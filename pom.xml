@@ -11,13 +11,13 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.greglturnquist</groupId>
-    <artifactId>react-and-spring-data-rest-basic</artifactId>
+    <groupId>com.scriptmaker</groupId>
+    <artifactId>script-maker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>React.js and Spring Data REST - Basic</name>
-    <description>An SPA with ReactJS in the frontend and Spring Data REST in the backend</description>
+    <name>Script Maker</name>
+    <description>Script Maker Description</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
