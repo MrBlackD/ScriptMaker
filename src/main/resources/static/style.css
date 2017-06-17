@@ -4,3 +4,10 @@
 .cell{
     padding:10px;
 }
+
+.action, .action td {
+    border: 1px solid black;
+}
+.action{
+    margin:10px;
+}

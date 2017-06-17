@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as funcs from "../utils/requests";
 import ReactDOM from 'react-dom'
+import DynamicParam from "./DynamicParam";
 
 export default class DynamicParams extends Component {
     constructor(props){
@@ -109,8 +110,7 @@ export default class DynamicParams extends Component {
         });
     }
 
-    render() {
-        let params = this.state.dynamicParams;
+    renderForms(){
         return (
             <div>
                 <form onSubmit={(e)=>this.handleCreateParam(e)}>
@@ -134,15 +134,6 @@ export default class DynamicParams extends Component {
                     <input placeholder="id" ref="deleteId" required={true}/>
                     <button type="submit">Delete</button>
                 </form>
-                <h2>DynamicParams</h2>
-                <table>
-                    <thead>
-                    {this.renderHeader(params)}
-                    </thead>
-                    <tbody>
-                        {this.renderParams(params)}
-                    </tbody>
-                </table>
             </div>
         )
     }
@@ -152,7 +143,7 @@ export default class DynamicParams extends Component {
         if(params.length > 0) {
             for (let key in params[0]) {
                 if(params[0].hasOwnProperty(key)) {
-                    result.push(<td className="cell">{key}</td>);
+                    result.push(<td key={key} className="cell">{key}</td>);
                 }
             }
         }
@@ -164,7 +155,7 @@ export default class DynamicParams extends Component {
         let result = [];
         for(let param in params){
             if(params.hasOwnProperty(param)){
-                result.push(this.renderRow(params[param]));
+                result.push(<DynamicParam key={param} data={params[param]}/>);//this.renderRow(params[param])
             }
         }
         return result;
@@ -174,7 +165,7 @@ export default class DynamicParams extends Component {
         let result = [];
         for(let key in item){
             if(item.hasOwnProperty(key)){
-                result.push(<td className="cell">{""+item[key]}</td>);
+                result.push(<td  className="cell">{""+item[key]}</td>);
             }
         }
         return(
@@ -182,6 +173,24 @@ export default class DynamicParams extends Component {
                 {result}
             </tr>
         );
+    }
+
+    render() {
+        let params = this.state.dynamicParams;
+        return (
+            <div>
+                {this.renderForms()}
+                <h2>DynamicParams</h2>
+                <table>
+                    <thead>
+                    {this.renderHeader(params)}
+                    </thead>
+                    <tbody>
+                    {this.renderParams(params)}
+                    </tbody>
+                </table>
+            </div>
+        )
     }
 
 }
