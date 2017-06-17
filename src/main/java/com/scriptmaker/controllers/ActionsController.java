@@ -1,6 +1,7 @@
 package com.scriptmaker.controllers;
 
 import com.scriptmaker.common.Utils;
+import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.repository.ActionRepository;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ActionsController {
 
     @Autowired
-    private DynamicParamRepository dynamicParamRepository;
+    private ActionFactory actionFactory;
     @Autowired
     private ActionRepository actionRepository;
     @Autowired
@@ -47,7 +48,7 @@ public class ActionsController {
             @RequestParam(name="description") String description,
             @RequestParam(name="inParams", required = false) String inParams,
             @RequestParam(name="outParams", required = false) String outParams
-    ){
+    ) throws Exception {
         Action newAction = new Action();
         newAction.setName(name);
         newAction.setCode(code);
@@ -55,7 +56,7 @@ public class ActionsController {
         newAction.setDescription(description);
         newAction.setInParams(utils.getDynamicParamsFromString(inParams));
         newAction.setOutParams(utils.getDynamicParamsFromString(outParams));
-        actionRepository.save(newAction);
+        actionFactory.create(newAction);
         return newAction;
     }
 
@@ -68,7 +69,7 @@ public class ActionsController {
             @RequestParam(name="description",required = false) String description,
             @RequestParam(name="inParams", required = false) String inParams,
             @RequestParam(name="outParams", required = false) String outParams
-    ){
+    ) throws Exception {
         Action action = actionRepository.findOne(Long.parseLong(id));
         String newName = name == null? action.getName() : name;
         String newCode = code == null? action.getCode() : code;
@@ -82,12 +83,12 @@ public class ActionsController {
         action.setDescription(newDescription);
         action.setInParams(newInParams);
         action.setOutParams(newOutParams);
-        actionRepository.save(action);
+        actionFactory.update(action);
         return action;
     }
 
     @RequestMapping("/api/actions/delete")
     public void deleteAction(@RequestParam(name="id") String id){
-        actionRepository.delete(Long.parseLong(id));
+        actionFactory.delete(Long.parseLong(id));
     }
 }

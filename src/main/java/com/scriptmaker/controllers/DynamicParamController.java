@@ -1,5 +1,6 @@
 package com.scriptmaker.controllers;
 
+import com.scriptmaker.factories.DynamicParamFactory;
 import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.repository.DynamicParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class DynamicParamController {
 
     @Autowired
     private DynamicParamRepository dynamicParamRepository;
+    @Autowired
+    private DynamicParamFactory dynamicParamFactory;
 
     @RequestMapping("/api/dynamicParams")
     public List<DynamicParam> getAllParams(){
@@ -35,7 +38,7 @@ public class DynamicParamController {
                                  @RequestParam(name="code")String code,
                                  @RequestParam(name="description")String description,
                                  @RequestParam(name="required",required = false) String required,
-                                 @RequestParam(name="keepInWorkflow",required = false) String keepInWorkflow){
+                                 @RequestParam(name="keepInWorkflow",required = false) String keepInWorkflow) throws Exception {
 
         DynamicParam newParam = new DynamicParam(
                 name,
@@ -44,7 +47,7 @@ public class DynamicParamController {
                 Boolean.parseBoolean(required),
                 Boolean.parseBoolean(keepInWorkflow)
         );
-        dynamicParamRepository.save(newParam);
+        dynamicParamFactory.create(newParam);
         return newParam;
     }
 
@@ -54,7 +57,7 @@ public class DynamicParamController {
                                   @RequestParam(name="code",required = false) String code,
                                   @RequestParam(name="description",required = false) String description,
                                   @RequestParam(name="required",required = false) String required,
-                                  @RequestParam(name="keepInWorkflow",required = false) String  keepInWorkflow){
+                                  @RequestParam(name="keepInWorkflow",required = false) String  keepInWorkflow) throws Exception {
 
         DynamicParam dynamicParam = dynamicParamRepository.findOne(Long.parseLong(id));
         String newName = name != null ? name : dynamicParam.getName();
@@ -67,12 +70,12 @@ public class DynamicParamController {
         dynamicParam.setDescription(newDescription);
         dynamicParam.setRequired(newRequired);
         dynamicParam.setKeepInWorkflow(newKeepInWorkflow);
-        dynamicParamRepository.save(dynamicParam);
+        dynamicParamFactory.update(dynamicParam);
         return dynamicParam;
     }
 
     @RequestMapping("/api/dynamicParams/delete")
     public void deleteParam(@RequestParam(name="id") String id){
-        dynamicParamRepository.delete(Long.parseLong(id));
+        dynamicParamFactory.delete(Long.parseLong(id));
     }
 }
