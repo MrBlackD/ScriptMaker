@@ -8,6 +8,7 @@ export default class HeadBar extends Component {
                 <ul>
                     <li><Link to="/dynamicParams">dynamicParams</Link></li>
                     <li><Link to="/actions">Actions</Link></li>
+                    <li><Link to="/operations">Operations</Link></li>
                     <li><Link to="/">Root</Link></li>
                 </ul>
             </div>

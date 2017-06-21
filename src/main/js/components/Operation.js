@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import {Link} from "react-router";
 
 
-export default class Action extends Component {
+export default class Operation extends Component {
     constructor(props){
         super(props);
 
@@ -26,18 +27,13 @@ export default class Action extends Component {
 
         }
     }
-
-    render() {
-        let action = this.props.data;
-        if(!action)
-            return null;
-        console.log(action);
+    getParams(operation){
         let inParams = [];
         let outParams = [];
-        if(action.inParams&&action.inParams.length > 0)
-            inParams = action.inParams;
-        if(action.outParams&&action.outParams.length > 0)
-            outParams = action.outParams;
+        if(operation.inParams&&operation.inParams.length > 0)
+            inParams = operation.inParams;
+        if(operation.outParams&&operation.outParams.length > 0)
+            outParams = operation.outParams;
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
         for(let i=0;i < paramsLength; i++){
@@ -54,29 +50,33 @@ export default class Action extends Component {
                 </tr>
             );
         }
+        return params;
+    }
+
+
+    render() {
+
+        let operation = this.props.data;
         return (
-            <table className="action">
+            <table className="operation">
                 <tbody>
-                    <tr>
-                        <td colSpan={2}>{action.name}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>{action.code}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>{action.module}</td>
-                    </tr>
-                    <tr>
-                        <td>входящие параметры</td>
-                        <td>исходящие параметры</td>
-                    </tr>
-                    {params}
-                    <tr>
-                        <td colSpan={2}>{action.description}</td>
-                    </tr>
+                <tr>
+                    <td colSpan={2}><Link to={"/operationScript/"+operation.id}>{operation.name}</Link></td>
+                </tr>
+                <tr>
+                    <td colSpan={2}>{operation.code}</td>
+                </tr>
+                <tr>
+                    <td>входящие параметры</td>
+                    <td>исходящие параметры</td>
+                </tr>
+                {this.getParams(operation)}
+                <tr>
+                    <td colSpan={2}>{operation.description}</td>
+                </tr>
                 </tbody>
             </table>
-        )
+        );
     }
 
 }

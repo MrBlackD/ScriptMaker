@@ -5,9 +5,24 @@
     padding:10px;
 }
 
-.action, .action td {
+.operation, .operation td,.action, .action td {
     border: 1px solid black;
 }
-.action{
+.operation, .action{
     margin:10px;
+}
+
+.action{
+    background-color: #ffd45a;
+}
+
+.operation{
+    background-color: #6ae4ff;
+}
+
+.end{
+    border: 1px solid black;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
 }
