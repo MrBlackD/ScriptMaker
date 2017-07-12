@@ -54,8 +54,12 @@ export default class Action extends Component {
                 </tr>
             );
         }
+        if(this.props.collapsed){
+            return (<div id={this.props.id} style={{"left":this.props.x+"px","top":this.props.y+"px"}} className="node">{action.name}</div>)
+        }
+
         return (
-            <table className="action">
+            <table id={this.props.id} className="action">
                 <tbody>
                     <tr>
                         <td colSpan={2}>{action.name}</td>

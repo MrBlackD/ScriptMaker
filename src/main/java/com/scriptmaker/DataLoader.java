@@ -58,12 +58,12 @@ public class DataLoader implements CommandLineRunner {
         this.actionRepository.save(action);
         this.actionRepository.save(action2);
 
-        Node node = new Node(action,null,null);
+        Node node = new Node(action,null,null,200L,200L);
 
-        Node node2 = new Node(action,null,node);
+        Node node2 = new Node(action,null,node,150L,150L);
         Condition condition = new Condition("cond",node,node2);
-        Node node3 = new Node(null,condition,null);
-        Node node4 = new Node(action2,null,node2);
+        Node node3 = new Node(null,condition,null,0L,0L);
+        Node node4 = new Node(action2,null,node2,100L,100L);
         this.nodeRepository.save(node);
         this.nodeRepository.save(node2);
         this.conditionRepository.save(condition);

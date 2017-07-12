@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "script-maker",
   "dependencies": {
+    "jsplumb": "^2.4.3",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "webpack": "^1.12.2",
     "react-router": "^2.1.1"
   },
   "scripts": {

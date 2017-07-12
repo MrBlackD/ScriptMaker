@@ -57,8 +57,11 @@ export default class Operation extends Component {
     render() {
 
         let operation = this.props.data;
+        if(this.props.collapsed){
+            return (<div id={this.props.id} className="node">{operation.name}</div>)
+        }
         return (
-            <table className="operation">
+            <table id={this.props.id} className="operation">
                 <tbody>
                 <tr>
                     <td colSpan={2}><Link to={"/operationScript/"+operation.id}>{operation.name}</Link></td>
