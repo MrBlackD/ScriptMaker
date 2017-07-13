@@ -4,17 +4,15 @@ import com.scriptmaker.factories.DynamicParamFactory;
 import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.repository.DynamicParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by Admin on 07.06.2017.
- */
+@CrossOrigin
 @RestController
 public class DynamicParamController {
 

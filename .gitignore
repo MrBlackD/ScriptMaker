@@ -1,0 +1,6 @@
+.idea/
+ScriptMaker.iml
+/node_modules/
+/src/main/resources/static/built/
+/target/
+/dist/

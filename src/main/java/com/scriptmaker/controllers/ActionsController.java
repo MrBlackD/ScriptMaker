@@ -5,16 +5,13 @@ import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.repository.ActionRepository;
-import com.scriptmaker.repository.DynamicParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Admin on 07.06.2017.
- */
+@CrossOrigin
 @RestController
 public class ActionsController {
 

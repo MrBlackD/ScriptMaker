@@ -1,16 +1,12 @@
 package com.scriptmaker.controllers;
 
 import com.scriptmaker.common.Utils;
-import com.scriptmaker.factories.ActionFactory;
-import com.scriptmaker.model.Action;
-import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.model.Operation;
-import com.scriptmaker.repository.ActionRepository;
 import com.scriptmaker.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -19,6 +15,7 @@ import java.util.List;
 /**
  * Created by Admin on 07.06.2017.
  */
+@CrossOrigin
 @RestController
 public class OperationsController {
 
