@@ -10,7 +10,7 @@
   },
   "scripts": {
     "watch": "webpack --watch -d",
-    "prod": "webpack --env=dev --progress --profile --colors",
+    "prod": "webpack --env=prod --progress --profile --colors",
     "dev": "webpack-dev-server --env=dev --colors --open"
   },
   "devDependencies": {

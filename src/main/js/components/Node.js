@@ -9,7 +9,13 @@ export default class Node extends Component {
 
 
     render() {
-        return (<div id={this.props.id} style={{"left":this.props.x+"px","top":this.props.y+"px"}} className="node">{this.props.data.name}</div>)
+        let name;
+        if(this.props.id==="startOperation"||this.props.id==="endOperation"){
+            name = this.props.data;
+        } else {
+            name = this.props.data.name;
+        }
+        return (<div id={this.props.id} style={{"left":this.props.x+"px","top":this.props.y+"px"}} className="node">{name}</div>)
     }
 
 }

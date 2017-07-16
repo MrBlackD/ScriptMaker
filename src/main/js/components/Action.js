@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import './../../css/style.css'
 
 export default class Action extends Component {
     constructor(props){

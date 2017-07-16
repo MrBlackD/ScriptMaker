@@ -4,3 +4,4 @@ ScriptMaker.iml
 /src/main/resources/static/built/
 /target/
 /dist/
+/src/main/resources/templates/index.html

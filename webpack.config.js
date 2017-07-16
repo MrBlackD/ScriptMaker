@@ -12,18 +12,33 @@ var PROD = {
         filename: './src/main/resources/static/built/bundle.js'
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: path.join(__dirname, '.'),
+                test: /\.js$/,
                 exclude: /(node_modules)/,
-                loader: 'babel-loader',
-                query: {
-                    cacheDirectory: true,
-                    presets: ['es2015', 'react']
-                }
+                use: [{
+                    loader:'babel-loader',
+                    query: {
+                        cacheDirectory: true,
+                        presets: ['es2015', 'react']
+                    }
+                }],
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
-    }
+    },
+    plugins:[
+        new HtmlWebpackPlugin({
+            title: 'ScriptMaker',
+            filename: './src/main/resources/templates/index.html',
+            template: './src/main/resources/templates/template.html'
+        }),
+        new webpack.HotModuleReplacementPlugin()
+    ],
+
 };
 
 var DEV = {
