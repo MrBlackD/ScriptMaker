@@ -7,11 +7,13 @@ export default class Actions extends Component {
     constructor(props){
         super(props);
         this.state = {
-            actions:{}
+            actions: {},
+            params: {}
         }
     }
     componentDidMount() {
         this.loadData();
+        this.loadParams();
     }
 
     loadData(){
@@ -25,6 +27,20 @@ export default class Actions extends Component {
                 this.setState({actions: res});
             }
         });
+    }
+
+    loadParams(){
+        funcs.get("http://localhost:8080/api/dynamicParams",(response, status, statusText)=>{
+            console.log(response);
+            let res = JSON.parse(response);
+            console.log(res);
+            if(status !== 200){
+                console.log(statusText);
+            } else {
+                this.setState({params: res});
+            }
+        });
+
     }
 
     handleCreateParam(e){
@@ -124,6 +140,9 @@ export default class Actions extends Component {
     }
 
     renderForms(){
+        let stateParams = this.state.params;
+        if(!stateParams.length)
+            return null;
         return (
             <div>
                 <form onSubmit={(e)=>this.handleCreateParam(e)}>
@@ -131,8 +150,18 @@ export default class Actions extends Component {
                     <input placeholder="code" ref="newCode" required={true}/>
                     <input placeholder="module" ref="newModule" required={true}/>
                     <input placeholder="description" ref="newDescription" required={true}/>
-                    <input placeholder="inParams" ref="newInParams" />
-                    <input placeholder="outParams" ref="newOutParams" />
+                    <select multiple ref="newInParams" >
+                        <option value="">{""}</option>
+                    {stateParams.map((item)=>{
+                        return <option value={item.id} key={item.id} >{item.code}</option>;
+                    })}
+                    </select>
+                    <select multiple ref="newOutParams" >
+                        <option value="">{""}</option>
+                        {stateParams.map((item)=>{
+                            return <option value={item.id} key={item.id} >{item.code}</option>;
+                        })}
+                    </select>
                     <button type="submit">Create new</button>
                 </form>
                 <form onSubmit={(e)=>this.handleEditParam(e)}>
@@ -163,7 +192,6 @@ export default class Actions extends Component {
     }
 
     render() {
-
         return (
             <div>
                 {this.renderForms()}

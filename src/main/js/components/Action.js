@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import "./style.css"
 
 export default class Action extends Component {
     constructor(props){
@@ -31,7 +31,7 @@ export default class Action extends Component {
         let action = this.props.data;
         if(!action)
             return null;
-        console.log(action);
+
         let inParams = [];
         let outParams = [];
         if(action.inParams&&action.inParams.length > 0)
