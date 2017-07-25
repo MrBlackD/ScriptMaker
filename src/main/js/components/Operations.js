@@ -17,7 +17,6 @@ export default class Operations extends Component {
 
     loadData(){
         funcs.get("http://localhost:8080/api/operations",(response, status, statusText)=>{
-            console.log(response);
             let res = JSON.parse(response);
             console.log(res);
             if(status !== 200){

@@ -60,32 +60,16 @@ public class DataLoader implements CommandLineRunner {
 
         Node node = new Node(action,null,null,200L,200L);
 
-        Node node2 = new Node(action,null,node,150L,150L);
-        Condition condition = new Condition("cond",node,node2);
-        Node node3 = new Node(null,condition,null,0L,0L);
-        Node node4 = new Node(action2,null,node2,100L,100L);
+        Node node2 = new Node(action,null,null,150L,150L);
+        Node node3 = new Node(action,null,node,50L,50L);
+        Condition condition = new Condition("cond",node2,node3);
+        Node node4 = new Node(action2,condition,null,100L,100L);
         this.nodeRepository.save(node);
         this.nodeRepository.save(node2);
-        this.conditionRepository.save(condition);
         this.nodeRepository.save(node3);
+        this.conditionRepository.save(condition);
         this.nodeRepository.save(node4);
 
-//        Node node = new Node(action.getId(),null,null);
-//        this.nodeRepository.save(node);
-//        Node node2 = new Node(null,null,null);
-//        this.nodeRepository.save(node2);
-//        node.setNextNodeId(node2.getId());
-//        this.nodeRepository.save(node);
-//
-//        Node node3 = new Node(action2.getId(),null,null);
-//        this.nodeRepository.save(node3);
-//
-//        Condition condition = new Condition("cond",node.getId(),node3.getId());
-//        this.conditionRepository.save(condition);
-//
-//        node2.setConditionId(condition.getId());
-//        this.nodeRepository.save(node2);
-//
         Operation operation = new Operation(
                 "operName",
                 "operCode",
