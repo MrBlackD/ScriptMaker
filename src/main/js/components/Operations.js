@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as funcs from "../utils/requests";
 import Operation from "./Operation";
+import {Typography} from "material-ui";
 
 
 export default class Operations extends Component {
@@ -39,7 +40,7 @@ export default class Operations extends Component {
 
         return (
             <div>
-                <h2>Operations</h2>
+                <Typography type="headline" align="center" gutterBottom>Operations</Typography>
                 {this.renderOperations()}
             </div>
         );

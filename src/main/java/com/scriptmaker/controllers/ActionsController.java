@@ -72,8 +72,8 @@ public class ActionsController {
         String newCode = code == null? action.getCode() : code;
         String newModule = module == null? action.getModule() : module;
         String newDescription = description == null? action.getDescription() : description;
-        List<DynamicParam> newInParams = utils.getDynamicParamsFromString(inParams);
-        List<DynamicParam> newOutParams = utils.getDynamicParamsFromString(outParams);
+        List<DynamicParam> newInParams = inParams == null? action.getInParams() : utils.getDynamicParamsFromString(inParams);
+        List<DynamicParam> newOutParams = outParams == null? action.getOutParams() : utils.getDynamicParamsFromString(outParams);
         action.setName(newName);
         action.setCode(newCode);
         action.setModule(newModule);

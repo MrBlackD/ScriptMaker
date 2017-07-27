@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from "react-router";
+import {Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
 
 
 export default class Operation extends Component {
@@ -44,10 +45,10 @@ export default class Operation extends Component {
             if(i < outParams.length)
                 outParam = outParams[i];
             params.push(
-                <tr key={i}>
-                    <td className={inParam.code} onMouseOver={()=>{this.onParamOver(inParam.code)}} onMouseLeave={()=>{this.onParamLeave(inParam.code)}}>{inParam.code}</td>
-                    <td className={outParam.code} onMouseOver={()=>{this.onParamOver(outParam.code)}} onMouseLeave={()=>{this.onParamLeave(outParam.code)}}>{outParam.code}</td>
-                </tr>
+                <TableRow key={i}>
+                    <TableCell className={inParam.code} onMouseOver={()=>{this.onParamOver(inParam.code)}} onMouseLeave={()=>{this.onParamLeave(inParam.code)}}>{inParam.code}</TableCell>
+                    <TableCell className={outParam.code} onMouseOver={()=>{this.onParamOver(outParam.code)}} onMouseLeave={()=>{this.onParamLeave(outParam.code)}}>{outParam.code}</TableCell>
+                </TableRow>
             );
         }
         return params;
@@ -61,24 +62,26 @@ export default class Operation extends Component {
             return (<div id={this.props.id} className="node">{operation.name}</div>)
         }
         return (
-            <table id={this.props.id} className="operation">
-                <tbody>
-                <tr>
-                    <td colSpan={2}><Link to={"/operationScript/"+operation.id}>{operation.name}</Link></td>
-                </tr>
-                <tr>
-                    <td colSpan={2}>{operation.code}</td>
-                </tr>
-                <tr>
-                    <td>входящие параметры</td>
-                    <td>исходящие параметры</td>
-                </tr>
-                {this.getParams(operation)}
-                <tr>
-                    <td colSpan={2}>{operation.description}</td>
-                </tr>
-                </tbody>
-            </table>
+            <Table id={this.props.id} className="operation" >
+                <TableHead>
+                    <TableRow>
+                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}><Link to={"/operationScript/"+operation.id}>{operation.name}</Link></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+                        <TableCell colSpan={2}>{operation.code}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell>входящие параметры</TableCell>
+                        <TableCell>исходящие параметры</TableCell>
+                    </TableRow>
+                    {this.getParams(operation)}
+                    <TableRow>
+                        <TableCell colSpan={2}>{operation.description}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         );
     }
 

@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import * as funcs from "../utils/requests";
-import ReactDOM from 'react-dom'
 import DynamicParam from "./DynamicParam";
+
+import {
+    Button, Divider, FormControlLabel, Switch, Table, TableBody, TableCell, TableHead, TableRow, TextField,
+    Typography
+} from "material-ui";
+
 
 export default class DynamicParams extends Component {
     constructor(props){
@@ -29,17 +34,16 @@ export default class DynamicParams extends Component {
 
     handleCreateParam(e){
         e.preventDefault();
-
-        let name = ReactDOM.findDOMNode(this.refs.newName).value;
-        ReactDOM.findDOMNode(this.refs.newName).value = "";
-        let code = ReactDOM.findDOMNode(this.refs.newCode).value;
-        ReactDOM.findDOMNode(this.refs.newCode).value = "";
-        let description = ReactDOM.findDOMNode(this.refs.newDescription).value;
-        ReactDOM.findDOMNode(this.refs.newDescription).value = "";
-        let required = ReactDOM.findDOMNode(this.refs.newRequired).checked;
-        ReactDOM.findDOMNode(this.refs.newRequired).checked = false;
-        let keepInWorkflow = ReactDOM.findDOMNode(this.refs.newKeepInWorkflow).checked;
-        ReactDOM.findDOMNode(this.refs.newKeepInWorkflow).checked = false;
+        let name = this.newName.value;
+        this.newName.value = "";
+        let code = this.newCode.value;
+        this.newCode.value = "";
+        let description = this.newDescription.value;
+        this.newDescription.value = "";
+        let required = this.newRequired.checked;
+        this.newRequired.checked = false;//не работает
+        let keepInWorkflow = this.newKeepInWorkflow.checked;
+        this.newKeepInWorkflow.checked = false;// не работает
         console.log(name+" "+code+" "+description+" "+required+" "+keepInWorkflow);
         let url = "http://localhost:8080/api/dynamicParams/new?"
             +"name="+name
@@ -60,18 +64,16 @@ export default class DynamicParams extends Component {
     handleEditParam(e){
         e.preventDefault();
 
-        let id = ReactDOM.findDOMNode(this.refs.editId).value;
-        ReactDOM.findDOMNode(this.refs.editId).value = "";
-        let name = ReactDOM.findDOMNode(this.refs.editName).value;
-        ReactDOM.findDOMNode(this.refs.editName).value = "";
-        let code = ReactDOM.findDOMNode(this.refs.editCode).value;
-        ReactDOM.findDOMNode(this.refs.editCode).value = "";
-        let description = ReactDOM.findDOMNode(this.refs.editDescription).value;
-        ReactDOM.findDOMNode(this.refs.editDescription).value = "";
-        let required = ReactDOM.findDOMNode(this.refs.editRequired).checked;
-        ReactDOM.findDOMNode(this.refs.editRequired).checked = false;
-        let keepInWorkflow = ReactDOM.findDOMNode(this.refs.editKeepInWorkflow).checked;
-        ReactDOM.findDOMNode(this.refs.editKeepInWorkflow).checked = false;
+        let id = this.editId.value;
+        this.editId.value = "";
+        let name = this.editName.value;
+        this.editName.value = "";
+        let code = this.editCode.value;
+        this.editCode.value = "";
+        let description = this.editDescription.value;
+        this.editDescription.value = "";
+        let required = this.editRequired.checked;
+        let keepInWorkflow = this.editKeepInWorkflow.checked;
         console.log(id+""+name+" "+code+" "+description+" "+required+" "+keepInWorkflow);
         let url = "http://localhost:8080/api/dynamicParams/edit?"
             +"id="+id
@@ -98,10 +100,8 @@ export default class DynamicParams extends Component {
 
     handleDelete(e){
         e.preventDefault();
-
-        let id = ReactDOM.findDOMNode(this.refs.deleteId).value;
-        ReactDOM.findDOMNode(this.refs.deleteId).value = "";
-        console.log(id);
+        let id = this.deleteId.value;
+        this.deleteId.value = "";
         let url = "http://localhost:8080/api/dynamicParams/delete?id="+id;
         funcs.get(url,(response, status, statusText)=>{
             console.log(response);
@@ -114,25 +114,45 @@ export default class DynamicParams extends Component {
         return (
             <div>
                 <form onSubmit={(e)=>this.handleCreateParam(e)}>
-                    <input placeholder="name" ref="newName" required={true}/>
-                    <input placeholder="code" ref="newCode" required={true}/>
-                    <input placeholder="description" ref="newDescription" required={true}/>
-                    <lable><input type="checkbox" ref="newRequired"/>Required</lable>
-                    <label><input type="checkbox" ref="newKeepInWorkflow"/>KeepInWorkflow</label>
-                    <button type="submit">Create new</button>
+                    <TextField id="newName" inputRef={(input) => { this.newName = input; }} label="Name" required={true}/>
+                    <TextField id="newCode" inputRef={(input) => { this.newCode = input; }} label="Code" required={true}/>
+                    <TextField id="newDescription" inputRef={(input) => { this.newDescription = input; }} label="Description" required={true}/>
+                    <FormControlLabel inputRef={(input) => {this.newRequired = input}}
+                        control={
+                            <Switch id="newRequired"/>
+                        }
+                        label="Required"
+                    />
+                    <FormControlLabel inputRef={(input) => {this.newKeepInWorkflow = input}}
+                        control={
+                            <Switch id="newKeepInWorkflow"  />
+                        }
+                        label="KeepInWorkflow"
+                    />
+                    <Button color="accent"  raised={true} type="submit">Create new</Button>
                 </form>
                 <form onSubmit={(e)=>this.handleEditParam(e)}>
-                    <input placeholder="id" ref="editId" required={true}/>
-                    <input placeholder="name" ref="editName"/>
-                    <input placeholder="code" ref="editCode"/>
-                    <input placeholder="description" ref="editDescription"/>
-                    <lable><input type="checkbox" ref="editRequired"/>Required</lable>
-                    <label><input type="checkbox" ref="editKeepInWorkflow"/>KeepInWorkflow</label>
-                    <button type="submit">Edit</button>
+                    <TextField id="editId" inputRef={(input) => { this.editId = input; }} label="Id" required={true}/>
+                    <TextField id="editName" inputRef={(input) => { this.editName = input; }} label="Name"/>
+                    <TextField id="editCode" inputRef={(input) => { this.editCode = input; }} label="Code"/>
+                    <TextField id="editDescription" inputRef={(input) => { this.editDescription = input; }} label="Description"/>
+                    <FormControlLabel inputRef={(input) => { this.editRequired = input; }}
+                        control={
+                            <Switch id="editRequired" />
+                        }
+                        label="Required"
+                    />
+                    <FormControlLabel inputRef={(input) => { this.editKeepInWorkflow = input; }}
+                        control={
+                            <Switch id="editKeepInWorkflow" />
+                        }
+                        label="KeepInWorkflow"
+                    />
+                    <Button color="accent"  raised={true} type="submit">Edit</Button>
                 </form>
                 <form onSubmit={(e)=>this.handleDelete(e)}>
-                    <input placeholder="id" ref="deleteId" required={true}/>
-                    <button type="submit">Delete</button>
+                    <TextField id="deleteId" label="Id" inputRef={(input) => { this.deleteId = input; }} required={true}/>
+                    <Button color="accent" raised={true} type="submit" >Delete</Button>
                 </form>
             </div>
         )
@@ -143,11 +163,11 @@ export default class DynamicParams extends Component {
         if(params.length > 0) {
             for (let key in params[0]) {
                 if(params[0].hasOwnProperty(key)) {
-                    result.push(<td key={key} className="cell">{key}</td>);
+                    result.push(<TableCell key={key}>{key}</TableCell>);
                 }
             }
         }
-        return (<tr className="bold">{result}</tr>);
+        return (<TableRow>{result}</TableRow>);
     }
 
 
@@ -155,7 +175,7 @@ export default class DynamicParams extends Component {
         let result = [];
         for(let param in params){
             if(params.hasOwnProperty(param)){
-                result.push(<DynamicParam key={param} data={params[param]}/>);//this.renderRow(params[param])
+                result.push(<DynamicParam key={param} data={params[param]}/>);
             }
         }
         return result;
@@ -180,15 +200,16 @@ export default class DynamicParams extends Component {
         return (
             <div>
                 {this.renderForms()}
-                <h2>DynamicParams</h2>
-                <table>
-                    <thead>
-                    {this.renderHeader(params)}
-                    </thead>
-                    <tbody>
-                    {this.renderParams(params)}
-                    </tbody>
-                </table>
+                <Divider />
+                <Typography type="headline" align="center" gutterBottom>DynamicParams</Typography>
+                <Table>
+                    <TableHead>
+                        {this.renderHeader(params)}
+                    </TableHead>
+                    <TableBody>
+                        {this.renderParams(params)}
+                    </TableBody>
+                </Table>
             </div>
         )
     }

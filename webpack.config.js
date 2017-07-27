@@ -18,7 +18,7 @@ var PROD = {
                 exclude: /(node_modules)/,
                 use: [{
                     loader:'babel-loader',
-                    query: {
+                    options: {
                         cacheDirectory: true,
                         presets: ['es2015', 'react']
                     }
@@ -27,6 +27,24 @@ var PROD = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use:[{
+                    loader:'file-loader',
+                    options:{
+                        outputPath:'./src/main/resources/static/built/'
+                    }
+                }]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use:[{
+                    loader:'file-loader',
+                    options:{
+                        outputPath:'./src/main/resources/static/built/'
+                    }
+                }]
             }
         ]
     },
@@ -65,9 +83,9 @@ var DEV = {
                 exclude: /(node_modules)/,
                 use: [{
                     loader:'babel-loader',
-                    query: {
+                    options: {
                         cacheDirectory: true,
-                        presets: ['es2015', 'react']
+                        presets: ['es2015', 'react','stage-1']
                     }
                 }],
 
@@ -75,6 +93,18 @@ var DEV = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use:[
+                    'file-loader'
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use:[
+                    'file-loader'
+                ]
             }
         ]
     },

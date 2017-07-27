@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './../../css/style.css'
+import {Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
 
 export default class Action extends Component {
     constructor(props){
@@ -48,10 +49,10 @@ export default class Action extends Component {
             if(i < outParams.length)
                 outParam = outParams[i];
             params.push(
-                <tr key={i}>
-                    <td className={inParam.code} onMouseOver={()=>{this.onParamOver(inParam.code)}} onMouseLeave={()=>{this.onParamLeave(inParam.code)}}>{inParam.code}</td>
-                    <td className={outParam.code} onMouseOver={()=>{this.onParamOver(outParam.code)}} onMouseLeave={()=>{this.onParamLeave(outParam.code)}}>{outParam.code}</td>
-                </tr>
+                <TableRow key={i}>
+                    <TableCell className={inParam.code} onMouseOver={()=>{this.onParamOver(inParam.code)}} onMouseLeave={()=>{this.onParamLeave(inParam.code)}}>{inParam.code}</TableCell>
+                    <TableCell className={outParam.code} onMouseOver={()=>{this.onParamOver(outParam.code)}} onMouseLeave={()=>{this.onParamLeave(outParam.code)}}>{outParam.code}</TableCell>
+                </TableRow>
             );
         }
         if(this.props.collapsed){
@@ -59,27 +60,29 @@ export default class Action extends Component {
         }
 
         return (
-            <table id={this.props.id} className="action">
-                <tbody>
-                    <tr>
-                        <td colSpan={2}>{action.name}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>{action.code}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>{action.module}</td>
-                    </tr>
-                    <tr>
-                        <td>входящие параметры</td>
-                        <td>исходящие параметры</td>
-                    </tr>
+            <Table id={this.props.id} className="action">
+                <TableHead>
+                    <TableRow>
+                        <TableCell colSpan={2} style={{"textAlign":"center"}}>{action.name}</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+                        <TableCell colSpan={2}>{action.code}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell colSpan={2}>{action.module}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell>входящие параметры</TableCell>
+                        <TableCell>исходящие параметры</TableCell>
+                    </TableRow>
                     {params}
-                    <tr>
-                        <td colSpan={2}>{action.description}</td>
-                    </tr>
-                </tbody>
-            </table>
+                    <TableRow>
+                        <TableCell colSpan={2}>{action.description}</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         )
     }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as funcs from "../utils/requests";
-import ReactDOM from 'react-dom'
 import Action from "./Action";
+import {Button, TextField, Typography} from "material-ui";
 
 export default class Actions extends Component {
     constructor(props){
@@ -30,18 +30,18 @@ export default class Actions extends Component {
     handleCreateParam(e){
         e.preventDefault();
 
-        let name = ReactDOM.findDOMNode(this.refs.newName).value;
-        ReactDOM.findDOMNode(this.refs.newName).value = "";
-        let code = ReactDOM.findDOMNode(this.refs.newCode).value;
-        ReactDOM.findDOMNode(this.refs.newCode).value = "";
-        let module = ReactDOM.findDOMNode(this.refs.newModule).value;
-        ReactDOM.findDOMNode(this.refs.newModule).value = "";
-        let description = ReactDOM.findDOMNode(this.refs.newDescription).value;
-        ReactDOM.findDOMNode(this.refs.newDescription).value = "";
-        let inParams = ReactDOM.findDOMNode(this.refs.newInParams).value;
-        ReactDOM.findDOMNode(this.refs.newInParams).value = "";
-        let outParams = ReactDOM.findDOMNode(this.refs.newOutParams).value;
-        ReactDOM.findDOMNode(this.refs.newOutParams).value = "";
+        let name = this.newName.value;
+        this.newName.value = "";
+        let code = this.newCode.value;
+        this.newCode.value = "";
+        let module = this.newModule.value;
+        this.newModule.value = "";
+        let description = this.newDescription.value;
+        this.newDescription.value = "";
+        let inParams = this.newInParams.value;
+        this.newInParams.value = "";
+        let outParams = this.newOutParams.value;
+        this.newOutParams.value = "";
         console.log(name+" "+code+" "+module+" "+description+" "+inParams+" "+outParams);
         let url = "http://localhost:8080/api/actions/new?"
             +"name="+name
@@ -65,21 +65,21 @@ export default class Actions extends Component {
     handleEditParam(e){
         e.preventDefault();
 
-        let id = ReactDOM.findDOMNode(this.refs.editId).value;
-        ReactDOM.findDOMNode(this.refs.editId).value = "";
-        let name = ReactDOM.findDOMNode(this.refs.editName).value;
-        ReactDOM.findDOMNode(this.refs.editName).value = "";
-        let code = ReactDOM.findDOMNode(this.refs.editCode).value;
-        ReactDOM.findDOMNode(this.refs.editCode).value = "";
-        let module = ReactDOM.findDOMNode(this.refs.editModule).value;
-        ReactDOM.findDOMNode(this.refs.editModule).value = "";
-        let description = ReactDOM.findDOMNode(this.refs.editDescription).value;
-        ReactDOM.findDOMNode(this.refs.editDescription).value = "";
-        let inParams = ReactDOM.findDOMNode(this.refs.editInParams).value;
-        ReactDOM.findDOMNode(this.refs.editInParams).value = "";
-        let outParams = ReactDOM.findDOMNode(this.refs.editOutParams).value;
-        ReactDOM.findDOMNode(this.refs.editOutParams).value = "";
-        console.log(id+""+name+" "+code+" "+module+" "+description+" "+inParams+" "+outParams);
+        let id = this.editId.value;
+        this.editId.value = "";
+        let name = this.editName.value;
+        this.editName.value = "";
+        let code = this.editCode.value;
+        this.editCode.value = "";
+        let module = this.editModule.value;
+        this.editModule.value = "";
+        let description = this.editDescription.value;
+        this.editDescription.value = "";
+        let inParams = this.editInParams.value;
+        this.editInParams.value = "";
+        let outParams = this.editOutParams.value;
+        this.editOutParams.value = "";
+        console.log(id+" "+name+" "+code+" "+module+" "+description+" "+inParams+" "+outParams);
         let url = "http://localhost:8080/api/actions/edit?"
             +"id="+id;
         if(name){
@@ -111,10 +111,8 @@ export default class Actions extends Component {
 
     handleDelete(e){
         e.preventDefault();
-
-        let id = ReactDOM.findDOMNode(this.refs.deleteId).value;
-        ReactDOM.findDOMNode(this.refs.deleteId).value = "";
-        console.log(id);
+        let id = this.deleteId.value;
+        this.deleteId.value = "";
         let url = "http://localhost:8080/api/actions/delete?id="+id;
         funcs.get(url,(response, status, statusText)=>{
             console.log(response);
@@ -127,27 +125,27 @@ export default class Actions extends Component {
         return (
             <div>
                 <form onSubmit={(e)=>this.handleCreateParam(e)}>
-                    <input placeholder="name" ref="newName" required={true}/>
-                    <input placeholder="code" ref="newCode" required={true}/>
-                    <input placeholder="module" ref="newModule" required={true}/>
-                    <input placeholder="description" ref="newDescription" required={true}/>
-                    <input placeholder="inParams" ref="newInParams" />
-                    <input placeholder="outParams" ref="newOutParams" />
-                    <button type="submit">Create new</button>
+                    <TextField inputRef={(input) => { this.newName = input; }} label="name" id="newName" required={true}/>
+                    <TextField inputRef={(input) => { this.newCode = input; }} label="code" id="newCode" required={true}/>
+                    <TextField inputRef={(input) => { this.newModule = input; }} label="module" id="newModule" required={true}/>
+                    <TextField inputRef={(input) => { this.newDescription = input; }} label="description" id="newDescription" required={true}/>
+                    <TextField inputRef={(input) => { this.newInParams = input; }} label="inParams" id="newInParams" />
+                    <TextField inputRef={(input) => { this.newOutParams = input; }} label="outParams" id="newOutParams" />
+                    <Button raised={true} type="submit">Create new</Button>
                 </form>
                 <form onSubmit={(e)=>this.handleEditParam(e)}>
-                    <input placeholder="id" ref="editId" required={true}/>
-                    <input placeholder="name" ref="editName"/>
-                    <input placeholder="code" ref="editCode"/>
-                    <input placeholder="module" ref="editModule"/>
-                    <input placeholder="description" ref="editDescription"/>
-                    <input placeholder="inParams" ref="editInParams"/>
-                    <input placeholder="outParams" ref="editOutParams"/>
-                    <button type="submit">Edit</button>
+                    <TextField inputRef={(input) => { this.editId = input; }} label="id" id="editId" required={true}/>
+                    <TextField inputRef={(input) => { this.editName = input; }} label="name" id="editName"/>
+                    <TextField inputRef={(input) => { this.editCode = input; }} label="code" id="editCode"/>
+                    <TextField inputRef={(input) => { this.editModule = input; }} label="module" id="editModule"/>
+                    <TextField inputRef={(input) => { this.editDescription = input; }} label="description" id="editDescription"/>
+                    <TextField inputRef={(input) => { this.editInParams = input; }} label="inParams" id="editInParams"/>
+                    <TextField inputRef={(input) => { this.editOutParams = input; }} label="outParams" id="editOutParams"/>
+                    <Button raised={true} type="submit">Edit</Button>
                 </form>
                 <form onSubmit={(e)=>this.handleDelete(e)}>
-                    <input placeholder="id" ref="deleteId" required={true}/>
-                    <button type="submit">Delete</button>
+                    <TextField inputRef={(input) => { this.deleteId = input; }} label="id" id="deleteId" required={true}/>
+                    <Button raised={true} type="submit">Delete</Button>
                 </form>
 
             </div>
@@ -167,7 +165,7 @@ export default class Actions extends Component {
         return (
             <div>
                 {this.renderForms()}
-                <h2>Actions</h2>
+                <Typography type="headline" align="center" gutterBottom>Actions</Typography>
                 {this.renderActions()}
             </div>
         )
