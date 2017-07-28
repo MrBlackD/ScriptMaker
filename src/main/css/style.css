@@ -1,23 +1,63 @@
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 100;
+    src: url('/src/main/resources/fonts/roboto/Roboto-Thin.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: url('/src/main/resources/fonts/roboto/Roboto-Light.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/src/main/resources/fonts/roboto/Roboto-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    src: url('/src/main/resources/fonts/roboto/Roboto-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/src/main/resources/fonts/roboto/Roboto-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    src: url('/src/main/resources/fonts/roboto/Roboto-Black.ttf');
+}
+
+
 .bold{
     font-weight:bold;
 }
-.cell{
-    padding:10px;
-}
 
-.operation, .operation td,.action, .action td {
-    border: 1px solid black;
+.operation,.action {
+    border: 2px solid black;
 }
 .operation, .action{
     margin:10px;
 }
 
 .action{
-    background-color: #ffd45a;
+    background-color: #ffec6a;
 }
 
 .operation{
-    background-color: #6ae4ff;
+    background-color: #6ddef2;
 }
 
 .end{
@@ -47,4 +87,20 @@
 
 .node::selection {
     background: #fff; /* Safari */
+}
+
+*{
+    font-family: 'Roboto', serif;
+}
+body{
+    background-color: #eeeeee;
+    margin:0;
+}
+.react-router-link{
+    text-decoration: none;
+    color:inherit;
+}
+
+.table-header-operation:hover{
+    background-color: #9df2f2;
 }

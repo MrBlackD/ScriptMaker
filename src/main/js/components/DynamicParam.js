@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {TableCell, TableRow} from "material-ui";
 
 
 export default class DynamicParam extends Component {
@@ -10,7 +11,7 @@ export default class DynamicParam extends Component {
         let result = [];
         for(let key in item){
             if(item.hasOwnProperty(key)){
-                result.push(<td key={key} className="cell">{""+item[key]}</td>);
+                result.push(<TableCell key={key} className="cell">{""+item[key]}</TableCell>);
             }
         }
         return result;
@@ -19,7 +20,7 @@ export default class DynamicParam extends Component {
     render() {
         let param = this.props.data;
         return (
-            <tr>{this.renderRow(param)}</tr>
+            <TableRow>{this.renderRow(param)}</TableRow>
         )
     }
 
