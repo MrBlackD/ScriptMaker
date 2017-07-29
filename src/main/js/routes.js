@@ -8,6 +8,7 @@ import DynamicParams from "./components/DynamicParams";
 import Actions from "./components/Actions";
 import Operations from "./components/Operations";
 import OperationScript from "./components/OperationScript";
+import CreateOperation from "./components/CreateOperation";
 
 export const routes = (
     <div>
@@ -16,6 +17,7 @@ export const routes = (
             <Route path="/dynamicParams" component={DynamicParams} />
             <Route path="/actions" component={Actions} />
             <Route path="/operations" component={Operations} />
+            <Route path="/operationScript" component={CreateOperation} />
             <Route path="/operationScript/:id" component={OperationScript} />
         </Route>
         <Route path='*' component={NotFound} />

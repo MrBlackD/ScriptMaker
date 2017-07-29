@@ -24,9 +24,17 @@ export default class HeadBar extends Component {
                         <Typography type="title">
                             <Link className="react-router-link" to="/">ScriptMaker v0.0.1</Link>
                         </Typography>
-                        <Button><Link className="react-router-link" to="/dynamicParams">Динамические параметры</Link></Button>
-                        <Button><Link className="react-router-link" to="/actions">Действия</Link></Button>
-                        <Button><Link className="react-router-link" to="/operations">Операции</Link></Button>
+                        <div className="appbar__menu">
+                            <Button>
+                                <Link  className="react-router-link" to="/dynamicParams">Динамические параметры</Link>
+                            </Button>
+                            <Button>
+                                <Link className="react-router-link" to="/actions">Действия</Link>
+                            </Button>
+                            <Button>
+                                <Link className="react-router-link" to="/operations">Операции</Link>
+                            </Button>
+                        </div>
                     </Toolbar>
                 </AppBar>
             </div>

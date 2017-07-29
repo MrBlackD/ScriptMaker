@@ -40,16 +40,8 @@
     src: url('/src/main/resources/fonts/roboto/Roboto-Black.ttf');
 }
 
-
 .bold{
     font-weight:bold;
-}
-
-.operation,.action {
-    border: 2px solid black;
-}
-.operation, .action{
-    margin:10px;
 }
 
 .action{
@@ -96,6 +88,7 @@ body{
     background-color: #eeeeee;
     margin:0;
 }
+
 .react-router-link{
     text-decoration: none;
     color:inherit;
@@ -103,4 +96,25 @@ body{
 
 .table-header-operation:hover{
     background-color: #9df2f2;
+}
+.appbar__menu{
+    text-align: center;
+    margin: 0 auto;
+}
+
+div.dialog{
+    max-width: none;
+}
+
+.dialog__content{
+    display: flex;
+    flex-direction: column;
+}
+
+.icon-edit, .icon-delete{
+    cursor: pointer;
+}
+
+.icon-edit:hover, .icon-delete:hover{
+    color:#555;
 }
