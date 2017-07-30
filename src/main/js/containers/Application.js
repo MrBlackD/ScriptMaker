@@ -8,6 +8,7 @@ import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import cyan from 'material-ui/colors/cyan';
 import blue from 'material-ui/colors/blue';
+import red from 'material-ui/colors/red';
 
 
 const styleSheet = createStyleSheet('FullWidthGrid', theme => ({
@@ -30,7 +31,8 @@ const theme = createMuiTheme({
         },
         accent: {
             ...blue
-        }
+        },
+        error:red
     }),
 });
 

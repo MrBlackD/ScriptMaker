@@ -46,10 +46,12 @@
 
 .action{
     background-color: #ffec6a;
+    margin-bottom: 20px;
 }
 
 .operation{
     background-color: #6ddef2;
+    margin-bottom: 20px;
 }
 
 .end{
