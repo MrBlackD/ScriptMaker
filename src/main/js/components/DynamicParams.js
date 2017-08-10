@@ -3,7 +3,7 @@ import * as funcs from "../utils/requests";
 import DynamicParam from "./DynamicParam";
 
 import {
-    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Switch,
+    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Paper, Switch,
     Table, TableBody,
     TableCell,
     TableHead, TableRow,
@@ -275,7 +275,7 @@ export default class DynamicParams extends Component {
     render() {
         let params = this.state.dynamicParams;
         return (
-            <div>
+            <Paper>
                 <div style={{"text-align":"center","padding":"10px"}}>
                     <Button onClick={()=>{
                         this.setState({openDialog:true});
@@ -292,7 +292,7 @@ export default class DynamicParams extends Component {
                         {this.renderParams(params)}
                     </TableBody>
                 </Table>
-            </div>
+            </Paper>
         )
     }
 

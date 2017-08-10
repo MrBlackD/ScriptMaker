@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as funcs from "../utils/requests.js";
 import Container from "./Container";
+import {Paper} from "material-ui";
 
 
 export default class OperationScript extends Component {
@@ -37,9 +38,9 @@ export default class OperationScript extends Component {
         }
 
         return (
-                <div>
+                <Paper>
                     <Container data={operation}/>
-                </div>
+                </Paper>
         );
     }
 

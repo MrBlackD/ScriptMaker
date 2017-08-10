@@ -54,9 +54,9 @@ export default class Application extends React.Component {
                     <HeadBar/>
                     <Grid container gutter={24}>
                         <Grid item xs={12}>
-                            <Paper>
+                            <div>
                                 {content}
-                            </Paper>
+                            </div>
                         </Grid>
                     </Grid>
                 </div>

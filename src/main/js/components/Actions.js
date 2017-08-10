@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import * as funcs from "../utils/requests";
 import Action from "./Action";
 import {
-    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField,
+    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, TextField,
     Typography
 } from "material-ui";
 
@@ -256,7 +256,7 @@ export default class Actions extends Component {
     render() {
 
         return (
-            <div>
+            <Paper>
                 <div style={{"text-align":"center","padding":"10px"}}>
                     <Button onClick={()=>{
                         this.setState({createDialogOpened:true});
@@ -266,7 +266,7 @@ export default class Actions extends Component {
                 {this.renderDeleteConfirmDialog()}
                 {this.renderEditionDialog()}
                 {this.renderActions()}
-            </div>
+            </Paper>
         )
     }
 
