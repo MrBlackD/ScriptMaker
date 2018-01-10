@@ -24,12 +24,7 @@ public class ActionsController {
 
     @RequestMapping("/api/actions")
     public List<Action> getAllActions(){
-        List<Action> list = new ArrayList<>();
-        Iterable<Action> actions = actionRepository.findAll();
-        for(Action action : actions){
-            list.add(action);
-        }
-        return list;
+        return  (List<Action>)actionRepository.findAll();
     }
 
     @RequestMapping("/api/actions/{id}")

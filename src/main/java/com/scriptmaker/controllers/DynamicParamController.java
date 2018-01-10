@@ -23,12 +23,7 @@ public class DynamicParamController {
 
     @RequestMapping("/api/dynamicParams")
     public List<DynamicParam> getAllParams(){
-        List<DynamicParam> list = new ArrayList<>();
-        Iterable<DynamicParam> dynamicParams = dynamicParamRepository.findAll();
-        for (DynamicParam dynamicParam : dynamicParams) {
-            list.add(dynamicParam);
-        }
-        return list;
+        return (List<DynamicParam>)dynamicParamRepository.findAll();
     }
 
     @RequestMapping("/api/dynamicParams/new")
