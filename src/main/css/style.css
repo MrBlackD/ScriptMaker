@@ -45,13 +45,11 @@
 }
 
 .action{
-    background-color: #ffec6a;
-    margin-bottom: 20px;
+    border: 1px solid;
 }
 
 .operation{
-    background-color: #6ddef2;
-    margin-bottom: 20px;
+    border: 1px solid;
 }
 
 .end{
@@ -132,4 +130,17 @@ div.dialog{
 
 .padding{
     padding:20px;
+}
+
+.condition{
+    border-radius: 30px;
+}
+
+.condition_label{
+    font-size:22px;
+    z-index: 2;
+}
+
+.jtk-endpoint{
+    z-index: 1;
 }

@@ -1,7 +1,8 @@
 .idea/
-ScriptMaker.iml
+*.iml
 /node_modules/
 /src/main/resources/static/built/
 /target/
 /dist/
 /src/main/resources/templates/index.html
+*.log

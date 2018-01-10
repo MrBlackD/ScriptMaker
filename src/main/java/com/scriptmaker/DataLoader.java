@@ -49,7 +49,7 @@ public class DataLoader implements CommandLineRunner {
                 "Очень полезное действие",
                 "DoSomeShitAction",
                 "another module",
-                "Тут должно быть описание очень полезного действия которое делает некоторое дерьмо",
+                "Тут должно быть описание очень полезного действия",
                 Arrays.asList(dynamicParam),
                 Collections.singletonList(dynamicParam2)
         );
