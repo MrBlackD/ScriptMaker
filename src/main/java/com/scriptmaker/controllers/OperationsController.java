@@ -26,12 +26,7 @@ public class OperationsController {
 
     @RequestMapping("/api/operations")
     public List<Operation> getAllOperations(){
-        List<Operation> list = new ArrayList<>();
-        Iterable<Operation> operations = operationRepository.findAll();
-        for(Operation operation : operations){
-            list.add(operation);
-        }
-        return list;
+        return (List<Operation>)operationRepository.findAll();
     }
 
     @RequestMapping("/api/operations/{id}")
