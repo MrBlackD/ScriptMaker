@@ -2,7 +2,7 @@ import React from 'react'
 import HeadBar from "../components/HeadBar";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {createMuiTheme}  from 'material-ui/styles';
-import createPalette from 'material-ui/styles/createPalette';
+import createPalette from 'material-ui/styles/palette';
 import {createStyleSheet} from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
