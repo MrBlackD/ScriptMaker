@@ -1,5 +1,5 @@
 .idea/
-ScriptMaker.iml
+*.iml
 /node_modules/
 /src/main/resources/static/built/
 /target/
