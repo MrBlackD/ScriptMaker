@@ -3,6 +3,7 @@ package com.scriptmaker.controllers;
 import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.model.Operation;
+import com.scriptmaker.repository.NodeRepository;
 import com.scriptmaker.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,8 @@ public class OperationsController {
     private Utils utils;
     @Autowired
     private OperationFactory operationFactory;
+    @Autowired
+    private NodeRepository nodeRepository;
 
     @RequestMapping("/api/operations")
     public List<Operation> getAllOperations(){
@@ -42,7 +45,7 @@ public class OperationsController {
             @RequestParam(name="startNode", required = false) String node
 
     ) throws Exception {
-        Operation newOperation = new Operation(name,code,description,utils.getDynamicParamsFromString(inParams),utils.getDynamicParamsFromString(outParams),null);
+        Operation newOperation = new Operation(name,code,description,utils.getDynamicParamsFromString(inParams),utils.getDynamicParamsFromString(outParams),nodeRepository.findOne(Long.parseLong(node)));
         operationFactory.create(newOperation);
         return newOperation;
     }
@@ -53,8 +56,7 @@ public class OperationsController {
             @RequestParam(name="code") String code,
             @RequestParam(name="description") String description,
             @RequestParam(name="inParams", required = false) String inParams,
-            @RequestParam(name="outParams", required = false) String outParams,
-            @RequestParam(name="startNode", required = false) String node
+            @RequestParam(name="outParams", required = false) String outParams
 
     ) throws Exception {
         Operation operation=operationRepository.findOne(Long.parseLong(id));
