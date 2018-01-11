@@ -57,18 +57,12 @@ public class ActionsController {
             @RequestParam(name="outParams", required = false) String outParams
     ) throws Exception {
         Action action = actionRepository.findOne(Long.parseLong(id));
-        String newName = name == null? action.getName() : name;
-        String newCode = code == null? action.getCode() : code;
-        String newModule = module == null? action.getModule() : module;
-        String newDescription = description == null? action.getDescription() : description;
-        List<DynamicParam> newInParams = inParams == null? action.getInParams() : utils.getDynamicParamsFromString(inParams);
-        List<DynamicParam> newOutParams = outParams == null? action.getOutParams() : utils.getDynamicParamsFromString(outParams);
-        action.setName(newName);
-        action.setCode(newCode);
-        action.setModule(newModule);
-        action.setDescription(newDescription);
-        action.setInParams(newInParams);
-        action.setOutParams(newOutParams);
+        action.setName(name == null? action.getName() : name);
+        action.setCode(code == null? action.getCode() : code);
+        action.setModule( module == null? action.getModule() : module);
+        action.setDescription(description == null? action.getDescription() : description);
+        action.setInParams(inParams == null? action.getInParams() : utils.getDynamicParamsFromString(inParams));
+        action.setOutParams(outParams == null? action.getOutParams() : utils.getDynamicParamsFromString(outParams));
         actionFactory.update(action);
         return action;
     }
