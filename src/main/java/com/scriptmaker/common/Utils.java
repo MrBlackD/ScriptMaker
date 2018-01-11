@@ -22,8 +22,9 @@ public class Utils {
         String[] params = paramsIds.split(",");
         List<DynamicParam> dynamicParams = new ArrayList<>();
         for(String id : params){
-            if(dynamicParamRepository.findOne(Long.parseLong(id))!=null){
-                dynamicParams.add(dynamicParamRepository.findOne(Long.parseLong(id)));
+            DynamicParam dynamicParam=dynamicParamRepository.findOne(Long.parseLong(id));
+            if(dynamicParam!=null){
+                dynamicParams.add(dynamicParam);
             }
         }
         return dynamicParams;
