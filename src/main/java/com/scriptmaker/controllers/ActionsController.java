@@ -41,13 +41,7 @@ public class ActionsController {
             @RequestParam(name="inParams", required = false) String inParams,
             @RequestParam(name="outParams", required = false) String outParams
     ) throws Exception {
-        Action newAction = new Action();
-        newAction.setName(name);
-        newAction.setCode(code);
-        newAction.setModule(module);
-        newAction.setDescription(description);
-        newAction.setInParams(utils.getDynamicParamsFromString(inParams));
-        newAction.setOutParams(utils.getDynamicParamsFromString(outParams));
+        Action newAction = new Action(name,code,module,description,utils.getDynamicParamsFromString(inParams),utils.getDynamicParamsFromString(outParams));
         actionFactory.create(newAction);
         return newAction;
     }
