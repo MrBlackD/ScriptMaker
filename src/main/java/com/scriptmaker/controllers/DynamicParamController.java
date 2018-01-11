@@ -53,11 +53,21 @@ public class DynamicParamController {
                                   @RequestParam(name="keepInWorkflow",required = false) String  keepInWorkflow) throws Exception {
 
         DynamicParam dynamicParam = dynamicParamRepository.findOne(Long.parseLong(id));
-        dynamicParam.setName( name == null ? dynamicParam.getName()  :name );
-        dynamicParam.setCode(code == null ? dynamicParam.getCode() : code);
-        dynamicParam.setDescription(description == null ? dynamicParam.getDescription() : description);
-        dynamicParam.setRequired(required == null ? dynamicParam.getRequired() :  Boolean.parseBoolean(required));
-        dynamicParam.setKeepInWorkflow(keepInWorkflow == null ? dynamicParam.getKeepInWorkflow() : Boolean.parseBoolean(keepInWorkflow));
+        if(name!=null){
+            dynamicParam.setName(name);
+        }
+        if(code!=null){
+            dynamicParam.setCode(code);
+        }
+        if(description!=null){
+            dynamicParam.setDescription(description);
+        }
+        if(required!=null){
+            dynamicParam.setRequired(Boolean.parseBoolean(required));
+        }
+        if(keepInWorkflow!=null){
+            dynamicParam.setKeepInWorkflow(Boolean.parseBoolean(keepInWorkflow));
+        }
         dynamicParamFactory.update(dynamicParam);
         return dynamicParam;
     }
