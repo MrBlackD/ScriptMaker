@@ -24,7 +24,12 @@ public class Operation {
     public Operation() {
     }
 
-    public Operation(String name, String code, String description, List<DynamicParam> inParams, List<DynamicParam> outParams, Node startNode) {
+    public Operation(String name,
+                     String code,
+                     String description,
+                     List<DynamicParam> inParams,
+                     List<DynamicParam> outParams,
+                     Node startNode) {
         this.name = name;
         this.code = code;
         this.description = description;

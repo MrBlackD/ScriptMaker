@@ -3,12 +3,10 @@ package com.scriptmaker.controllers;
 import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.model.Action;
-import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.repository.ActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin

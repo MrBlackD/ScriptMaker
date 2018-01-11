@@ -1,7 +1,6 @@
 package com.scriptmaker.repository;
 
 import com.scriptmaker.model.Condition;
-import com.scriptmaker.model.Node;
 import org.springframework.data.repository.CrudRepository;
 
 /**
