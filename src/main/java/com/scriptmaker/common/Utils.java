@@ -2,8 +2,10 @@ package com.scriptmaker.common;
 
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
+import com.scriptmaker.model.Operation;
 import com.scriptmaker.repository.ActionRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
+import com.scriptmaker.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,8 @@ public class Utils {
     private DynamicParamRepository dynamicParamRepository;
     @Autowired
     private ActionRepository actionRepository;
+    @Autowired
+    private OperationRepository operationRepository;
 
     public List<DynamicParam> getDynamicParamsFromString(String paramsIds){
         if(paramsIds == null)
@@ -46,5 +50,18 @@ public class Utils {
             }
         }
         return actionsList;
+    }
+    public List<Operation> getOperationsFromString(String operationsIds){
+        if(operationsIds== null)
+            return null;
+        String[] operations = operationsIds.split(",");
+        List<Operation> operationsList = new ArrayList<>();
+        for(String id : operations){
+            Operation operation=operationRepository.findOne(Long.parseLong(id));
+            if(operation!=null){
+                operationsList.add(operation);
+            }
+        }
+        return operationsList;
     }
 }
