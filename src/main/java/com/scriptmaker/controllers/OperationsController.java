@@ -4,8 +4,11 @@ import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.model.Action;
+import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.model.Node;
 import com.scriptmaker.model.Operation;
+import com.scriptmaker.repository.ActionRepository;
+import com.scriptmaker.repository.DynamicParamRepository;
 import com.scriptmaker.repository.NodeRepository;
 import com.scriptmaker.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,13 @@ public class OperationsController {
     @Autowired
     private OperationRepository operationRepository;
     @Autowired
-    private Utils utils;
+    private Utils<Action,ActionRepository> utilForAction;
+    @Autowired
+    private Utils<DynamicParam,DynamicParamRepository> utilFordynamicParam;
+    @Autowired
+    private DynamicParamRepository dynamicParamRepository;
+    @Autowired
+    private ActionRepository actionRepository;
     @Autowired
     private OperationFactory operationFactory;
     @Autowired
@@ -54,10 +63,10 @@ public class OperationsController {
                 name,
                 code,
                 description,
-                utils.getDynamicParamsFromString(inParams),
-                utils.getDynamicParamsFromString(outParams),
+                utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository),
+                utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node)),
-                        utils.getActionsFromString(actions)
+                        utilForAction.getIdsFromString(actions,actionRepository)
                 );
         operationFactory.create(newOperation);
         return newOperation;
@@ -85,13 +94,13 @@ public class OperationsController {
             operation.setDescription(description);
         }
         if (inParams != null) {
-            operation.setInParams(utils.getDynamicParamsFromString(inParams));
+            operation.setInParams(utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository));
         }
         if (outParams != null) {
-            operation.setOutParams(utils.getDynamicParamsFromString(outParams));
+            operation.setOutParams(utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository));
         }
         if(actions!=null){
-            operation.setActions(utils.getActionsFromString(actions));
+            operation.setActions(utilForAction.getIdsFromString(actions,actionRepository));
         }
         operationFactory.update(operation);
         return operation;

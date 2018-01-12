@@ -3,11 +3,11 @@ package com.scriptmaker.controllers;
 import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.factories.ServiceFactory;
+import com.scriptmaker.model.Action;
+import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.model.Operation;
 import com.scriptmaker.model.Service;
-import com.scriptmaker.repository.NodeRepository;
-import com.scriptmaker.repository.OperationRepository;
-import com.scriptmaker.repository.ServiceRepository;
+import com.scriptmaker.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +28,14 @@ public class ServicesController {
     private ServiceFactory serviceFactory;
     @Autowired
     private NodeRepository nodeRepository;
+    @Autowired
+    private Utils<Operation,OperationRepository> utilForOperation;
+    @Autowired
+    private Utils<DynamicParam,DynamicParamRepository> utilFordynamicParam;
+    @Autowired
+    private DynamicParamRepository dynamicParamRepository;
+    @Autowired
+    private OperationRepository operationRepository;
 
     @RequestMapping("/api/services")
     public List<Service> getAllServices() {
@@ -54,9 +62,9 @@ public class ServicesController {
                 name,
                 code,
                 description,
-                utils.getDynamicParamsFromString(inParams),
-                utils.getDynamicParamsFromString(outParams),
-                        utils.getOperationsFromString(operations),
+                utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository),
+                utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository),
+                       utilForOperation.getIdsFromString(operations,operationRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node))
                 );
         serviceFactory.create(newService);
@@ -85,13 +93,13 @@ public class ServicesController {
             service.setDescription(description);
         }
         if (inParams != null) {
-            service.setInParams(utils.getDynamicParamsFromString(inParams));
+            service.setInParams( utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository));
         }
         if (outParams != null) {
-            service.setOutParams(utils.getDynamicParamsFromString(outParams));
+            service.setOutParams( utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository));
         }
         if(operations!=null){
-            service.setOperations(utils.getOperationsFromString(operations));
+            service.setOperations( utilForOperation.getIdsFromString(operations,operationRepository));
         }
         serviceFactory.update(service);
         return service;

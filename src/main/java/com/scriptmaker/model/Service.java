@@ -23,7 +23,14 @@ public class Service {
     @OneToOne
     private Node startNode;
 
-    public Service(String name, String code, String description, List<DynamicParam> inParams, List<DynamicParam> outParams, List<Operation> operations, Node startNode) {
+    public Service(String name,
+                   String code,
+                   String description,
+                   List<DynamicParam> inParams,
+                   List<DynamicParam> outParams,
+                   List<Operation> operations,
+                   Node startNode
+    ) {
         this.name = name;
         this.code = code;
         this.description = description;

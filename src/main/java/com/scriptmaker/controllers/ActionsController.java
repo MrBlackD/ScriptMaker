@@ -3,7 +3,9 @@ package com.scriptmaker.controllers;
 import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.model.Action;
+import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.repository.ActionRepository;
+import com.scriptmaker.repository.DynamicParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +20,9 @@ public class ActionsController {
     @Autowired
     private ActionRepository actionRepository;
     @Autowired
-    private Utils utils;
+    private DynamicParamRepository dynamicParamRepository;
+    @Autowired
+    private Utils<DynamicParam,DynamicParamRepository> utils;
 
     @RequestMapping("/api/actions")
     public List<Action> getAllActions(){
@@ -39,7 +43,14 @@ public class ActionsController {
             @RequestParam(name="inParams", required = false) String inParams,
             @RequestParam(name="outParams", required = false) String outParams
     ) throws Exception {
-        Action newAction = new Action(name,code,module,description,utils.getDynamicParamsFromString(inParams),utils.getDynamicParamsFromString(outParams));
+        Action newAction = new Action(
+                name,
+                code,
+                module,
+                description,
+                utils.getIdsFromString(inParams,dynamicParamRepository),
+                utils.getIdsFromString(outParams,dynamicParamRepository)
+        );
         actionFactory.create(newAction);
         return newAction;
     }
@@ -68,10 +79,10 @@ public class ActionsController {
             action.setDescription(description);
         }
         if(inParams!=null){
-            action.setInParams(utils.getDynamicParamsFromString(inParams));
+            action.setInParams(utils.getIdsFromString(inParams,dynamicParamRepository));
         }
         if(outParams!=null){
-            action.setOutParams(utils.getDynamicParamsFromString(outParams));
+            action.setOutParams(utils.getIdsFromString(outParams,dynamicParamRepository));
         }
         actionFactory.update(action);
         return action;
