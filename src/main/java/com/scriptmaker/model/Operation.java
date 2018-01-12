@@ -18,11 +18,10 @@ public class Operation {
     private List<DynamicParam> inParams;
     @ManyToMany
     private List<DynamicParam> outParams;
+    @ManyToMany
+    private List<Action> actions;
     @OneToOne
     private Node startNode;
-
-    public Operation() {
-    }
 
     public Operation(String name,
                      String code,
@@ -37,6 +36,34 @@ public class Operation {
         this.outParams = outParams;
         this.startNode = startNode;
     }
+
+    public List<Action> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    public Operation() {
+    }
+
+    public Operation(String name,
+                     String code,
+                     String description,
+                     List<DynamicParam> inParams,
+                     List<DynamicParam> outParams,
+                     Node startNode,
+                     List<Action> actions) {
+        this.name = name;
+        this.code = code;
+        this.description = description;
+        this.inParams = inParams;
+        this.outParams = outParams;
+        this.startNode = startNode;
+        this.actions=actions;
+    }
+
 
     public Long getId() {
         return id;
