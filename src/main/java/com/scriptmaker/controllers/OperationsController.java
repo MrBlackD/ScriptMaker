@@ -26,9 +26,7 @@ public class OperationsController {
     @Autowired
     private OperationRepository operationRepository;
     @Autowired
-    private Utils<Action,ActionRepository> utilForAction;
-    @Autowired
-    private Utils<DynamicParam,DynamicParamRepository> utilFordynamicParam;
+    private Utils utils;
     @Autowired
     private DynamicParamRepository dynamicParamRepository;
     @Autowired
@@ -63,10 +61,10 @@ public class OperationsController {
                 name,
                 code,
                 description,
-                utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository),
-                utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository),
+                utils.getIdsFromString(inParams,dynamicParamRepository),
+                utils.getIdsFromString(outParams,dynamicParamRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node)),
-                        utilForAction.getIdsFromString(actions,actionRepository)
+                utils.getIdsFromString(actions,actionRepository)
                 );
         operationFactory.create(newOperation);
         return newOperation;
@@ -94,13 +92,16 @@ public class OperationsController {
             operation.setDescription(description);
         }
         if (inParams != null) {
-            operation.setInParams(utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository));
+            operation.setInParams(
+                    utils.getIdsFromString(inParams,dynamicParamRepository));
         }
         if (outParams != null) {
-            operation.setOutParams(utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository));
+            operation.setOutParams(
+                    utils.getIdsFromString(outParams,dynamicParamRepository));
         }
         if(actions!=null){
-            operation.setActions(utilForAction.getIdsFromString(actions,actionRepository));
+            operation.setActions(
+                    utils.getIdsFromString(actions,actionRepository));
         }
         operationFactory.update(operation);
         return operation;

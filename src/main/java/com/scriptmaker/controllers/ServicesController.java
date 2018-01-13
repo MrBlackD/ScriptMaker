@@ -29,10 +29,6 @@ public class ServicesController {
     @Autowired
     private NodeRepository nodeRepository;
     @Autowired
-    private Utils<Operation,OperationRepository> utilForOperation;
-    @Autowired
-    private Utils<DynamicParam,DynamicParamRepository> utilFordynamicParam;
-    @Autowired
     private DynamicParamRepository dynamicParamRepository;
     @Autowired
     private OperationRepository operationRepository;
@@ -62,9 +58,9 @@ public class ServicesController {
                 name,
                 code,
                 description,
-                utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository),
-                utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository),
-                       utilForOperation.getIdsFromString(operations,operationRepository),
+                utils.getIdsFromString(inParams,dynamicParamRepository),
+                utils.getIdsFromString(outParams,dynamicParamRepository),
+                utils.getIdsFromString(operations,operationRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node))
                 );
         serviceFactory.create(newService);
@@ -93,13 +89,13 @@ public class ServicesController {
             service.setDescription(description);
         }
         if (inParams != null) {
-            service.setInParams( utilFordynamicParam.getIdsFromString(inParams,dynamicParamRepository));
+            service.setInParams( utils.getIdsFromString(inParams,dynamicParamRepository));
         }
         if (outParams != null) {
-            service.setOutParams( utilFordynamicParam.getIdsFromString(outParams,dynamicParamRepository));
+            service.setOutParams( utils.getIdsFromString(outParams,dynamicParamRepository));
         }
         if(operations!=null){
-            service.setOperations( utilForOperation.getIdsFromString(operations,operationRepository));
+            service.setOperations( utils.getIdsFromString(operations,operationRepository));
         }
         serviceFactory.update(service);
         return service;

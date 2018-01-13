@@ -33,8 +33,8 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        DynamicParam dynamicParam = new DynamicParam("Тестовый динамический параметр","test","");
-        DynamicParam dynamicParam2 = new DynamicParam("Новый параметр","NEW","Новый параметр для теста");
+        DynamicParam dynamicParam = new DynamicParam("Тестовый динамический параметр", "test", "");
+        DynamicParam dynamicParam2 = new DynamicParam("Новый параметр", "NEW", "Новый параметр для теста");
         Action action = new Action(
                 "name",
                 "code",
@@ -56,12 +56,12 @@ public class DataLoader implements CommandLineRunner {
         this.actionRepository.save(action);
         this.actionRepository.save(action2);
 
-        Node node = new Node(action,null,null,200L,200L);
+        Node node = new Node(action, null, null, 200L, 200L);
 
-        Node node2 = new Node(action,null,null,150L,150L);
-        Node node3 = new Node(action,null,node,50L,50L);
-        Condition condition = new Condition("cond",node2,node3);
-        Node node4 = new Node(action2,condition,null,100L,100L);
+        Node node2 = new Node(action, null, null, 150L, 150L);
+        Node node3 = new Node(action, null, node, 50L, 50L);
+        Condition condition = new Condition("cond", node2, node3);
+        Node node4 = new Node(action2, condition, null, 100L, 100L);
         this.nodeRepository.save(node);
         this.nodeRepository.save(node2);
         this.nodeRepository.save(node3);

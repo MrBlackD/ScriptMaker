@@ -17,16 +17,10 @@ import java.util.List;
  * Created by Admin on 15.06.2017.
  */
 @Component
-public class Utils<T,E extends CrudRepository<T, Long>> {
-    @Autowired
-    DynamicParamRepository dynamicParamRepository;
-    @Autowired
-    ActionRepository actionRepository;
-    @Autowired
-    OperationRepository operationRepository;
+public class Utils {
 
-
-    public List<T> getIdsFromString(String ids,E repository){
+    public <T,E extends CrudRepository<T, Long>>List<T> getIdsFromString(
+            String ids,E repository){
         if(ids == null)
             return null;
         String[] params = ids.split(",");
@@ -40,44 +34,4 @@ public class Utils<T,E extends CrudRepository<T, Long>> {
         return paramsList;
     }
 
-    public List<DynamicParam> getDynamicParamsFromString(String paramsIds){
-        if(paramsIds == null)
-            return null;
-        String[] params = paramsIds.split(",");
-        List<DynamicParam> dynamicParams = new ArrayList<>();
-        for(String id : params){
-            DynamicParam dynamicParam=dynamicParamRepository.findOne(Long.parseLong(id));
-            if(dynamicParam!=null){
-                dynamicParams.add(dynamicParam);
-            }
-        }
-        return dynamicParams;
-    }
-
-    public List<Action> getActionsFromString(String actionsIds){
-        if(actionsIds== null)
-            return null;
-        String[] actions = actionsIds.split(",");
-        List<Action> actionsList = new ArrayList<>();
-        for(String id : actions){
-            Action action=actionRepository.findOne(Long.parseLong(id));
-            if(action!=null){
-                actionsList.add(action);
-            }
-        }
-        return actionsList;
-    }
-    public List<Operation> getOperationsFromString(String operationsIds){
-        if(operationsIds== null)
-            return null;
-        String[] operations = operationsIds.split(",");
-        List<Operation> operationsList = new ArrayList<>();
-        for(String id : operations){
-            Operation operation=operationRepository.findOne(Long.parseLong(id));
-            if(operation!=null){
-                operationsList.add(operation);
-            }
-        }
-        return operationsList;
-    }
 }

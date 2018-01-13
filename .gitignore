@@ -1,8 +1,7 @@
 .idea/
 *.iml
 /node_modules/
-/src/main/resources/static/built/
+/src/main/resources/static/app/
 /target/
 /dist/
-/src/main/resources/templates/index.html
 *.log
