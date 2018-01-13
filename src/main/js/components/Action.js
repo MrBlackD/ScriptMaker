@@ -37,7 +37,7 @@ export default class Action extends Component {
 
         if(!action)
             return null;
-        console.log(action);
+
         let inParams = [];
         let outParams = [];
         if(action.inParams&&action.inParams.length > 0)
