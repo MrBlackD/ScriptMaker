@@ -1,7 +1,6 @@
 package com.scriptmaker.repository;
 
 import com.scriptmaker.model.Action;
-import com.scriptmaker.model.DynamicParam;
 import org.springframework.data.repository.CrudRepository;
 
 /**

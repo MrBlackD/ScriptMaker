@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Operation {
+public class Service {
     @Id
     @GeneratedValue
     private Long id;
@@ -19,51 +19,26 @@ public class Operation {
     @ManyToMany
     private List<DynamicParam> outParams;
     @ManyToMany
-    private List<Action> actions;
+    private List<Operation> operations;
     @OneToOne
     private Node startNode;
 
-    public Operation(String name,
-                     String code,
-                     String description,
-                     List<DynamicParam> inParams,
-                     List<DynamicParam> outParams,
-                     Node startNode) {
+    public Service(String name,
+                   String code,
+                   String description,
+                   List<DynamicParam> inParams,
+                   List<DynamicParam> outParams,
+                   List<Operation> operations,
+                   Node startNode
+    ) {
         this.name = name;
         this.code = code;
         this.description = description;
         this.inParams = inParams;
         this.outParams = outParams;
+        this.operations = operations;
         this.startNode = startNode;
     }
-
-    public List<Action> getActions() {
-        return actions;
-    }
-
-    public void setActions(List<Action> actions) {
-        this.actions = actions;
-    }
-
-    public Operation() {
-    }
-
-    public Operation(String name,
-                     String code,
-                     String description,
-                     List<DynamicParam> inParams,
-                     List<DynamicParam> outParams,
-                     Node startNode,
-                     List<Action> actions) {
-        this.name = name;
-        this.code = code;
-        this.description = description;
-        this.inParams = inParams;
-        this.outParams = outParams;
-        this.startNode = startNode;
-        this.actions=actions;
-    }
-
 
     public Long getId() {
         return id;
@@ -111,6 +86,14 @@ public class Operation {
 
     public void setOutParams(List<DynamicParam> outParams) {
         this.outParams = outParams;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<Operation> operations) {
+        this.operations = operations;
     }
 
     public Node getStartNode() {

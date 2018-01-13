@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -53,16 +52,21 @@ public class DynamicParamController {
                                   @RequestParam(name="keepInWorkflow",required = false) String  keepInWorkflow) throws Exception {
 
         DynamicParam dynamicParam = dynamicParamRepository.findOne(Long.parseLong(id));
-        String newName = name != null ? name : dynamicParam.getName();
-        String newCode = code != null ? code : dynamicParam.getCode();
-        String newDescription = description != null ? description : dynamicParam.getDescription();
-        Boolean newRequired = required != null ? Boolean.parseBoolean(required) : dynamicParam.getRequired();
-        Boolean newKeepInWorkflow = keepInWorkflow != null ? Boolean.parseBoolean(keepInWorkflow) : dynamicParam.getKeepInWorkflow();
-        dynamicParam.setName(newName);
-        dynamicParam.setCode(newCode);
-        dynamicParam.setDescription(newDescription);
-        dynamicParam.setRequired(newRequired);
-        dynamicParam.setKeepInWorkflow(newKeepInWorkflow);
+        if(name!=null){
+            dynamicParam.setName(name);
+        }
+        if(code!=null){
+            dynamicParam.setCode(code);
+        }
+        if(description!=null){
+            dynamicParam.setDescription(description);
+        }
+        if(required!=null){
+            dynamicParam.setRequired(Boolean.parseBoolean(required));
+        }
+        if(keepInWorkflow!=null){
+            dynamicParam.setKeepInWorkflow(Boolean.parseBoolean(keepInWorkflow));
+        }
         dynamicParamFactory.update(dynamicParam);
         return dynamicParam;
     }

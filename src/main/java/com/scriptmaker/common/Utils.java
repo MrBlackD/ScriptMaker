@@ -1,8 +1,13 @@
 package com.scriptmaker.common;
 
+import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
+import com.scriptmaker.model.Operation;
+import com.scriptmaker.repository.ActionRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
+import com.scriptmaker.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,19 +18,20 @@ import java.util.List;
  */
 @Component
 public class Utils {
-    @Autowired
-    private DynamicParamRepository dynamicParamRepository;
 
-    public List<DynamicParam> getDynamicParamsFromString(String paramsIds){
-        if(paramsIds == null)
+    public <T,E extends CrudRepository<T, Long>>List<T> getIdsFromString(
+            String ids,E repository){
+        if(ids == null)
             return null;
-        String[] params = paramsIds.split(",");
-        List<DynamicParam> dynamicParams = new ArrayList<>();
+        String[] params = ids.split(",");
+        List<T> paramsList = new ArrayList<>();
         for(String id : params){
-            if(dynamicParamRepository.findOne(Long.parseLong(id))!=null){
-                dynamicParams.add(dynamicParamRepository.findOne(Long.parseLong(id)));
+            T param=repository.findOne(Long.parseLong(id));
+            if(param!=null){
+                paramsList.add(param);
             }
         }
-        return dynamicParams;
+        return paramsList;
     }
+
 }

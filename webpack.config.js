@@ -8,8 +8,8 @@ var PROD = {
     devtool: 'sourcemaps',
     cache: true,
     output: {
-        path: __dirname,
-        filename: './src/main/resources/static/built/bundle.js'
+        path: path.resolve(__dirname,"src/main/resources/static/app"),
+        filename: 'bundle.js'
     },
     module: {
         rules: [
@@ -32,18 +32,12 @@ var PROD = {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use:[{
                     loader:'file-loader',
-                    options:{
-                        outputPath:'./src/main/resources/static/built/'
-                    }
                 }]
             },
             {
                 test: /\.(png|svg|jpg|gif)$/,
                 use:[{
                     loader:'file-loader',
-                    options:{
-                        outputPath:'./src/main/resources/static/built/'
-                    }
                 }]
             }
         ]
@@ -51,7 +45,7 @@ var PROD = {
     plugins:[
         new HtmlWebpackPlugin({
             title: 'ScriptMaker',
-            filename: './src/main/resources/templates/index.html',
+            filename: 'index.html',
             template: './src/main/resources/templates/template.html'
         }),
         new webpack.HotModuleReplacementPlugin()
