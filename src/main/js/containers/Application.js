@@ -1,14 +1,14 @@
-import React from 'react'
+import React from "react";
+import "./../../css/style.less";
 import HeadBar from "../components/HeadBar";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {createMuiTheme}  from 'material-ui/styles';
-import createPalette from 'material-ui/styles/palette';
-import {createStyleSheet} from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
-import cyan from 'material-ui/colors/cyan';
-import blue from 'material-ui/colors/blue';
-import red from 'material-ui/colors/red';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import {createMuiTheme, createStyleSheet} from "material-ui/styles";
+import createPalette from "material-ui/styles/palette";
+
+import Grid from "material-ui/Grid";
+import cyan from "material-ui/colors/cyan";
+import blue from "material-ui/colors/blue";
+import red from "material-ui/colors/red";
 
 
 const styleSheet = createStyleSheet('FullWidthGrid', theme => ({

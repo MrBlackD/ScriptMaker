@@ -1,8 +1,6 @@
-import React, { Component } from 'react'
-import './../../css/style.css'
+import React, {Component} from "react";
 import {Button, Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
-import {Delete, Edit} from "material-ui-icons";
-import red from 'material-ui/colors/red';
+
 
 export default class Action extends Component {
     constructor(props){
@@ -68,7 +66,7 @@ export default class Action extends Component {
             <Table id={this.props.id} className="action">
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2} style={{"textAlign":"center"}}>
+                        <TableCell className="name" colSpan={2} >
                             {action.name}
                         </TableCell>
                     </TableRow>
@@ -90,8 +88,8 @@ export default class Action extends Component {
                     </TableRow>
                     <TableRow>
                         <TableCell style={{"textAlign":"center"}} colSpan={2}>
-                            <Button raised={true}  onClick={()=>{this.props.onEdit(action.id)}}>Редактировать</Button>
-                            <Button raised={true}  onClick={()=>{this.props.onDelete(action.id)}}>Удалить</Button>
+                            {this.props.onEdit&&<Button raised={true} onClick={()=>{this.props.onEdit(action.id)}}>Редактировать</Button>}
+                            {this.props.onDelete&&<Button raised={true} onClick={()=>{this.props.onDelete(action.id)}}>Удалить</Button>}
                         </TableCell>
                     </TableRow>
                 </TableBody>

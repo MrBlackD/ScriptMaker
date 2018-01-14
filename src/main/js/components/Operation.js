@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
+import {Button, Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
+import {Link} from "react-router";
 
 
 export default class Operation extends Component {
@@ -64,8 +65,8 @@ export default class Operation extends Component {
             <Table id={this.props.id} className="operation" >
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}>
-                            {operation.name}
+                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  className={"name"}>
+                            <Link to={"/operations/"+operation.id}>{operation.name}</Link>
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -79,7 +80,22 @@ export default class Operation extends Component {
                     </TableRow>
                     {this.getParams(operation)}
                     <TableRow>
+                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}>
+                            Описание
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
                         <TableCell colSpan={2}>{operation.description}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell style={{"textAlign":"center"}} colSpan={2}>
+                            {this.props.onEdit&&
+                            <Button raised={true}
+                                    onClick={()=>{this.props.onEdit(operation.id)}}>Редактировать</Button>}
+                            {this.props.onDelete&&
+                            <Button raised={true}
+                                    onClick={()=>{this.props.onDelete(operation.id)}}>Удалить</Button>}
+                        </TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
