@@ -25,8 +25,8 @@ var PROD = {
                 }],
             },
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
+                test: /\.(css|less)$/,
+                use: ['style-loader', 'css-loader','less-loader']
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -85,8 +85,8 @@ var DEV = {
 
             },
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
+                test: /\.(css|less)$/,
+                use: ['style-loader', 'css-loader','less-loader']
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
