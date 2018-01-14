@@ -1,24 +1,13 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router'
-import { createStyleSheet } from 'material-ui/styles';
+import React, {Component} from "react";
+import {Link} from "react-router";
 import AppBar from "material-ui/AppBar/AppBar";
 import {Button, Toolbar, Typography} from "material-ui";
 
 
-const styleSheet = createStyleSheet('SimpleAppBar', {
-    root: {
-        marginTop: 30,
-        width: '100%',
-    },
-    flex:{
-        flex:1
-    }
-});
-
 export default class HeadBar extends Component {
     render() {
         return (
-            <div className={styleSheet.root}>
+            <div className={"headbar_root"}>
                 <AppBar position="static" color="primary">
                     <Toolbar >
                         <Typography type="title">
