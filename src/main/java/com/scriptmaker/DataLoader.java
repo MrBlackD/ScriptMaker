@@ -1,10 +1,13 @@
 package com.scriptmaker;
 
-import com.scriptmaker.model.*;
+import com.scriptmaker.model.Action;
+import com.scriptmaker.model.DynamicParam;
+import com.scriptmaker.model.Operation;
 import com.scriptmaker.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -56,17 +59,6 @@ public class DataLoader implements CommandLineRunner {
         this.actionRepository.save(action);
         this.actionRepository.save(action2);
 
-        Node node = new Node(action, null, null, 200L, 200L);
-
-        Node node2 = new Node(action, null, null, 150L, 150L);
-        Node node3 = new Node(action, null, node, 50L, 50L);
-        Condition condition = new Condition("cond", node2, node3);
-        Node node4 = new Node(action2, condition, null, 100L, 100L);
-        this.nodeRepository.save(node);
-        this.nodeRepository.save(node2);
-        this.nodeRepository.save(node3);
-        this.conditionRepository.save(condition);
-        this.nodeRepository.save(node4);
 
         Operation operation = new Operation(
                 "operName",
@@ -74,7 +66,7 @@ public class DataLoader implements CommandLineRunner {
                 "operDesc",
                 Arrays.asList(dynamicParam),
                 Arrays.asList(dynamicParam2),
-                node4
+                null
         );
 
 
