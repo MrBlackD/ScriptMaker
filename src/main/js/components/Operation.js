@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import {Link} from "react-router";
+import React, {Component} from "react";
 import {Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
 
 
@@ -65,7 +64,9 @@ export default class Operation extends Component {
             <Table id={this.props.id} className="operation" >
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}><Link to={"/operationScript/"+operation.id}>{operation.name}</Link></TableCell>
+                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}>
+                            {operation.name}
+                        </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

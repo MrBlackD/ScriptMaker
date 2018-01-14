@@ -1,8 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from "react";
 import * as funcs from "../utils/requests";
 import Operation from "./Operation";
 import {Button, Paper} from "material-ui";
-import {Link} from "react-router";
 
 
 export default class Operations extends Component {
@@ -43,7 +42,7 @@ export default class Operations extends Component {
             <Paper>
                 <div style={{"text-align":"center","padding":"10px"}}>
                     <Button raised color="accent">
-                        <Link className="react-router-link" to="/operationScript">Создать операцию</Link>
+                        Создать операцию
                     </Button>
                 </div>
                 {this.renderOperations()}
