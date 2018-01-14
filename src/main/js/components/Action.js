@@ -8,26 +8,6 @@ export default class Action extends Component {
 
     }
 
-    onParamOver(code){
-        let elements = document.querySelectorAll("."+code);
-        for(let key in elements){
-            if(elements.hasOwnProperty(key)){
-                elements[key].style.backgroundColor="#488bff";
-            }
-
-        }
-    }
-
-    onParamLeave(code){
-        let elements = document.querySelectorAll("."+code);
-        for(let key in elements){
-            if(elements.hasOwnProperty(key)){
-                elements[key].style.backgroundColor="";
-            }
-
-        }
-    }
-
     render() {
         let action = this.props.data;
         let onClose = this.props.onClose;
@@ -53,8 +33,8 @@ export default class Action extends Component {
                 outParam = outParams[i];
             params.push(
                 <TableRow key={i}>
-                    <TableCell className={inParam.code} onMouseOver={()=>{this.onParamOver(inParam.code)}} onMouseLeave={()=>{this.onParamLeave(inParam.code)}}>{inParam.code}</TableCell>
-                    <TableCell className={outParam.code} onMouseOver={()=>{this.onParamOver(outParam.code)}} onMouseLeave={()=>{this.onParamLeave(outParam.code)}}>{outParam.code}</TableCell>
+                    <TableCell className={inParam.code}>{inParam.code}</TableCell>
+                    <TableCell className={outParam.code}>{outParam.code}</TableCell>
                 </TableRow>
             );
         }

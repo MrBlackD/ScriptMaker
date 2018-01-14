@@ -3,12 +3,18 @@ import * as funcs from "../utils/requests";
 import Action from "./Action";
 import {
     Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Input,
+    InputLabel,
+    ListItemText,
+    MenuItem,
     Paper,
+    Select,
     TextField,
     Typography
 } from "material-ui";
@@ -21,7 +27,10 @@ export default class Actions extends Component {
             editionDialogOpened: false,
             targetId: 0,
             deleteConfirmDialogOpened: false,
-            actions: {}
+            actions: {},
+            inParams:[],
+            outParams:[],
+            dynamicParams:[]
         };
         this.handleRequestEditDialog = this.handleRequestEditDialog.bind(this);
         this.handleRequestCreateDialog = this.handleRequestCreateDialog.bind(this);
@@ -32,6 +41,16 @@ export default class Actions extends Component {
     }
 
     loadData() {
+        funcs.get("http://localhost:8080/api/dynamicParams", (response, status, statusText) => {
+            console.log(response);
+            let res = JSON.parse(response);
+            console.log(res);
+            if (status !== 200) {
+                console.log(statusText);
+            } else {
+                this.setState({dynamicParams: res});
+            }
+        });
         funcs.get("http://localhost:8080/api/actions", (response, status, statusText) => {
             console.log(response);
             let res = JSON.parse(response);
@@ -45,6 +64,7 @@ export default class Actions extends Component {
     }
 
     handleCreateParam() {
+        this.clearForm();
         let name = this.newName.value;
         this.newName.value = "";
         let code = this.newCode.value;
@@ -53,10 +73,29 @@ export default class Actions extends Component {
         this.newModule.value = "";
         let description = this.newDescription.value;
         this.newDescription.value = "";
-        let inParams = this.newInParams.value;
-        this.newInParams.value = "";
-        let outParams = this.newOutParams.value;
-        this.newOutParams.value = "";
+
+        let inParams = "";
+        if(this.state.inParams) {
+            this.state.dynamicParams.forEach((param) => {
+                this.state.inParams.forEach((inParamCode) => {
+                    if (param.code === inParamCode) {
+                        inParams += param.id + ",";
+                    }
+                })
+
+            })
+        }
+        let outParams = "";
+        if(this.state.outParams){
+            this.state.dynamicParams.forEach((param) =>{
+                this.state.outParams.forEach((outParamCode) =>{
+                    if(param.code === outParamCode){
+                        outParams += param.id + ",";
+                    }
+                })
+
+            })
+        }
         console.log(name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/actions/new?"
             + "name=" + name
@@ -86,10 +125,28 @@ export default class Actions extends Component {
         this.editModule.value = "";
         let description = this.editDescription.value;
         this.editDescription.value = "";
-        let inParams = this.editInParams.value;
-        this.editInParams.value = "";
-        let outParams = this.editOutParams.value;
-        this.editOutParams.value = "";
+        let inParams = "";
+        if(this.state.inParams) {
+            this.state.dynamicParams.forEach((param) => {
+                this.state.inParams.forEach((inParamCode) => {
+                    if (param.code === inParamCode) {
+                        inParams += param.id + ",";
+                    }
+                })
+
+            })
+        }
+        let outParams = "";
+        if(this.state.outParams) {
+            this.state.dynamicParams.forEach((param) => {
+                this.state.outParams.forEach((outParamCode) => {
+                    if (param.code === outParamCode) {
+                        outParams += param.id + ",";
+                    }
+                })
+
+            })
+        }
         console.log(id + " " + name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/actions/edit?"
             + "id=" + id;
@@ -152,7 +209,28 @@ export default class Actions extends Component {
     }
 
     openEditDialog(id) {
-        this.setState({editionDialogOpened: true, targetId: id});
+        let actions = this.state.actions;
+        let action;
+        for (let i = 0; i < actions.length; i++) {
+            if (actions[i].id === id) {
+                action = actions[i];
+                break;
+            }
+        }
+        let inParams = [];
+        if (action.inParams) {
+            action.inParams.map((item) => {
+                inParams.push(item.code)
+            });
+        }
+        let outParams = [];
+        if (action.outParams) {
+            action.outParams.map((item) => {
+                outParams.push(item.code)
+            });
+        }
+        console.log("inParams",inParams);
+        this.setState({editionDialogOpened: true, targetId: id,inParams:inParams,outParams:outParams});
     }
 
     renderDeleteConfirmDialog() {
@@ -181,7 +259,7 @@ export default class Actions extends Component {
     renderCreationDialog() {
         return (
             <Dialog classes={{paper: "dialog"}} open={this.state.createDialogOpened}
-                    onRequestClose={this.handleRequestCreateDialog}>
+                    onClose={this.handleRequestCreateDialog}>
                 <DialogTitle>
                     <Typography type="headline" gutterBottom>{"Создание действия"}</Typography>
                 </DialogTitle>
@@ -193,6 +271,7 @@ export default class Actions extends Component {
     }
 
     renderCreationForm() {
+
         return (
             <div className={"dialog__content"}>
                 <TextField inputRef={(input) => {
@@ -207,12 +286,31 @@ export default class Actions extends Component {
                 <TextField inputRef={(input) => {
                     this.newDescription = input;
                 }} label="description" id="newDescription" required={true}/>
-                <TextField inputRef={(input) => {
-                    this.newInParams = input;
-                }} label="inParams" id="newInParams"/>
-                <TextField inputRef={(input) => {
-                    this.newOutParams = input;
-                }} label="outParams" id="newOutParams"/>
+                <InputLabel htmlFor="inParams">inParams</InputLabel>
+                <Select multiple value={[...this.state.inParams]}
+                        renderValue={selected => selected.join(', ')}
+                        onChange={(e)=>{this.setState({inParams:e.target.value})}}
+                        input={<Input id="inParams" />}>
+                    {this.state.dynamicParams.map(param => (
+                        <MenuItem key={param.id} value={param.code}>
+                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)} />
+                            <ListItemText primary={param.code} />
+                        </MenuItem>
+                    ))}
+                </Select>
+                <InputLabel htmlFor="outParams">outParams</InputLabel>
+                <Select multiple value={[...this.state.outParams]}
+                        renderValue={selected => selected.join(', ')}
+                        onChange={(e)=>{this.setState({outParams:e.target.value})}}
+                        input={<Input id="outParams" />}>
+                    {this.state.dynamicParams.map(param => (
+                        <MenuItem key={param.id} value={param.code}>
+                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)} />
+                            <ListItemText primary={param.code} />
+                        </MenuItem>
+                    ))}
+                </Select>
+
                 <Button raised={true} onClick={() => {
                     this.handleRequestCreateDialog();
                     this.handleCreateParam()
@@ -225,7 +323,7 @@ export default class Actions extends Component {
     renderEditionDialog() {
         return (
             <Dialog classes={{paper: "dialog"}} open={this.state.editionDialogOpened}
-                    onRequestClose={this.handleRequestEditDialog}>
+                    onClose={this.handleRequestEditDialog}>
                 <DialogTitle>
                     <Typography type="headline" gutterBottom>{"Редактирование действия"}</Typography>
                 </DialogTitle>
@@ -247,28 +345,9 @@ export default class Actions extends Component {
         }
         if (!action)
             return null;
-        let inParams = "";
-        if (action.inParams) {
-            action.inParams.map((item) => {
-                if (inParams === "") {
-                    inParams = +item.id;
-                } else {
-                    inParams = +"," + item.id;
-                }
-            });
-        }
 
-        let outParams = "";
-        if (action.outParams) {
-            action.outParams.map((item) => {
-                if (outParams === "") {
-                    outParams = +item.id;
-                } else {
-                    outParams = +"," + item.id;
-                }
 
-            });
-        }
+
         return (
             <div className={"dialog__content"}>
                 <TextField inputRef={(input) => {
@@ -287,14 +366,30 @@ export default class Actions extends Component {
                     this.editDescription = input;
                 }}
                            defaultValue={action.description} label="description" id="editDescription"/>
-                <TextField inputRef={(input) => {
-                    this.editInParams = input;
-                }}
-                           defaultValue={inParams} label="inParams" id="editInParams"/>
-                <TextField inputRef={(input) => {
-                    this.editOutParams = input;
-                }}
-                           defaultValue={outParams} label="outParams" id="editOutParams"/>
+                <InputLabel htmlFor="inParams">inParams</InputLabel>
+                <Select multiple value={[...this.state.inParams]}
+                        renderValue={selected => selected.join(', ')}
+                        onChange={(e)=>{this.setState({inParams:e.target.value})}}
+                        input={<Input id="inParams" />}>
+                    {this.state.dynamicParams.map(param => (
+                        <MenuItem key={param.id} value={param.code}>
+                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)} />
+                            <ListItemText primary={param.code} />
+                        </MenuItem>
+                    ))}
+                </Select>
+                <InputLabel htmlFor="outParams">outParams</InputLabel>
+                <Select multiple value={[...this.state.outParams]}
+                        renderValue={selected => selected.join(', ')}
+                        onChange={(e)=>{this.setState({outParams:e.target.value})}}
+                        input={<Input id="outParams" />}>
+                    {this.state.dynamicParams.map(param => (
+                        <MenuItem key={param.id} value={param.code}>
+                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)} />
+                            <ListItemText primary={param.code} />
+                        </MenuItem>
+                    ))}
+                </Select>
                 <Button raised={true} type="submit" onClick={() => {
                     this.handleRequestEditDialog();
                     this.handleEditParam(this.state.targetId)
@@ -320,4 +415,7 @@ export default class Actions extends Component {
         )
     }
 
+    clearForm() {
+        this.setState({inParams:[]});
+    }
 }

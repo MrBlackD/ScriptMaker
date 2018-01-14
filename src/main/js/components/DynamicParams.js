@@ -1,12 +1,22 @@
-import React, { Component } from 'react'
+import React, {Component} from "react";
 import * as funcs from "../utils/requests";
 import DynamicParam from "./DynamicParam";
 
 import {
-    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Paper, Switch,
-    Table, TableBody,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControlLabel,
+    Paper,
+    Switch,
+    Table,
+    TableBody,
     TableCell,
-    TableHead, TableRow,
+    TableHead,
+    TableRow,
     TextField,
     Typography
 } from "material-ui";
@@ -170,7 +180,7 @@ export default class DynamicParams extends Component {
 
     renderCreationDialog(){
         return (
-            <Dialog classes={{paper:"dialog"}} open={this.state.openDialog} onRequestClose={this.handleRequestCloseDialog}>
+            <Dialog classes={{paper:"dialog"}} open={this.state.openDialog} onClose={this.handleRequestCloseDialog}>
                 <DialogTitle>
                     <Typography type="headline" gutterBottom>{"Создание динамического параметра"}</Typography>
                 </DialogTitle>
@@ -183,7 +193,7 @@ export default class DynamicParams extends Component {
 
     renderEditionDialog(){
         return (
-            <Dialog classes={{paper:"dialog"}} open={this.state.editionDialogOpened} onRequestClose={this.handleRequestEditDialog}>
+            <Dialog classes={{paper:"dialog"}} open={this.state.editionDialogOpened} onClose={this.handleRequestEditDialog}>
                 <DialogTitle>
                     <Typography type="headline" gutterBottom>{"Редактирование динамического параметра"}</Typography>
                 </DialogTitle>
