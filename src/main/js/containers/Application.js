@@ -1,5 +1,6 @@
 import React from "react";
 import "./../../css/style.less";
+import "./../../css/autoSuggest.less";
 import HeadBar from "../components/HeadBar";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import {createMuiTheme} from "material-ui/styles";

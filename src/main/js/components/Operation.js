@@ -46,7 +46,7 @@ export default class Operation extends Component {
             <Table id={this.props.id} className="operation" >
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  className={"name"}>
+                        <TableCell colSpan={2}  className={"name"}>
                             <Link to={"/operations/"+operation.id}>{operation.name}</Link>
                         </TableCell>
                     </TableRow>
@@ -61,7 +61,7 @@ export default class Operation extends Component {
                     </TableRow>
                     {this.getParams(operation)}
                     <TableRow>
-                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}>
+                        <TableCell colSpan={2}  style={{"text-align":"center"}}>
                             Описание
                         </TableCell>
                     </TableRow>

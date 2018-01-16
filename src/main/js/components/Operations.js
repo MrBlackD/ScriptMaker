@@ -18,6 +18,7 @@ import {
     TextField,
     Typography
 } from "material-ui";
+import Autosuggest from "react-autosuggest";
 import {Add, Remove} from "material-ui-icons";
 
 
@@ -34,7 +35,9 @@ export default class Operations extends Component {
             operations: {},
             createDialogOpened: false,
             dynamicParams: [],
-            actionsRegistry: []
+            actionsRegistry: [],
+            value:"",
+            suggestions: []
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -106,13 +109,27 @@ export default class Operations extends Component {
 
     renderActionsInputs = () => {
         console.log(this.state.actions);
+        const {suggestions} = this.state;
+
         return this.state.actions.map((action, index) => {
-            return <div key={index}>
-                <TextField onChange={(event) => {
+            const inputProps = {
+                placeholder: 'Type an action code',
+                value:this.state.actions[index],
+                onChange: (event) => {
                     let actions = [...this.state.actions];
                     actions[index] = event.target.value;
                     this.setState({actions});
-                }} value={this.state.actions[index]} label="action" required={true}/>
+                }
+            };
+            return <div key={index}>
+                <Autosuggest
+                    suggestions={suggestions}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                    getSuggestionValue={this.getSuggestionValue}
+                    renderSuggestion={this.renderSuggestion}
+                    inputProps={inputProps}
+                />
                 <Remove onClick={() => {
                     let actions = [...this.state.actions];
                     actions.splice(index, 1);
@@ -340,6 +357,42 @@ export default class Operations extends Component {
         );
     }
 
+    getSuggestions = value => {
+        const inputValue = value.trim().toLowerCase();
+        const inputLength = inputValue.length;
+
+        return inputLength === 0 ? [] : this.state.actionsRegistry.filter(action =>
+            action.code.toLowerCase().slice(0, inputLength) === inputValue
+        );
+    };
+
+    getSuggestionValue = suggestion => suggestion.code;
+    renderSuggestion = suggestion => (
+        <span>
+            {suggestion.code}
+        </span>
+    );
+
+    onChange = (event, { newValue }) => {
+        this.setState({
+            value: newValue
+        });
+    };
+
+    // Autosuggest will call this function every time you need to update suggestions.
+    // You already implemented this logic above, so just use it.
+    onSuggestionsFetchRequested = ({ value }) => {
+        this.setState({
+            suggestions: this.getSuggestions(value)
+        });
+    };
+
+    // Autosuggest will call this function every time you need to clear suggestions.
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
     renderEditionForm() {
 
         return (
@@ -350,6 +403,7 @@ export default class Operations extends Component {
                            value={this.state.code} label="code"/>
                 <TextField onChange={this.handleChange("description")}
                            value={this.state.description} label="description"/>
+
                 <InputLabel>Actions</InputLabel>
                 {this.renderActionsInputs()}
                 <Add onClick={() => {
