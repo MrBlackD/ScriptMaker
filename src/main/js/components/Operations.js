@@ -18,6 +18,7 @@ import {
     TextField,
     Typography
 } from "material-ui";
+import {Add, Remove} from "material-ui-icons";
 
 
 export default class Operations extends Component {
@@ -27,13 +28,13 @@ export default class Operations extends Component {
             name: "",
             code: "",
             description: "",
-            actions: "",
+            actions: [""],
             inParams: "",
             outParams: "",
             operations: {},
             createDialogOpened: false,
-            dynamicParams:[],
-            actionsRegistry:[]
+            dynamicParams: [],
+            actionsRegistry: []
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -103,45 +104,64 @@ export default class Operations extends Component {
         });
     };
 
+    renderActionsInputs = () => {
+        console.log(this.state.actions);
+        return this.state.actions.map((action, index) => {
+            return <div key={index}>
+                <TextField onChange={(event) => {
+                    let actions = [...this.state.actions];
+                    actions[index] = event.target.value;
+                    this.setState({actions});
+                }} value={this.state.actions[index]} label="action" required={true}/>
+                <Remove onClick={() => {
+                    let actions = [...this.state.actions];
+                    actions.splice(index, 1);
+                    console.log(index);
+                    this.setState({actions});
+                }}/>
+            </div>
+        });
+
+    }
+
     renderCreationForm() {
         return (
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("name")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
                 <TextField onChange={this.handleChange("description")} label="description" required={true}/>
-                <InputLabel htmlFor="actions">Actions</InputLabel>
-                <Select multiple value={[...this.state.actions]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({actions:e.target.value})}}
-                        input={<Input id="actions"/>}>
-                    {this.state.actionsRegistry.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.actions).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
+                <InputLabel>Actions</InputLabel>
+                {this.renderActionsInputs()}
+                <Add onClick={() => {
+                    let actions = [...this.state.actions];
+                    actions.push("");
+                    this.setState({actions});
+                }}/>
                 <InputLabel htmlFor="inParams">inParams</InputLabel>
                 <Select multiple value={[...this.state.inParams]}
                         renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({inParams:e.target.value})}}
-                        input={<Input id="inParams" />}>
+                        onChange={(e) => {
+                            this.setState({inParams: e.target.value})
+                        }}
+                        input={<Input id="inParams"/>}>
                     {this.state.dynamicParams.map(param => (
                         <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
+                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)}/>
+                            <ListItemText primary={param.code}/>
                         </MenuItem>
                     ))}
                 </Select>
                 <InputLabel htmlFor="outParams">outParams</InputLabel>
                 <Select multiple value={[...this.state.outParams]}
                         renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({outParams:e.target.value})}}
-                        input={<Input id="inParams" />}>
+                        onChange={(e) => {
+                            this.setState({outParams: e.target.value})
+                        }}
+                        input={<Input id="inParams"/>}>
                     {this.state.dynamicParams.map(param => (
                         <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
+                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)}/>
+                            <ListItemText primary={param.code}/>
                         </MenuItem>
                     ))}
                 </Select>
@@ -159,7 +179,7 @@ export default class Operations extends Component {
         let code = this.state.code;
         let description = this.state.description;
         let inParams = "";
-        if(this.state.inParams) {
+        if (this.state.inParams) {
             this.state.dynamicParams.forEach((param) => {
                 this.state.inParams.forEach((inParamCode) => {
                     if (param.code === inParamCode) {
@@ -171,7 +191,7 @@ export default class Operations extends Component {
         }
 
         let outParams = "";
-        if(this.state.outParams) {
+        if (this.state.outParams) {
             this.state.dynamicParams.forEach((param) => {
                 this.state.outParams.forEach((outParamCode) => {
                     if (param.code === outParamCode) {
@@ -181,9 +201,9 @@ export default class Operations extends Component {
             })
         }
         let actions = "";
-        if(this.state.actions) {
-            this.state.actionsRegistry.forEach((action) => {
-                this.state.actions.forEach((actionCode) => {
+        if (this.state.actions) {
+            this.state.actions.forEach((actionCode) => {
+                this.state.actionsRegistry.forEach((action) => {
                     if (action.code === actionCode) {
                         actions += action.id + ",";
                     }
@@ -224,7 +244,7 @@ export default class Operations extends Component {
         return operations;
     }
 
-    renderDeleteConfirmOperation(){
+    renderDeleteConfirmOperation() {
         return (
             <Dialog open={this.state.showDeleteDialog}>
                 <DialogTitle>
@@ -236,29 +256,30 @@ export default class Operations extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={()=>{
-                        this.setState({showDeleteDialog:false});
-                        this.handleDelete(this.state.targetId)}
+                    <Button onClick={() => {
+                        this.setState({showDeleteDialog: false});
+                        this.handleDelete(this.state.targetId)
+                    }
                     } color="accent" raised>{"Удалить"}</Button>
-                    <Button onClick={()=>this.setState({showDeleteDialog:false})} raised>{"Отмена"}</Button>
+                    <Button onClick={() => this.setState({showDeleteDialog: false})} raised>{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
     }
 
-    openDeleteOperation =(id)=>{
-        this.setState({showDeleteDialog:true,targetId:id});
+    openDeleteOperation = (id) => {
+        this.setState({showDeleteDialog: true, targetId: id});
     }
     openEditOperation = (id) => {
         let operations = this.state.operations;
         let operation;
-        for(let i=0;i < operations.length; i++){
-            if(operations[i].id === id){
+        for (let i = 0; i < operations.length; i++) {
+            if (operations[i].id === id) {
                 operation = operations[i];
                 break;
             }
         }
-        if(!operation)
+        if (!operation)
             return null;
         let inParams = [];
         if (operation.inParams) {
@@ -274,53 +295,54 @@ export default class Operations extends Component {
             });
         }
 
-        let actions =[];
+        let actions = [];
         if (operation.actions) {
             operation.actions.map((item) => {
                 actions.push(item.code)
             });
         }
         this.setState({
-            showEditDialog:true,
-            targetId:id,
-            name:operation.name,
-            code:operation.code,
-            description:operation.description,
-            actions:actions,
-            inParams:inParams,
-            outParams:outParams});
+            showEditDialog: true,
+            targetId: id,
+            name: operation.name,
+            code: operation.code,
+            description: operation.description,
+            actions: actions,
+            inParams: inParams,
+            outParams: outParams
+        });
     }
 
-    handleDelete(id){
-        let url = "http://localhost:8080/api/operations/delete?id="+id;
-        funcs.get(url,(response, status, statusText)=>{
+    handleDelete(id) {
+        let url = "http://localhost:8080/api/operations/delete?id=" + id;
+        funcs.get(url, (response, status, statusText) => {
             console.log(response);
             console.log(statusText);
             this.loadData();
         });
     }
 
-    closeEditDialog = ()=>{
-        this.setState({showEditDialog:false});
+    closeEditDialog = () => {
+        this.setState({showEditDialog: false});
     }
 
-    renderEditionDialog(){
+    renderEditionDialog() {
         return (
-            <Dialog classes={{paper:"dialog"}} open={this.state.showEditDialog}
+            <Dialog classes={{paper: "dialog"}} open={this.state.showEditDialog}
                     onClose={this.closeEditDialog}>
                 <DialogTitle>
                     <Typography type="headline" gutterBottom>{"Редактирование операции"}</Typography>
                 </DialogTitle>
-                <DialogContent classes={{root:"content"}}>
+                <DialogContent classes={{root: "content"}}>
                     {this.renderEditionForm()}
                 </DialogContent>
             </Dialog>
         );
     }
 
-    renderEditionForm(){
+    renderEditionForm() {
 
-        return(
+        return (
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("name")}
                            value={this.state.name} label="name"/>
@@ -328,56 +350,56 @@ export default class Operations extends Component {
                            value={this.state.code} label="code"/>
                 <TextField onChange={this.handleChange("description")}
                            value={this.state.description} label="description"/>
-                <InputLabel htmlFor="actions">Actions</InputLabel>
-                <Select multiple value={[...this.state.actions]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({actions:e.target.value})}}
-                        input={<Input id="actions"/>}>
-                    {this.state.actionsRegistry.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.actions).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
+                <InputLabel>Actions</InputLabel>
+                {this.renderActionsInputs()}
+                <Add onClick={() => {
+                    let actions = [...this.state.actions];
+                    actions.push("");
+                    this.setState({actions});
+                }}/>
                 <InputLabel htmlFor="inParams">inParams</InputLabel>
                 <Select multiple value={[...this.state.inParams]}
                         renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({inParams:e.target.value})}}
+                        onChange={(e) => {
+                            this.setState({inParams: e.target.value})
+                        }}
                         input={<Input id="inParams"/>}>
                     {this.state.dynamicParams.map(param => (
                         <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
+                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)}/>
+                            <ListItemText primary={param.code}/>
                         </MenuItem>
                     ))}
                 </Select>
                 <InputLabel htmlFor="outParams">outParams</InputLabel>
                 <Select multiple value={[...this.state.outParams]}
                         renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({outParams:e.target.value})}}
+                        onChange={(e) => {
+                            this.setState({outParams: e.target.value})
+                        }}
                         input={<Input id="outParams"/>}>
                     {this.state.dynamicParams.map(param => (
                         <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
+                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)}/>
+                            <ListItemText primary={param.code}/>
                         </MenuItem>
                     ))}
                 </Select>
-                <Button raised={true} type="submit" onClick={()=>{
+                <Button raised={true} type="submit" onClick={() => {
                     this.closeEditDialog();
-                    this.handleEditOperation(this.state.targetId)}
+                    this.handleEditOperation(this.state.targetId)
+                }
                 }>РЕДАКТИРОВАТЬ</Button>
             </div>
         );
     }
 
-    handleEditOperation(id){
+    handleEditOperation(id) {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
         let inParams = "";
-        if(this.state.inParams) {
+        if (this.state.inParams) {
             this.state.dynamicParams.forEach((param) => {
                 this.state.inParams.forEach((inParamCode) => {
                     if (param.code === inParamCode) {
@@ -389,7 +411,7 @@ export default class Operations extends Component {
         }
 
         let outParams = "";
-        if(this.state.outParams) {
+        if (this.state.outParams) {
             this.state.dynamicParams.forEach((param) => {
                 this.state.outParams.forEach((outParamCode) => {
                     if (param.code === outParamCode) {
@@ -399,9 +421,10 @@ export default class Operations extends Component {
             })
         }
         let actions = "";
-        if(this.state.actions) {
-            this.state.actionsRegistry.forEach((action) => {
-                this.state.actions.forEach((actionCode) => {
+        if (this.state.actions) {
+            this.state.actions.forEach((actionCode) => {
+                this.state.actionsRegistry.forEach((action) => {
+
                     if (action.code === actionCode) {
                         actions += action.id + ",";
                     }
@@ -409,29 +432,29 @@ export default class Operations extends Component {
 
             })
         }
-        console.log(id+" "+name+" "+code+" "+actions+" "+description+" "+inParams+" "+outParams);
+        console.log(id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/operations/edit?"
-            +"id="+id;
-        if(name){
-            url+="&name="+name;
+            + "id=" + id;
+        if (name) {
+            url += "&name=" + name;
         }
-        if(code){
-            url+="&code="+code;
+        if (code) {
+            url += "&code=" + code;
         }
-        if(description){
-            url+="&description="+description;
+        if (description) {
+            url += "&description=" + description;
         }
-        if(actions){
-            url+="&actions="+actions;
+        if (actions) {
+            url += "&actions=" + actions;
         }
-        if(inParams){
-            url+="&inParams="+inParams;
+        if (inParams) {
+            url += "&inParams=" + inParams;
         }
-        if(outParams){
-            url+="&outParams="+outParams;
+        if (outParams) {
+            url += "&outParams=" + outParams;
         }
 
-        funcs.get(url,(response, status, statusText)=>{
+        funcs.get(url, (response, status, statusText) => {
             console.log(response);
             console.log(statusText);
             this.loadData();
@@ -462,7 +485,7 @@ export default class Operations extends Component {
             code: "",
             description: "",
             module: "",
-            actions: "",
+            actions: [""],
             inParams: "",
             outParams: "",
         });
