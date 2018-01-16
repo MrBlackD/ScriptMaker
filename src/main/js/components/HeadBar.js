@@ -23,6 +23,9 @@ export default class HeadBar extends Component {
                             <Button>
                                 <Link className="react-router-link" to="/operations">Операции</Link>
                             </Button>
+                            <Button>
+                                <Link className="react-router-link" to="/services">Сервисы</Link>
+                            </Button>
                         </div>
                     </Toolbar>
                 </AppBar>

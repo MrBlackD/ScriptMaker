@@ -23,6 +23,9 @@ public class Service {
     @OneToOne
     private Node startNode;
 
+    public Service() {
+    }
+
     public Service(String name,
                    String code,
                    String description,
