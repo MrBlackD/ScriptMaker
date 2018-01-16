@@ -18,6 +18,8 @@ import {
     TextField,
     Typography
 } from "material-ui";
+import Autosuggest from "react-autosuggest";
+import {Add, Remove} from "material-ui-icons";
 
 
 export default class Services extends Component {
@@ -29,11 +31,13 @@ export default class Services extends Component {
             description: "",
             inParams: "",
             outParams: "",
-            operations: {},
-            services:{},
+            operations: [""],
+            services:[],
             createDialogOpened: false,
             dynamicParams:[],
-            operationsRegistry:[]
+            operationsRegistry:[],
+            value:"",
+            suggestions: []
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -103,24 +107,84 @@ export default class Services extends Component {
         });
     };
 
+    getSuggestions = value => {
+        const inputValue = value.trim().toLowerCase();
+        const inputLength = inputValue.length;
+
+        return inputLength === 0 ? [] : this.state.operationsRegistry.filter(action =>
+            action.code.toLowerCase().slice(0, inputLength) === inputValue
+        );
+    };
+
+    getSuggestionValue = suggestion => suggestion.code;
+    renderSuggestion = suggestion => (
+        <span>
+            {suggestion.code}
+        </span>
+    );
+
+
+    // Autosuggest will call this function every time you need to update suggestions.
+    // You already implemented this logic above, so just use it.
+    onSuggestionsFetchRequested = ({ value }) => {
+        this.setState({
+            suggestions: this.getSuggestions(value)
+        });
+    };
+
+    // Autosuggest will call this function every time you need to clear suggestions.
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
+
+    renderOperationsInputs = () => {
+        const {suggestions} = this.state;
+
+        return this.state.operations.map((operation, index) => {
+            const value = this.state.operations[index] || "";
+            const inputProps = {
+                placeholder: 'Type an operation code',
+                value:value,
+                onChange: (event,{newValue}) => {
+                    let operations = [...this.state.operations];
+                    operations[index] = newValue;
+                    this.setState({operations});
+                }
+            };
+            return <div key={index}>
+                <Autosuggest
+                    suggestions={suggestions}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                    getSuggestionValue={this.getSuggestionValue}
+                    renderSuggestion={this.renderSuggestion}
+                    inputProps={inputProps}
+                />
+                <Remove onClick={() => {
+                    let operations = [...this.state.operations];
+                    operations.splice(index, 1);
+                    this.setState({operations});
+                }}/>
+            </div>
+        });
+
+    }
+
     renderCreationForm() {
         return (
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("name")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
                 <TextField onChange={this.handleChange("description")} label="description" required={true}/>
-                <InputLabel htmlFor="operations">Operations</InputLabel>
-                <Select multiple value={[...this.state.operations]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({operations:e.target.value})}}
-                        input={<Input id="operations"/>}>
-                    {this.state.operationsRegistry.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.operations).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
+                <InputLabel>Operations</InputLabel>
+                {this.renderOperationsInputs()}
+                <Add onClick={() => {
+                    let operations = [...this.state.operations];
+                    operations.push("");
+                    this.setState({operations});
+                }}/>
                 <InputLabel htmlFor="inParams">inParams</InputLabel>
                 <Select multiple value={[...this.state.inParams]}
                         renderValue={selected => selected.join(', ')}
@@ -327,18 +391,13 @@ export default class Services extends Component {
                            value={this.state.code} label="code"/>
                 <TextField onChange={this.handleChange("description")}
                            value={this.state.description} label="description"/>
-                <InputLabel htmlFor="operations">Operations</InputLabel>
-                <Select multiple value={[...this.state.operations]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({operations:e.target.value})}}
-                        input={<Input id="operations"/>}>
-                    {this.state.operationsRegistry.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.operations).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
+                <InputLabel>Operations</InputLabel>
+                {this.renderOperationsInputs()}
+                <Add onClick={() => {
+                    let operations = [...this.state.operations];
+                    operations.push("");
+                    this.setState({operations});
+                }}/>
                 <InputLabel htmlFor="inParams">inParams</InputLabel>
                 <Select multiple value={[...this.state.inParams]}
                         renderValue={selected => selected.join(', ')}

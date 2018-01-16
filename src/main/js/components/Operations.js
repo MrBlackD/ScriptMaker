@@ -112,12 +112,13 @@ export default class Operations extends Component {
         const {suggestions} = this.state;
 
         return this.state.actions.map((action, index) => {
+            const value = this.state.actions[index] || "";
             const inputProps = {
                 placeholder: 'Type an action code',
-                value:this.state.actions[index],
-                onChange: (event) => {
+                value:value,
+                onChange: (event,{newValue}) => {
                     let actions = [...this.state.actions];
-                    actions[index] = event.target.value;
+                    actions[index] = newValue;
                     this.setState({actions});
                 }
             };
@@ -373,11 +374,6 @@ export default class Operations extends Component {
         </span>
     );
 
-    onChange = (event, { newValue }) => {
-        this.setState({
-            value: newValue
-        });
-    };
 
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
