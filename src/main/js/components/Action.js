@@ -64,6 +64,11 @@ export default class Action extends Component {
                     </TableRow>
                     {params}
                     <TableRow>
+                        <TableCell colSpan={2}  style={{"text-align":"center"}}>
+                            Описание
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
                         <TableCell colSpan={2}>{action.description}</TableCell>
                     </TableRow>
                     <TableRow>
