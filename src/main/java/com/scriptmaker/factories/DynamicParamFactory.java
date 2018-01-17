@@ -2,8 +2,12 @@ package com.scriptmaker.factories;
 
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
+import com.scriptmaker.model.Operation;
+import com.scriptmaker.model.Service;
 import com.scriptmaker.repository.ActionRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
+import com.scriptmaker.repository.OperationRepository;
+import com.scriptmaker.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +24,10 @@ public class DynamicParamFactory {
     private DynamicParamRepository dynamicParamRepository;
     @Autowired
     private ActionRepository actionRepository;
+    @Autowired
+    private OperationRepository operationRepository;
+    @Autowired
+    private ServiceRepository serviceRepository;
 
     public void create(DynamicParam param) throws Exception {
         if(dynamicParamRepository.findByCode(param.getCode()) != null){
@@ -72,6 +80,14 @@ public class DynamicParamFactory {
         for(Action action:actionRepository.findAll()) {
             action.getInParams().remove(param);
             action.getOutParams().remove(param);
+        }
+        for(Operation operation:operationRepository.findAll()) {
+            operation.getInParams().remove(param);
+            operation.getOutParams().remove(param);
+        }
+        for(Service service:serviceRepository.findAll()) {
+            service.getInParams().remove(param);
+            service.getOutParams().remove(param);
         }
     }
 }
