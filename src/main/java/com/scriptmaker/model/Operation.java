@@ -2,7 +2,11 @@ package com.scriptmaker.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 @Data
@@ -19,7 +23,7 @@ public class Operation {
     @ManyToMany
     private List<DynamicParam> outParams;
     @ManyToMany
-    private List<Action> actions;
+    private List<ActionInstance> actions;
     @OneToOne
     private Node startNode;
 
@@ -37,11 +41,11 @@ public class Operation {
         this.startNode = startNode;
     }
 
-    public List<Action> getActions() {
+    public List<ActionInstance> getActions() {
         return actions;
     }
 
-    public void setActions(List<Action> actions) {
+    public void setActions(List<ActionInstance> actions) {
         this.actions = actions;
     }
 
@@ -54,7 +58,7 @@ public class Operation {
                      List<DynamicParam> inParams,
                      List<DynamicParam> outParams,
                      Node startNode,
-                     List<Action> actions) {
+                     List<ActionInstance> actions) {
         this.name = name;
         this.code = code;
         this.description = description;
