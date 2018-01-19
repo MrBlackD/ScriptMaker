@@ -11,8 +11,10 @@ export default class DynamicParam extends Component {
         let result = [];
         let onClose = this.props.onClose;
         let onEdit = this.props.onEdit;
+        let count=0;
         for (let key in item) {
-            if (item.hasOwnProperty(key)) {
+            count++;
+            if (item.hasOwnProperty(key)&&count<7) {
                 result.push(<TableCell key={key} className="cell">{"" + item[key]}</TableCell>);
             }
         }

@@ -5,7 +5,6 @@ import {Button, Table, TableBody, TableCell, TableHead, TableRow} from "material
 export default class Action extends Component {
     constructor(props){
         super(props);
-
     }
 
     render() {

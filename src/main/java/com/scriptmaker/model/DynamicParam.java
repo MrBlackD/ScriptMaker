@@ -2,9 +2,10 @@ package com.scriptmaker.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -17,6 +18,33 @@ public class DynamicParam {
     private String description;
     private Boolean required = false;
     private Boolean keepInWorkflow = false;
+    private String refersActions;
+    private String refersOperations;
+    private String refersServices;
+
+    public String getRefersOperations() {
+        return refersOperations;
+    }
+
+    public void setRefersOperations(String refersOperations) {
+        this.refersOperations = refersOperations;
+    }
+
+    public String getRefersServices() {
+        return refersServices;
+    }
+
+    public void setRefersServices(String refersServices) {
+        this.refersServices = refersServices;
+    }
+
+    public String getRefersActions() {
+        return refersActions;
+    }
+
+    public void setRefersActions(String refersActions) {
+        this.refersActions = refersActions;
+    }
 
     public DynamicParam() {
     }

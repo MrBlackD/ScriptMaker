@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -19,6 +20,26 @@ public class Action {
     private List<DynamicParam> inParams;
     @ManyToMany
     private List<DynamicParam> outParams;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Action action = (Action) o;
+        return Objects.equals(id, action.id) &&
+                Objects.equals(name, action.name) &&
+                Objects.equals(code, action.code) &&
+                Objects.equals(module, action.module) &&
+                Objects.equals(description, action.description) &&
+                Objects.equals(inParams, action.inParams) &&
+                Objects.equals(outParams, action.outParams);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, code, module, description, inParams, outParams);
+    }
 
     public Action() {
     }
