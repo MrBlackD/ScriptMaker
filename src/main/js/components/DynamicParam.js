@@ -14,7 +14,7 @@ export default class DynamicParam extends Component {
         let count=0;
         for (let key in item) {
             count++;
-            if (item.hasOwnProperty(key)&&count<7) {
+            if (item.hasOwnProperty(key)&&count<5) {
                 result.push(<TableCell key={key} className="cell">{"" + item[key]}</TableCell>);
             }
         }

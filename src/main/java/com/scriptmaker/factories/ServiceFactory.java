@@ -26,8 +26,9 @@ public class ServiceFactory {
 
     public void update(Service service) throws Exception {
         Service oldService = serviceRepository.findOne(service.getId());
-        if( serviceRepository.findByCode(service.getCode())!= null
-                && !Objects.equals(serviceRepository.findByCode(service.getCode()).getId(), oldService.getId())){
+        Service newService = serviceRepository.findByCode(service.getCode());
+        if( newService!= null
+                && !Objects.equals(newService.getId(), oldService.getId())){
             System.out.println("ERROR service with code" + service.getCode() + " already exist");
             throw new Exception();
 
