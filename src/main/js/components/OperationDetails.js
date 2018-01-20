@@ -39,8 +39,8 @@ export default class OperationDetails extends React.Component{
             return null;
         }
 
-        return this.state.operation.actions.map((action) =>{
-            return <Action data={action}/>;
+        return this.state.operation.actions.map((actionInstance) =>{
+            return <Action data={actionInstance.action}/>;
         })
     }
 

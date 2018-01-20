@@ -1,18 +1,22 @@
 package com.scriptmaker.controllers;
 
 import com.scriptmaker.common.Utils;
-import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.model.Action;
+import com.scriptmaker.model.ActionInstance;
 import com.scriptmaker.model.DynamicParam;
-import com.scriptmaker.model.Node;
 import com.scriptmaker.model.Operation;
+import com.scriptmaker.repository.ActionInstanceRepository;
 import com.scriptmaker.repository.ActionRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
 import com.scriptmaker.repository.NodeRepository;
 import com.scriptmaker.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +37,8 @@ public class OperationsController {
     private DynamicParamRepository dynamicParamRepository;
     @Autowired
     private ActionRepository actionRepository;
+    @Autowired
+    private ActionInstanceRepository actionInstanceRepository;
     @Autowired
     private OperationFactory operationFactory;
     @Autowired
@@ -59,6 +65,12 @@ public class OperationsController {
             @RequestParam(name = "actions", required = false) String actions
 
     ) throws Exception {
+        List<Action> actionList = utils.getIdsFromString(actions, actionRepository);
+        List<ActionInstance> actionInstances = new ArrayList<>();
+        for(Action action:actionList){
+            actionInstances.add(new ActionInstance(action,null));
+        }
+        actionInstanceRepository.save(actionInstances);
         Operation newOperation = new Operation(
                 name,
                 code,
@@ -66,7 +78,7 @@ public class OperationsController {
                 utils.getIdsFromString(inParams,dynamicParamRepository),
                 utils.getIdsFromString(outParams,dynamicParamRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node)),
-                utils.getIdsFromString(actions,actionRepository)
+                actionInstances
                 );
         operationFactory.create(newOperation);
         linked(newOperation);
@@ -169,8 +181,13 @@ public class OperationsController {
             }
         }
         if(actions!=null){
-            operation.setActions(
-                    utils.getIdsFromString(actions,actionRepository));
+            List<Action> actionList = utils.getIdsFromString(actions, actionRepository);
+            List<ActionInstance> actionInstances = new ArrayList<>();
+            for(Action action:actionList){
+                actionInstances.add(new ActionInstance(action,null));
+            }
+            actionInstanceRepository.save(actionInstances);
+            operation.setActions(actionInstances);
         }
         operationFactory.update(operation);
         linked(operation);

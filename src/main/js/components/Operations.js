@@ -315,8 +315,8 @@ export default class Operations extends Component {
 
         let actions = [];
         if (operation.actions) {
-            operation.actions.map((item) => {
-                actions.push(item.code)
+            operation.actions.map((actionInstance) => {
+                actions.push(actionInstance.action.code)
             });
         }
         this.setState({
