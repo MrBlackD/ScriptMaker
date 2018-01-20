@@ -53,7 +53,7 @@ public class DynamicParamController {
             dynamicParam.setCode(code);
         }
         if(type!=null){
-            dynamicParam.setCode(type);
+            dynamicParam.setType(type);
         }
         dynamicParamFactory.update(dynamicParam);
         return dynamicParam;
