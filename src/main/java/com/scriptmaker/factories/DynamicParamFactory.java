@@ -39,8 +39,9 @@ public class DynamicParamFactory {
 
     public void update(DynamicParam param) throws Exception {
         DynamicParam oldParam = dynamicParamRepository.findOne(param.getId());
-        if( dynamicParamRepository.findByCode(param.getCode())!= null
-                && !Objects.equals(dynamicParamRepository.findByCode(param.getCode()).getId(), oldParam.getId())){
+        DynamicParam newParam = dynamicParamRepository.findByCode(param.getCode());
+        if( newParam!= null
+                && !Objects.equals(newParam.getId(), oldParam.getId())){
             System.out.println("ERROR parametr with code" + param.getCode() + " already exist");
             throw new Exception();
 

@@ -24,8 +24,9 @@ public class OperationFactory {
 
     public void update(Operation operation) throws Exception {
         Operation oldOperation = operationRepository.findOne(operation.getId());
-        if( operationRepository.findByCode(operation.getCode())!= null
-                && !Objects.equals(operationRepository.findByCode(operation.getCode()).getId(), oldOperation.getId())){
+        Operation newOperation = operationRepository.findByCode(operation.getCode());
+        if( newOperation!= null
+                && !Objects.equals(newOperation.getId(), oldOperation.getId())){
             System.out.println("ERROR operation with code" + operation.getCode() + " already exist");
             throw new Exception();
 

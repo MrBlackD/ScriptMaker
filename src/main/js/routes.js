@@ -10,6 +10,7 @@ import Operations from "./components/Operations";
 import OperationScript from "./components/OperationScript";
 import CreateOperation from "./components/CreateOperation";
 import OperationDetails from "./components/OperationDetails";
+import ActionDetails from "./components/ActionDetails";
 import ServiceDetails from "./components/ServiceDetails";
 import Services from "./components/Services";
 
@@ -20,6 +21,7 @@ export const routes = (
             <Route path="/dynamicParams" component={DynamicParams} />
             <Route path="/actions" component={Actions} />
             <Route path="/operations" component={Operations} />
+            <Route path="/actions/:id" component={ActionDetails} />
             <Route path="/operations/:id" component={OperationDetails} />
             <Route path="/services/:id" component={ServiceDetails} />
             <Route path="/operationScript" component={CreateOperation} />

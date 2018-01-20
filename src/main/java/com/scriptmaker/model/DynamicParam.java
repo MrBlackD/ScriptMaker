@@ -2,9 +2,10 @@ package com.scriptmaker.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -14,25 +15,55 @@ public class DynamicParam {
     private Long id;
     private String name;
     private String code;
-    private String description;
-    private Boolean required = false;
-    private Boolean keepInWorkflow = false;
+    private String type;
+    private String refersActions;
+    private String refersOperations;
+    private String refersServices;
+
+    public String getRefersOperations() {
+        return refersOperations;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public DynamicParam(String name, String code, String type) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+    }
+
+    public void setRefersOperations(String refersOperations) {
+        this.refersOperations = refersOperations;
+    }
+
+    public String getRefersServices() {
+        return refersServices;
+    }
+
+    public void setRefersServices(String refersServices) {
+        this.refersServices = refersServices;
+    }
+
+    public String getRefersActions() {
+        return refersActions;
+    }
+
+    public void setRefersActions(String refersActions) {
+        this.refersActions = refersActions;
+    }
 
     public DynamicParam() {
     }
 
-    public DynamicParam(String name, String code, String description) {
+    public DynamicParam(String name, String code) {
         this.name = name;
         this.code = code;
-        this.description = description;
-    }
-
-    public DynamicParam(String name, String code, String description, Boolean required, Boolean keepInWorkflow) {
-        this.name = name;
-        this.code = code;
-        this.description = description;
-        this.required = required;
-        this.keepInWorkflow = keepInWorkflow;
     }
 
     public Long getId() {
@@ -59,27 +90,5 @@ public class DynamicParam {
         this.code = code;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Boolean getRequired() {
-        return required;
-    }
-
-    public void setRequired(Boolean required) {
-        this.required = required;
-    }
-
-    public Boolean getKeepInWorkflow() {
-        return keepInWorkflow;
-    }
-
-    public void setKeepInWorkflow(Boolean keepInWorkflow) {
-        this.keepInWorkflow = keepInWorkflow;
-    }
 }
