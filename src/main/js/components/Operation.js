@@ -22,9 +22,9 @@ export default class Operation extends Component {
             let inParam = "";
             let outParam = "";
             if(i < inParams.length)
-                inParam = inParams[i];
+                inParam = inParams[i].dynamicParam;
             if(i < outParams.length)
-                outParam = outParams[i];
+                outParam = outParams[i].dynamicParam;
             params.push(
                 <TableRow key={i}>
                     <TableCell className={inParam.code}>{inParam.code}</TableCell>
@@ -46,7 +46,7 @@ export default class Operation extends Component {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}  className={"name"}>
-                            <Link to={"/operations/"+operation.id}>{operation.name}</Link>
+                            <Link to={"/operations/"+operation.id}>{operation.name+"( id:"+operation.id+")"}</Link>
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -71,7 +71,7 @@ export default class Operation extends Component {
                         <TableCell style={{"textAlign":"center"}} colSpan={2}>
                             {this.props.onEdit&&
                             <Button raised={true}
-                                    onClick={()=>{this.props.onEdit(operation.id)}}>Редактировать</Button>}
+                                    onClick={()=>{this.props.onEdit(operation)}}>Редактировать</Button>}
                             {this.props.onDelete&&
                             <Button raised={true}
                                     onClick={()=>{this.props.onDelete(operation.id)}}>Удалить</Button>}

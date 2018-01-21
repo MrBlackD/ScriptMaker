@@ -19,9 +19,9 @@ public class Operation {
     private String code;
     private String description;
     @ManyToMany
-    private List<DynamicParam> inParams;
+    private List<DynamicParamInstance> inParams;
     @ManyToMany
-    private List<DynamicParam> outParams;
+    private List<DynamicParamInstance> outParams;
     @ManyToMany
     private List<ActionInstance> actions;
     @OneToOne
@@ -30,8 +30,8 @@ public class Operation {
     public Operation(String name,
                      String code,
                      String description,
-                     List<DynamicParam> inParams,
-                     List<DynamicParam> outParams,
+                     List<DynamicParamInstance> inParams,
+                     List<DynamicParamInstance> outParams,
                      Node startNode) {
         this.name = name;
         this.code = code;
@@ -55,8 +55,8 @@ public class Operation {
     public Operation(String name,
                      String code,
                      String description,
-                     List<DynamicParam> inParams,
-                     List<DynamicParam> outParams,
+                     List<DynamicParamInstance> inParams,
+                     List<DynamicParamInstance> outParams,
                      Node startNode,
                      List<ActionInstance> actions) {
         this.name = name;
@@ -101,19 +101,19 @@ public class Operation {
         this.description = description;
     }
 
-    public List<DynamicParam> getInParams() {
+    public List<DynamicParamInstance> getInParams() {
         return inParams;
     }
 
-    public void setInParams(List<DynamicParam> inParams) {
+    public void setInParams(List<DynamicParamInstance> inParams) {
         this.inParams = inParams;
     }
 
-    public List<DynamicParam> getOutParams() {
+    public List<DynamicParamInstance> getOutParams() {
         return outParams;
     }
 
-    public void setOutParams(List<DynamicParam> outParams) {
+    public void setOutParams(List<DynamicParamInstance> outParams) {
         this.outParams = outParams;
     }
 

@@ -49,7 +49,7 @@ export default class Action extends Component {
                 <TableHead>
                     <TableRow>
                         <TableCell className="name" colSpan={2} >
-                            {action.name}
+                            {action.name +"( id:"+action.id+")"}
                         </TableCell>
                     </TableRow>
                 </TableHead>

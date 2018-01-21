@@ -52,8 +52,8 @@ public class ActionsController {
             @RequestParam(name = "inParams", required = false) String inParams,
             @RequestParam(name = "outParams", required = false) String outParams
     ) throws Exception {
-        List<DynamicParamInstance> inParamInstances = getDynamicParamsInstances(inParams);
-        List<DynamicParamInstance> outParamInstances = getDynamicParamsInstances(outParams);
+        List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
+        List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
         dynamicParamInstanceRepository.save(inParamInstances);
         dynamicParamInstanceRepository.save(outParamInstances);
         Action newAction = new Action(
@@ -67,34 +67,6 @@ public class ActionsController {
         actionFactory.create(newAction);
         //linked(newAction);
         return newAction;
-    }
-
-    /**
-     * Создаёт список экземпляров динамических параметров из строки
-     * @param string  строка вида `dynamicParamId,required,keepInworkflow,defaultValue;`
-     * @return список экземпляров динамических параметров
-     */
-    private List<DynamicParamInstance> getDynamicParamsInstances(String string) {
-        if(string == null || string.isEmpty()){
-            return new ArrayList<>();
-        }
-        List<DynamicParamInstance> dynamicParamInstances = new ArrayList<>();
-        for(String paramInstance : string.split(";")){
-            String[] props = paramInstance.split(",");
-            DynamicParamInstance dynamicParamInstance = new DynamicParamInstance();
-            dynamicParamInstance.setDynamicParam(dynamicParamRepository.findOne(Long.valueOf(props[0])));
-            if(props.length>=2) {
-                dynamicParamInstance.setRequired(Boolean.valueOf(props[1]));
-            }
-            if(props.length>=3) {
-                dynamicParamInstance.setKeepInWorkflow(Boolean.valueOf(props[2]));
-            }
-            if(props.length>=4){
-                dynamicParamInstance.setDefaultValue(String.valueOf(props[3]));
-            }
-            dynamicParamInstances.add(dynamicParamInstance);
-        }
-        return dynamicParamInstances;
     }
 
 //    private void linked(Action newAction) {
@@ -181,14 +153,14 @@ public class ActionsController {
             action.setDescription(description);
         }
         if(inParams!=null){
-            List<DynamicParamInstance> inParamInstances = getDynamicParamsInstances(inParams);
+            List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
             dynamicParamInstanceRepository.save(inParamInstances);
             action.setInParams(inParamInstances);
         } else {
             action.setInParams(new ArrayList<>());
         }
         if(outParams!=null){
-            List<DynamicParamInstance> outParamInstances = getDynamicParamsInstances(outParams);
+            List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
             dynamicParamInstanceRepository.save(outParamInstances);
             action.setOutParams(outParamInstances);
         } else {

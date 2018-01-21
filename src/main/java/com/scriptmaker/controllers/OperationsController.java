@@ -5,10 +5,12 @@ import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.model.ActionInstance;
 import com.scriptmaker.model.DynamicParam;
+import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.model.Operation;
 import com.scriptmaker.model.ParamMapping;
 import com.scriptmaker.repository.ActionInstanceRepository;
 import com.scriptmaker.repository.ActionRepository;
+import com.scriptmaker.repository.DynamicParamInstanceRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
 import com.scriptmaker.repository.NodeRepository;
 import com.scriptmaker.repository.OperationRepository;
@@ -21,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Admin on 07.06.2017.
@@ -48,6 +48,8 @@ public class OperationsController {
     private NodeRepository nodeRepository;
     @Autowired
     private ParamMappingRepository paramMappingRepository;
+    @Autowired
+    private DynamicParamInstanceRepository dynamicParamInstanceRepository;
 
     @RequestMapping("/api/operations")
     public List<Operation> getAllOperations() {
@@ -71,13 +73,17 @@ public class OperationsController {
 
     ) throws Exception {
         List<ActionInstance> actionInstances = getActionInstances(actions);
+        List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
+        List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
+        dynamicParamInstanceRepository.save(inParamInstances);
+        dynamicParamInstanceRepository.save(outParamInstances);
         actionInstanceRepository.save(actionInstances);
         Operation newOperation = new Operation(
                 name,
                 code,
                 description,
-                utils.getIdsFromString(inParams, dynamicParamRepository),
-                utils.getIdsFromString(outParams, dynamicParamRepository),
+                inParamInstances,
+                outParamInstances,
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node)),
                 actionInstances
         );
@@ -86,39 +92,39 @@ public class OperationsController {
         return newOperation;
     }
 
-    private void linked(Operation newOperation) {
-        Set<DynamicParam> dynamicParams = new HashSet<>();
-        if (newOperation.getInParams() != null) {
-            dynamicParams.addAll(newOperation.getInParams());
-        }
-        if (newOperation.getOutParams() != null)
-            dynamicParams.addAll(newOperation.getOutParams());
-        if (dynamicParams != null) {
-            Long operationId = operationRepository.findByCode(newOperation.getCode()).getId();
-            for (DynamicParam dynamicParam : dynamicParams) {
-                String string = dynamicParam.getRefersOperations();
-                if (string != null) {
-                    String[] strings = string.split(",");
-                    int count = 0;
-                    for (int i = 0; i < strings.length; i++) {
-                        if (!strings[i].equals(newOperation.getId().toString()))
-                            count++;
-                        else break;
-                    }
-                    if (count == strings.length) {
-                        dynamicParam.setRefersOperations(string + "," + operationId);
-                        dynamicParamRepository.save(dynamicParam);
-                    }
-
-                } else {
-                    dynamicParam.setRefersOperations(operationId.toString());
-                    dynamicParamRepository.save(dynamicParam);
-                }
-
-            }
-        }
-
-    }
+//    private void linked(Operation newOperation) {
+//        Set<DynamicParam> dynamicParams = new HashSet<>();
+//        if (newOperation.getInParams() != null) {
+//            dynamicParams.addAll(newOperation.getInParams());
+//        }
+//        if (newOperation.getOutParams() != null)
+//            dynamicParams.addAll(newOperation.getOutParams());
+//        if (dynamicParams != null) {
+//            Long operationId = operationRepository.findByCode(newOperation.getCode()).getId();
+//            for (DynamicParam dynamicParam : dynamicParams) {
+//                String string = dynamicParam.getRefersOperations();
+//                if (string != null) {
+//                    String[] strings = string.split(",");
+//                    int count = 0;
+//                    for (int i = 0; i < strings.length; i++) {
+//                        if (!strings[i].equals(newOperation.getId().toString()))
+//                            count++;
+//                        else break;
+//                    }
+//                    if (count == strings.length) {
+//                        dynamicParam.setRefersOperations(string + "," + operationId);
+//                        dynamicParamRepository.save(dynamicParam);
+//                    }
+//
+//                } else {
+//                    dynamicParam.setRefersOperations(operationId.toString());
+//                    dynamicParamRepository.save(dynamicParam);
+//                }
+//
+//            }
+//        }
+//
+//    }
 
     public static void removeLinked(List<DynamicParam> dynamicParams, Operation operation) {
         if (dynamicParams != null) {
@@ -154,9 +160,6 @@ public class OperationsController {
 
     ) throws Exception {
         Operation operation = operationRepository.findOne(Long.parseLong(id));
-
-        List<DynamicParam> oldInParams = operation.getInParams();
-        List<DynamicParam> oldOutParams = operation.getOutParams();
         if (name != null) {
             operation.setName(name);
         }
@@ -166,39 +169,37 @@ public class OperationsController {
         if (description != null) {
             operation.setDescription(description);
         }
-        if (inParams != null) {
-            List<DynamicParam> dynamicParams = utils.getIdsFromString(inParams, dynamicParamRepository);
-            operation.setInParams(dynamicParams);
-            if (oldInParams != null) {
-                if (oldInParams.removeAll(dynamicParams))
-                    removeLinked(oldInParams, operation);
-            }
+        if(inParams!=null){
+            List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
+            dynamicParamInstanceRepository.save(inParamInstances);
+            operation.setInParams(inParamInstances);
+        } else {
+            operation.setInParams(new ArrayList<>());
         }
-        if (outParams != null) {
-            List<DynamicParam> dynamicParams = utils.getIdsFromString(outParams, dynamicParamRepository);
-            operation.setOutParams(dynamicParams);
-            if (oldOutParams != null) {
-                if (oldOutParams.removeAll(dynamicParams))
-                    removeLinked(oldOutParams, operation);
-            }
+        if(outParams!=null){
+            List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
+            dynamicParamInstanceRepository.save(outParamInstances);
+            operation.setOutParams(outParamInstances);
+        } else {
+            operation.setOutParams(new ArrayList<>());
         }
         List<ActionInstance> actionInstances = getActionInstances(actions);
         actionInstanceRepository.save(actionInstances);
         operation.setActions(actionInstances);
         operationFactory.update(operation);
-        linked(operation);
+        //linked(operation);
         return operation;
     }
 
     @RequestMapping("/api/operations/delete")
     public void deleteOperation(@RequestParam(name = "id") String id) {
-        Operation operation = operationRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> dynamicInParams = operation.getInParams();
-        List<DynamicParam> dynamicOutParams = operation.getOutParams();
-        if (dynamicInParams != null)
-            removeLinked(dynamicInParams, operation);
-        if (dynamicOutParams != null)
-            removeLinked(dynamicOutParams, operation);
+//        Operation operation = operationRepository.findOne(Long.parseLong(id));
+//        List<DynamicParam> dynamicInParams = operation.getInParams();
+//        List<DynamicParam> dynamicOutParams = operation.getOutParams();
+//        if (dynamicInParams != null)
+//            removeLinked(dynamicInParams, operation);
+//        if (dynamicOutParams != null)
+//            removeLinked(dynamicOutParams, operation);
         operationFactory.delete(Long.parseLong(id));
     }
 

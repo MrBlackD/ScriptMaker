@@ -40,7 +40,7 @@ export default class Service extends Component {
 
         let service = this.props.data;
         if(this.props.collapsed){
-            return (<div id={this.props.id} className="node">{service.name}</div>)
+            return (<div id={this.props.id} className="node">{service.name  +"( id:"+service.id+")"}</div>)
         }
         return (
             <Table id={this.props.id} className="service" >

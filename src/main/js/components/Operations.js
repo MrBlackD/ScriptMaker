@@ -3,18 +3,19 @@ import * as funcs from "../utils/requests";
 import Operation from "./Operation";
 import {
     Button,
-    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Input,
-    InputLabel,
-    ListItemText,
-    MenuItem,
+    FormControlLabel,
     Paper,
-    Select,
+    Switch,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
     TextField,
     Typography
 } from "material-ui";
@@ -27,11 +28,13 @@ export default class Operations extends Component {
         super(props);
         this.state = {
             name: "",
+            targetId:0,
+            target:{},
             code: "",
             description: "",
             actions: [],
-            inParams: "",
-            outParams: "",
+            inParams: [],
+            outParams: [],
             operations: {},
             createDialogOpened: false,
             dynamicParams: [],
@@ -40,7 +43,12 @@ export default class Operations extends Component {
             suggestions: [],
             openAddActionDialog: false,
             newActionId: "",
-            newMapping:[]
+            newMapping:[],
+            newParamId: "",
+            newParamRequired: false,
+            newParamKeepInWorkflow: false,
+            newParamDefaultValue: "",
+            newParamType: ""
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -152,39 +160,12 @@ export default class Operations extends Component {
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
                 <TextField onChange={this.handleChange("description")} label="description" required={true}/>
                 {this.renderOperationActions()}
-                <InputLabel htmlFor="inParams">inParams</InputLabel>
-                <Select multiple value={[...this.state.inParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e) => {
-                            this.setState({inParams: e.target.value})
-                        }}
-                        input={<Input id="inParams"/>}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)}/>
-                            <ListItemText primary={param.code}/>
-                        </MenuItem>
-                    ))}
-                </Select>
-                <InputLabel htmlFor="outParams">outParams</InputLabel>
-                <Select multiple value={[...this.state.outParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e) => {
-                            this.setState({outParams: e.target.value})
-                        }}
-                        input={<Input id="inParams"/>}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)}/>
-                            <ListItemText primary={param.code}/>
-                        </MenuItem>
-                    ))}
-                </Select>
+                {this.renderInParams()}
+                {this.renderOutParams()}
                 <Button raised={true} onClick={() => {
                     this.closeDialog();
-                    this.clearState();
                     this.createOperation();
-                }}>{"Создать операцию"}</Button>
+                }} color="accent">{"Создать операцию"}</Button>
             </div>
         );
     }
@@ -193,28 +174,8 @@ export default class Operations extends Component {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = "";
-        if (this.state.inParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.inParams.forEach((inParamCode) => {
-                    if (param.code === inParamCode) {
-                        inParams += param.id + ",";
-                    }
-                })
-
-            })
-        }
-
-        let outParams = "";
-        if (this.state.outParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.outParams.forEach((outParamCode) => {
-                    if (param.code === outParamCode) {
-                        outParams += param.id + ",";
-                    }
-                })
-            })
-        }
+        let inParams = this.state.inParams.join("");
+        let outParams = this.state.outParams.join("");
         let actions = this.state.actions.join("!");
         console.log(name + " " + code + " " + description + " " + actions + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/operations/new?"
@@ -230,7 +191,7 @@ export default class Operations extends Component {
         if (outParams) {
             url += "&outParams=" + outParams;
         }
-
+        this.clearState();
         funcs.get(url, (response, status, statusText) => {
             console.log(response);
             console.log(statusText);
@@ -275,30 +236,22 @@ export default class Operations extends Component {
     openDeleteOperation = (id) => {
         this.setState({showDeleteDialog: true, targetId: id});
     }
-    openEditOperation = (id) => {
-        let operations = this.state.operations;
-        let operation;
-        for (let i = 0; i < operations.length; i++) {
-            if (operations[i].id === id) {
-                operation = operations[i];
-                break;
-            }
-        }
-        if (!operation)
-            return null;
-        let inParams = [];
-        if (operation.inParams) {
-            operation.inParams.map((item) => {
-                inParams.push(item.code)
-            });
-        }
+    openEditOperation = (operation) => {
 
+        let inParams = [];
+        operation.inParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
+            inParams.push(dynamicParam.id + ","
+                + required + ","
+                + keepInWorkflow + ","
+                + defaultValue + ";");
+        });
         let outParams = [];
-        if (operation.outParams) {
-            operation.outParams.map((item) => {
-                outParams.push(item.code)
-            });
-        }
+        operation.outParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
+            outParams.push(dynamicParam.id + ","
+                + required + ","
+                + keepInWorkflow + ","
+                + defaultValue + ";");
+        });
 
         let actions = [];
         if (operation.actions) {
@@ -312,7 +265,7 @@ export default class Operations extends Component {
         }
         this.setState({
             showEditDialog: true,
-            targetId: id,
+            target: operation,
             name: operation.name,
             code: operation.code,
             description: operation.description,
@@ -469,73 +422,27 @@ export default class Operations extends Component {
                 <TextField onChange={this.handleChange("description")}
                            value={this.state.description} label="description"/>
                 {this.renderOperationActions()}
-                <InputLabel htmlFor="inParams">inParams</InputLabel>
-                <Select multiple value={[...this.state.inParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e) => {
-                            this.setState({inParams: e.target.value})
-                        }}
-                        input={<Input id="inParams"/>}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)}/>
-                            <ListItemText primary={param.code}/>
-                        </MenuItem>
-                    ))}
-                </Select>
-                <InputLabel htmlFor="outParams">outParams</InputLabel>
-                <Select multiple value={[...this.state.outParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e) => {
-                            this.setState({outParams: e.target.value})
-                        }}
-                        input={<Input id="outParams"/>}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)}/>
-                            <ListItemText primary={param.code}/>
-                        </MenuItem>
-                    ))}
-                </Select>
+                {this.renderInParams()}
+                {this.renderOutParams()}
                 <Button raised={true} type="submit" onClick={() => {
                     this.closeEditDialog();
-                    this.handleEditOperation(this.state.targetId)
+                    this.handleEditOperation(this.state.target)
                 }
-                }>РЕДАКТИРОВАТЬ</Button>
+                } color="accent">РЕДАКТИРОВАТЬ</Button>
             </div>
         );
     }
 
-    handleEditOperation(id) {
+    handleEditOperation(operation) {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = "";
-        if (this.state.inParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.inParams.forEach((inParamCode) => {
-                    if (param.code === inParamCode) {
-                        inParams += param.id + ",";
-                    }
-                })
-
-            })
-        }
-
-        let outParams = "";
-        if (this.state.outParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.outParams.forEach((outParamCode) => {
-                    if (param.code === outParamCode) {
-                        outParams += param.id + ",";
-                    }
-                })
-            })
-        }
+        let inParams = this.state.inParams.join("");
+        let outParams = this.state.outParams.join("");
         let actions = this.state.actions.join("!");
-        console.log(id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
+        console.log(operation.id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/operations/edit?"
-            + "id=" + id;
+            + "id=" + operation.id;
         if (name) {
             url += "&name=" + name;
         }
@@ -555,6 +462,7 @@ export default class Operations extends Component {
             url += "&outParams=" + outParams;
         }
 
+
         funcs.get(url, (response, status, statusText) => {
             console.log(response);
             console.log(statusText);
@@ -572,6 +480,7 @@ export default class Operations extends Component {
                         Создать операцию
                     </Button>
                 </div>
+                {this.renderAddParamDialog()}
                 {this.renderAddActionDialog()}
                 {this.renderDeleteConfirmOperation()}
                 {this.renderEditionDialog()}
@@ -587,9 +496,9 @@ export default class Operations extends Component {
             code: "",
             description: "",
             module: "",
-            actions: [""],
-            inParams: "",
-            outParams: "",
+            actions: [],
+            inParams: [],
+            outParams: [],
         });
     }
 
@@ -611,6 +520,134 @@ export default class Operations extends Component {
                     this.setState({openAddActionDialog: true});
                 }}>Добавить действие</Button>
             </div>
+        );
+    }
+    renderInParams() {
+        return (
+            <div>
+                <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
+                {this.renderTableParams("inParams")}
+                <Button raised={true} onClick={() => {
+                    this.setState({openedAddParamDialog: true, newParamType: "inParams"});
+                }}>Добавить входящий параметр</Button>
+            </div>
+        );
+    }
+
+    renderOutParams() {
+        return(
+            <div>
+                <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
+                {this.renderTableParams("outParams")}
+                <Button raised={true} onClick={() => {
+                    this.setState({openedAddParamDialog: true, newParamType: "outParams"});
+                }}>Добавить исходящий параметр</Button>
+            </div>
+        );
+    }
+
+    renderTableParams(params) {
+        return(
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>paramId</TableCell>
+                        <TableCell>defaultValue</TableCell>
+                        <TableCell>required</TableCell>
+                        <TableCell>keepInWorkflow</TableCell>
+                        <TableCell>Remove</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                        this.state[params].map((param) => {
+                            const splittedParam = param.slice(0,param.length-1).split(",");
+                            return <TableRow>
+                                <TableCell>{splittedParam[0]}</TableCell>
+                                <TableCell>{splittedParam[3]}</TableCell>
+                                <TableCell>{splittedParam[1]}</TableCell>
+                                <TableCell>{splittedParam[2]}</TableCell>
+                                <TableCell>
+                                    <Remove onClick={() => {
+                                        let resultParams = [...this.state[params]];
+                                        resultParams.splice(resultParams.indexOf(param), 1);
+                                        const state = {...this.state};
+                                        state[params] = resultParams;
+                                        this.setState(state);
+                                    }}/>
+                                </TableCell>
+                            </TableRow>;
+                        })
+                    }
+                </TableBody>
+            </Table>
+        );
+    }
+
+    renderAddParamDialog() {
+        return (
+            <Dialog classes={{paper: "dialog"}} open={this.state.openedAddParamDialog}
+                    onClose={() => {
+                        this.setState({openedAddParamDialog: false})
+                    }}>
+                <DialogTitle>
+                    <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
+                </DialogTitle>
+                <DialogContent classes={{root: "content"}}>
+                    <TextField value={this.state.newParamId}
+                               onChange={(e) => this.setState({newParamId: e.target.value})}
+                               label="paramId"/>
+                    <TextField value={this.state.newParamDefaultValue}
+                               onChange={(e) => {
+                                   this.setState({newParamDefaultValue: e.target.value})
+                               }}
+                               label="defaultValue"/>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={this.state.newParamRequired}
+                                onChange={(event, checked) => {
+                                    this.setState({newParamRequired: checked})
+                                }}
+                            />
+                        }
+                        label="Required"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={this.state.newParamKeepInWorkflow}
+                                onChange={(event, checked) => {
+                                    this.setState({newParamKeepInWorkflow: checked})
+                                }}
+                            />
+                        }
+                        label="KeepInWorkflow"
+                    />
+                    <Button raised={true} onClick={() => {
+                        let params = this.state[this.state.newParamType].slice();
+                        const {
+                            newParamId,
+                            newParamRequired,
+                            newParamKeepInWorkflow,
+                            newParamDefaultValue
+                        } = this.state;
+                        const newParam = newParamId + ","
+                            + newParamRequired + ","
+                            + newParamKeepInWorkflow + ","
+                            + newParamDefaultValue + ";";
+                        params.push(newParam);
+                        const state = {...this.state};
+                        state[this.state.newParamType] = params;
+                        state.openedAddParamDialog = false;
+                        state.newParamId = "";
+                        state.newParamRequired = false;
+                        state.newParamKeepInWorkflow = false;
+                        state.newParamDefaultValue = "";
+                        this.setState(state)
+                    }}>Добавить параметр</Button>
+                </DialogContent>
+            </Dialog>
         );
     }
 }
