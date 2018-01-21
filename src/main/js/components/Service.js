@@ -22,9 +22,9 @@ export default class Service extends Component {
             let inParam = "";
             let outParam = "";
             if(i < inParams.length)
-                inParam = inParams[i];
+                inParam = inParams[i].dynamicParam;
             if(i < outParams.length)
-                outParam = outParams[i];
+                outParam = outParams[i].dynamicParam;
             params.push(
                 <TableRow key={i}>
                     <TableCell className={inParam.code}>{inParam.code}</TableCell>
@@ -46,7 +46,7 @@ export default class Service extends Component {
             <Table id={this.props.id} className="service" >
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  className={"name"}>
+                        <TableCell colSpan={2}  className={"name"}>
                             <Link to={"/services/"+service.id}>{service.name}</Link>
                         </TableCell>
                     </TableRow>
@@ -61,7 +61,7 @@ export default class Service extends Component {
                     </TableRow>
                     {this.getParams(service)}
                     <TableRow>
-                        <TableCell colSpan={2} classes={{head:"table-header-operation"}}  style={{"text-align":"center"}}>
+                        <TableCell colSpan={2} style={{"text-align":"center"}}>
                             Описание
                         </TableCell>
                     </TableRow>
@@ -72,7 +72,7 @@ export default class Service extends Component {
                         <TableCell style={{"textAlign":"center"}} colSpan={2}>
                             {this.props.onEdit&&
                             <Button raised={true}
-                                    onClick={()=>{this.props.onEdit(service.id)}}>Редактировать</Button>}
+                                    onClick={()=>{this.props.onEdit(service)}}>Редактировать</Button>}
                             {this.props.onDelete&&
                             <Button raised={true}
                                     onClick={()=>{this.props.onDelete(service.id)}}>Удалить</Button>}

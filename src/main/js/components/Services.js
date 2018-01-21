@@ -3,18 +3,20 @@ import * as funcs from "../utils/requests";
 import Service from "./Service";
 import {
     Button,
-    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Input,
+    FormControlLabel,
     InputLabel,
-    ListItemText,
-    MenuItem,
     Paper,
-    Select,
+    Switch,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
     TextField,
     Typography
 } from "material-ui";
@@ -29,15 +31,22 @@ export default class Services extends Component {
             name: "",
             code: "",
             description: "",
-            inParams: "",
-            outParams: "",
-            operations: [""],
+            targetId:0,
+            target:{},
+            inParams: [],
+            outParams: [],
+            operations: [],
             services:[],
             createDialogOpened: false,
             dynamicParams:[],
             operationsRegistry:[],
             value:"",
-            suggestions: []
+            suggestions: [],
+            newParamId: "",
+            newParamRequired: false,
+            newParamKeepInWorkflow: false,
+            newParamDefaultValue: "",
+            newParamType: ""
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -185,30 +194,8 @@ export default class Services extends Component {
                     operations.push("");
                     this.setState({operations});
                 }}/>
-                <InputLabel htmlFor="inParams">inParams</InputLabel>
-                <Select multiple value={[...this.state.inParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({inParams:e.target.value})}}
-                        input={<Input id="inParams" />}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
-                <InputLabel htmlFor="outParams">outParams</InputLabel>
-                <Select multiple value={[...this.state.outParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({outParams:e.target.value})}}
-                        input={<Input id="inParams" />}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
+                {this.renderInParams()}
+                {this.renderOutParams()}
                 <Button raised={true} onClick={() => {
                     this.closeDialog();
                     this.clearState();
@@ -222,28 +209,8 @@ export default class Services extends Component {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = "";
-        if(this.state.inParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.inParams.forEach((inParamCode) => {
-                    if (param.code === inParamCode) {
-                        inParams += param.id + ",";
-                    }
-                })
-
-            })
-        }
-
-        let outParams = "";
-        if(this.state.outParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.outParams.forEach((outParamCode) => {
-                    if (param.code === outParamCode) {
-                        outParams += param.id + ",";
-                    }
-                })
-            })
-        }
+        let inParams = this.state.inParams.join("");
+        let outParams = this.state.outParams.join("");
         let operations = "";
         if(this.state.operations) {
             this.state.operationsRegistry.forEach((operation) => {
@@ -313,30 +280,21 @@ export default class Services extends Component {
     openDeleteService =(id)=>{
         this.setState({showDeleteDialog:true,targetId:id});
     }
-    openEditService = (id) => {
-        let services = this.state.services;
-        let service;
-        for(let i=0;i < services.length; i++){
-            if(services[i].id === id){
-                service = services[i];
-                break;
-            }
-        }
-        if(!service)
-            return null;
+    openEditService = (service) => {
         let inParams = [];
-        if (service.inParams) {
-            service.inParams.map((item) => {
-                inParams.push(item.code)
-            });
-        }
-
+        service.inParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
+            inParams.push(dynamicParam.id + ","
+                + required + ","
+                + keepInWorkflow + ","
+                + defaultValue + ";");
+        });
         let outParams = [];
-        if (service.outParams) {
-            service.outParams.map((item) => {
-                outParams.push(item.code)
-            });
-        }
+        service.outParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
+            outParams.push(dynamicParam.id + ","
+                + required + ","
+                + keepInWorkflow + ","
+                + defaultValue + ";");
+        });
 
         let operations =[];
         if (service.operations) {
@@ -346,7 +304,7 @@ export default class Services extends Component {
         }
         this.setState({
             showEditDialog:true,
-            targetId:id,
+            target:service,
             name:service.name,
             code:service.code,
             description:service.description,
@@ -398,64 +356,22 @@ export default class Services extends Component {
                     operations.push("");
                     this.setState({operations});
                 }}/>
-                <InputLabel htmlFor="inParams">inParams</InputLabel>
-                <Select multiple value={[...this.state.inParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({inParams:e.target.value})}}
-                        input={<Input id="inParams"/>}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.inParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
-                <InputLabel htmlFor="outParams">outParams</InputLabel>
-                <Select multiple value={[...this.state.outParams]}
-                        renderValue={selected => selected.join(', ')}
-                        onChange={(e)=>{this.setState({outParams:e.target.value})}}
-                        input={<Input id="outParams"/>}>
-                    {this.state.dynamicParams.map(param => (
-                        <MenuItem key={param.id} value={param.code}>
-                            <Checkbox checked={Object.values(this.state.outParams).includes(param.code)} />
-                            <ListItemText primary={param.code} />
-                        </MenuItem>
-                    ))}
-                </Select>
+                {this.renderInParams()}
+                {this.renderOutParams()}
                 <Button raised={true} type="submit" onClick={()=>{
                     this.closeEditDialog();
-                    this.handleEditService(this.state.targetId)}
-                }>РЕДАКТИРОВАТЬ</Button>
+                    this.handleEditService(this.state.target)}
+                } color="accent">РЕДАКТИРОВАТЬ</Button>
             </div>
         );
     }
 
-    handleEditService(id){
+    handleEditService(operation){
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = "";
-        if(this.state.inParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.inParams.forEach((inParamCode) => {
-                    if (param.code === inParamCode) {
-                        inParams += param.id + ",";
-                    }
-                })
-
-            })
-        }
-
-        let outParams = "";
-        if(this.state.outParams) {
-            this.state.dynamicParams.forEach((param) => {
-                this.state.outParams.forEach((outParamCode) => {
-                    if (param.code === outParamCode) {
-                        outParams += param.id + ",";
-                    }
-                })
-            })
-        }
+        let inParams = this.state.inParams.join("");
+        let outParams = this.state.outParams.join("");
         let operations = "";
         if(this.state.operations) {
             this.state.operationsRegistry.forEach((operation) => {
@@ -467,9 +383,9 @@ export default class Services extends Component {
 
             })
         }
-        console.log(id+" "+name+" "+code+" "+operations+" "+description+" "+inParams+" "+outParams);
+        console.log(operation.id+" "+name+" "+code+" "+operations+" "+description+" "+inParams+" "+outParams);
         let url = "http://localhost:8080/api/services/edit?"
-            +"id="+id;
+            +"id="+operation.id;
         if(name){
             url+="&name="+name;
         }
@@ -506,6 +422,7 @@ export default class Services extends Component {
                         Создать сервис
                     </Button>
                 </div>
+                {this.renderAddParamDialog()}
                 {this.renderDeleteConfirmService()}
                 {this.renderEditionDialog()}
                 {this.renderCreationDialog()}
@@ -521,8 +438,137 @@ export default class Services extends Component {
             description: "",
             module: "",
             actions: "",
-            inParams: "",
-            outParams: "",
+            inParams: [],
+            outParams: [],
         });
+    }
+
+    renderInParams() {
+        return (
+            <div>
+                <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
+                {this.renderTableParams("inParams")}
+                <Button raised={true} onClick={() => {
+                    this.setState({openedAddParamDialog: true, newParamType: "inParams"});
+                }}>Добавить входящий параметр</Button>
+            </div>
+        );
+    }
+
+    renderOutParams() {
+        return(
+            <div>
+                <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
+                {this.renderTableParams("outParams")}
+                <Button raised={true} onClick={() => {
+                    this.setState({openedAddParamDialog: true, newParamType: "outParams"});
+                }}>Добавить исходящий параметр</Button>
+            </div>
+        );
+    }
+
+    renderTableParams(params) {
+        return(
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>paramId</TableCell>
+                        <TableCell>defaultValue</TableCell>
+                        <TableCell>required</TableCell>
+                        <TableCell>keepInWorkflow</TableCell>
+                        <TableCell>Remove</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                        this.state[params].map((param) => {
+                            const splittedParam = param.slice(0,param.length-1).split(",");
+                            return <TableRow>
+                                <TableCell>{splittedParam[0]}</TableCell>
+                                <TableCell>{splittedParam[3]}</TableCell>
+                                <TableCell>{splittedParam[1]}</TableCell>
+                                <TableCell>{splittedParam[2]}</TableCell>
+                                <TableCell>
+                                    <Remove onClick={() => {
+                                        let resultParams = [...this.state[params]];
+                                        resultParams.splice(resultParams.indexOf(param), 1);
+                                        const state = {...this.state};
+                                        state[params] = resultParams;
+                                        this.setState(state);
+                                    }}/>
+                                </TableCell>
+                            </TableRow>;
+                        })
+                    }
+                </TableBody>
+            </Table>
+        );
+    }
+
+    renderAddParamDialog() {
+        return (
+            <Dialog classes={{paper: "dialog"}} open={this.state.openedAddParamDialog}
+                    onClose={() => {
+                        this.setState({openedAddParamDialog: false})
+                    }}>
+                <DialogTitle>
+                    <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
+                </DialogTitle>
+                <DialogContent classes={{root: "content"}}>
+                    <TextField value={this.state.newParamId}
+                               onChange={(e) => this.setState({newParamId: e.target.value})}
+                               label="paramId"/>
+                    <TextField value={this.state.newParamDefaultValue}
+                               onChange={(e) => {
+                                   this.setState({newParamDefaultValue: e.target.value})
+                               }}
+                               label="defaultValue"/>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={this.state.newParamRequired}
+                                onChange={(event, checked) => {
+                                    this.setState({newParamRequired: checked})
+                                }}
+                            />
+                        }
+                        label="Required"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={this.state.newParamKeepInWorkflow}
+                                onChange={(event, checked) => {
+                                    this.setState({newParamKeepInWorkflow: checked})
+                                }}
+                            />
+                        }
+                        label="KeepInWorkflow"
+                    />
+                    <Button raised={true} onClick={() => {
+                        let params = this.state[this.state.newParamType].slice();
+                        const {
+                            newParamId,
+                            newParamRequired,
+                            newParamKeepInWorkflow,
+                            newParamDefaultValue
+                        } = this.state;
+                        const newParam = newParamId + ","
+                            + newParamRequired + ","
+                            + newParamKeepInWorkflow + ","
+                            + newParamDefaultValue + ";";
+                        params.push(newParam);
+                        const state = {...this.state};
+                        state[this.state.newParamType] = params;
+                        state.openedAddParamDialog = false;
+                        state.newParamId = "";
+                        state.newParamRequired = false;
+                        state.newParamKeepInWorkflow = false;
+                        state.newParamDefaultValue = "";
+                        this.setState(state)
+                    }}>Добавить параметр</Button>
+                </DialogContent>
+            </Dialog>
+        );
     }
 }

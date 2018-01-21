@@ -1,19 +1,24 @@
 package com.scriptmaker.controllers;
 
 import com.scriptmaker.common.Utils;
-import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.factories.ServiceFactory;
-import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
-import com.scriptmaker.model.Operation;
+import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.model.Service;
-import com.scriptmaker.repository.*;
+import com.scriptmaker.repository.DynamicParamInstanceRepository;
+import com.scriptmaker.repository.DynamicParamRepository;
+import com.scriptmaker.repository.NodeRepository;
+import com.scriptmaker.repository.OperationRepository;
+import com.scriptmaker.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Admin on 07.06.2017.
@@ -34,6 +39,8 @@ public class ServicesController {
     private DynamicParamRepository dynamicParamRepository;
     @Autowired
     private OperationRepository operationRepository;
+    @Autowired
+    private DynamicParamInstanceRepository dynamicParamInstanceRepository;
 
     @RequestMapping("/api/services")
     public List<Service> getAllServices() {
@@ -56,54 +63,57 @@ public class ServicesController {
             @RequestParam(name = "operations", required = false) String operations
 
     ) throws Exception {
+        List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
+        List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
+        dynamicParamInstanceRepository.save(inParamInstances);
+        dynamicParamInstanceRepository.save(outParamInstances);
         Service newService = new Service(
                 name,
                 code,
                 description,
-                utils.getIdsFromString(inParams,dynamicParamRepository),
-                utils.getIdsFromString(outParams,dynamicParamRepository),
-                utils.getIdsFromString(operations,operationRepository),
+                inParamInstances,
+                outParamInstances,
+                utils.getIdsFromString(operations, operationRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node))
-                );
+        );
         serviceFactory.create(newService);
-       linked(newService);
+        //linked(newService);
         return newService;
     }
 
-    private void linked(Service newService) {
-        Set<DynamicParam> dynamicParams = new HashSet<>();
-        if (newService.getInParams() != null) {
-            dynamicParams.addAll(newService.getInParams());
-        }
-        if (newService.getOutParams() != null)
-            dynamicParams.addAll(newService.getOutParams());
-        if (dynamicParams != null){
-            Long serviceId=serviceRepository.findByCode(newService.getCode()).getId();
-            for (DynamicParam dynamicParam : dynamicParams) {
-                String string = dynamicParam.getRefersServices();
-                if (string != null) {
-                    String[] strings = string.split(",");
-                    int count = 0;
-                    for (int i = 0; i < strings.length; i++) {
-                        if (!strings[i].equals(newService.getId().toString()))
-                            count++;
-                        else break;
-                    }
-                    if (count == strings.length){
-                        dynamicParam.setRefersServices(string+","+serviceId);
-                        dynamicParamRepository.save(dynamicParam);
-                    }
-
-                }
-                else {
-                    dynamicParam.setRefersServices(serviceId.toString());
-                    dynamicParamRepository.save(dynamicParam);
-                }
-
-            }
-        }
-
-    }
+//    private void linked(Service newService) {
+//        Set<DynamicParam> dynamicParams = new HashSet<>();
+//        if (newService.getInParams() != null) {
+//            dynamicParams.addAll(newService.getInParams());
+//        }
+//        if (newService.getOutParams() != null)
+//            dynamicParams.addAll(newService.getOutParams());
+//        if (dynamicParams != null) {
+//            Long serviceId = serviceRepository.findByCode(newService.getCode()).getId();
+//            for (DynamicParam dynamicParam : dynamicParams) {
+//                String string = dynamicParam.getRefersServices();
+//                if (string != null) {
+//                    String[] strings = string.split(",");
+//                    int count = 0;
+//                    for (int i = 0; i < strings.length; i++) {
+//                        if (!strings[i].equals(newService.getId().toString()))
+//                            count++;
+//                        else break;
+//                    }
+//                    if (count == strings.length) {
+//                        dynamicParam.setRefersServices(string + "," + serviceId);
+//                        dynamicParamRepository.save(dynamicParam);
+//                    }
+//
+//                } else {
+//                    dynamicParam.setRefersServices(serviceId.toString());
+//                    dynamicParamRepository.save(dynamicParam);
+//                }
+//
+//            }
+//        }
+//
+//    }
 
     public static void removeLinked(List<DynamicParam> dynamicParams, Service service) {
         if (dynamicParams != null) {
@@ -112,14 +122,14 @@ public class ServicesController {
                 String string = "";
                 for (int i = 0; i < strings.length; i++) {
                     if (!strings[i].equals(service.getId().toString())) {
-                        string += strings[i]+",";
+                        string += strings[i] + ",";
                     }
                 }
-                if(string.equals(""))
-                    string=null;
-                else{
-                    if(string.charAt(string.length()-1)==',')
-                        string=string.substring(0,string.length()-1);
+                if (string.equals(""))
+                    string = null;
+                else {
+                    if (string.charAt(string.length() - 1) == ',')
+                        string = string.substring(0, string.length() - 1);
                 }
                 dynamicParam.setRefersServices(string);
             }
@@ -138,8 +148,7 @@ public class ServicesController {
 
     ) throws Exception {
         Service service = serviceRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> oldInParams = service.getInParams();
-        List<DynamicParam> oldOutParams = service.getOutParams();
+
         if (name != null) {
             service.setName(name);
         }
@@ -149,39 +158,37 @@ public class ServicesController {
         if (description != null) {
             service.setDescription(description);
         }
-        if (inParams != null) {
-            List<DynamicParam> dynamicParams=utils.getIdsFromString(inParams, dynamicParamRepository);
-            service.setInParams(dynamicParams);
-            if (oldInParams != null) {
-                if (oldInParams.removeAll(dynamicParams))
-                    removeLinked(oldInParams, service);
-            }
+        if(inParams!=null){
+            List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
+            dynamicParamInstanceRepository.save(inParamInstances);
+            service.setInParams(inParamInstances);
+        } else {
+            service.setInParams(new ArrayList<>());
         }
-        if (outParams != null) {
-            List<DynamicParam> dynamicParams = utils.getIdsFromString(outParams, dynamicParamRepository);
-            service.setOutParams(dynamicParams);
-            if (oldOutParams != null) {
-                if (oldOutParams.removeAll(dynamicParams))
-                    removeLinked(oldOutParams, service);
-            }
+        if(outParams!=null){
+            List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
+            dynamicParamInstanceRepository.save(outParamInstances);
+            service.setOutParams(outParamInstances);
+        } else {
+            service.setOutParams(new ArrayList<>());
         }
-        if(operations!=null){
-            service.setOperations( utils.getIdsFromString(operations,operationRepository));
+        if (operations != null) {
+            service.setOperations(utils.getIdsFromString(operations, operationRepository));
         }
         serviceFactory.update(service);
-        linked(service);
+        //linked(service);
         return service;
     }
 
     @RequestMapping("/api/services/delete")
     public void deleteService(@RequestParam(name = "id") String id) {
-        Service service = serviceRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> dynamicInParams = service.getInParams();
-        List<DynamicParam> dynamicOutParams = service.getOutParams();
-        if (dynamicInParams != null)
-            removeLinked(dynamicInParams, service);
-        if (dynamicOutParams != null)
-            removeLinked(dynamicOutParams, service);
+//        Service service = serviceRepository.findOne(Long.parseLong(id));
+//        List<DynamicParam> dynamicInParams = service.getInParams();
+//        List<DynamicParam> dynamicOutParams = service.getOutParams();
+//        if (dynamicInParams != null)
+//            removeLinked(dynamicInParams, service);
+//        if (dynamicOutParams != null)
+//            removeLinked(dynamicOutParams, service);
         serviceFactory.delete(Long.parseLong(id));
     }
 
