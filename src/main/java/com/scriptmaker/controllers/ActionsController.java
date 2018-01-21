@@ -75,6 +75,9 @@ public class ActionsController {
      * @return список экземпляров динамических параметров
      */
     private List<DynamicParamInstance> getDynamicParamsInstances(String string) {
+        if(string == null || string.isEmpty()){
+            return new ArrayList<>();
+        }
         List<DynamicParamInstance> dynamicParamInstances = new ArrayList<>();
         for(String paramInstance : string.split(";")){
             String[] props = paramInstance.split(",");

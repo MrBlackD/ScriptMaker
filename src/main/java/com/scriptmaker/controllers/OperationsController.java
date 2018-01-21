@@ -1,16 +1,18 @@
 package com.scriptmaker.controllers;
 
+import com.scriptmaker.common.Type;
 import com.scriptmaker.common.Utils;
 import com.scriptmaker.factories.OperationFactory;
-import com.scriptmaker.model.Action;
 import com.scriptmaker.model.ActionInstance;
 import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.model.Operation;
+import com.scriptmaker.model.ParamMapping;
 import com.scriptmaker.repository.ActionInstanceRepository;
 import com.scriptmaker.repository.ActionRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
 import com.scriptmaker.repository.NodeRepository;
 import com.scriptmaker.repository.OperationRepository;
+import com.scriptmaker.repository.ParamMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,8 @@ public class OperationsController {
     private OperationFactory operationFactory;
     @Autowired
     private NodeRepository nodeRepository;
+    @Autowired
+    private ParamMappingRepository paramMappingRepository;
 
     @RequestMapping("/api/operations")
     public List<Operation> getAllOperations() {
@@ -66,25 +70,22 @@ public class OperationsController {
             @RequestParam(name = "actions", required = false) String actions
 
     ) throws Exception {
-        List<Action> actionList = utils.getIdsFromString(actions, actionRepository);
-        List<ActionInstance> actionInstances = new ArrayList<>();
-        for(Action action:actionList){
-            actionInstances.add(new ActionInstance(action,null));
-        }
+        List<ActionInstance> actionInstances = getActionInstances(actions);
         actionInstanceRepository.save(actionInstances);
         Operation newOperation = new Operation(
                 name,
                 code,
                 description,
-                utils.getIdsFromString(inParams,dynamicParamRepository),
-                utils.getIdsFromString(outParams,dynamicParamRepository),
+                utils.getIdsFromString(inParams, dynamicParamRepository),
+                utils.getIdsFromString(outParams, dynamicParamRepository),
                 node == null ? null : nodeRepository.findOne(Long.parseLong(node)),
                 actionInstances
-                );
+        );
         operationFactory.create(newOperation);
-        linked(newOperation);
+        //linked(newOperation);
         return newOperation;
     }
+
     private void linked(Operation newOperation) {
         Set<DynamicParam> dynamicParams = new HashSet<>();
         if (newOperation.getInParams() != null) {
@@ -92,8 +93,8 @@ public class OperationsController {
         }
         if (newOperation.getOutParams() != null)
             dynamicParams.addAll(newOperation.getOutParams());
-        if (dynamicParams != null){
-            Long operationId=operationRepository.findByCode(newOperation.getCode()).getId();
+        if (dynamicParams != null) {
+            Long operationId = operationRepository.findByCode(newOperation.getCode()).getId();
             for (DynamicParam dynamicParam : dynamicParams) {
                 String string = dynamicParam.getRefersOperations();
                 if (string != null) {
@@ -104,13 +105,12 @@ public class OperationsController {
                             count++;
                         else break;
                     }
-                    if (count == strings.length){
-                        dynamicParam.setRefersOperations(string+","+operationId);
+                    if (count == strings.length) {
+                        dynamicParam.setRefersOperations(string + "," + operationId);
                         dynamicParamRepository.save(dynamicParam);
                     }
 
-                }
-                else {
+                } else {
                     dynamicParam.setRefersOperations(operationId.toString());
                     dynamicParamRepository.save(dynamicParam);
                 }
@@ -127,14 +127,14 @@ public class OperationsController {
                 String string = "";
                 for (int i = 0; i < strings.length; i++) {
                     if (!strings[i].equals(operation.getId().toString())) {
-                        string += strings[i]+",";
+                        string += strings[i] + ",";
                     }
                 }
-                if(string.equals(""))
-                    string=null;
-                else{
-                    if(string.charAt(string.length()-1)==',')
-                        string=string.substring(0,string.length()-1);
+                if (string.equals(""))
+                    string = null;
+                else {
+                    if (string.charAt(string.length() - 1) == ',')
+                        string = string.substring(0, string.length() - 1);
                 }
                 dynamicParam.setRefersOperations(string);
             }
@@ -154,6 +154,7 @@ public class OperationsController {
 
     ) throws Exception {
         Operation operation = operationRepository.findOne(Long.parseLong(id));
+
         List<DynamicParam> oldInParams = operation.getInParams();
         List<DynamicParam> oldOutParams = operation.getOutParams();
         if (name != null) {
@@ -166,7 +167,7 @@ public class OperationsController {
             operation.setDescription(description);
         }
         if (inParams != null) {
-            List<DynamicParam> dynamicParams=utils.getIdsFromString(inParams, dynamicParamRepository);
+            List<DynamicParam> dynamicParams = utils.getIdsFromString(inParams, dynamicParamRepository);
             operation.setInParams(dynamicParams);
             if (oldInParams != null) {
                 if (oldInParams.removeAll(dynamicParams))
@@ -181,15 +182,9 @@ public class OperationsController {
                     removeLinked(oldOutParams, operation);
             }
         }
-        if(actions!=null){
-            List<Action> actionList = utils.getIdsFromString(actions, actionRepository);
-            List<ActionInstance> actionInstances = new ArrayList<>();
-            for(Action action:actionList){
-                actionInstances.add(new ActionInstance(action,null));
-            }
-            actionInstanceRepository.save(actionInstances);
-            operation.setActions(actionInstances);
-        }
+        List<ActionInstance> actionInstances = getActionInstances(actions);
+        actionInstanceRepository.save(actionInstances);
+        operation.setActions(actionInstances);
         operationFactory.update(operation);
         linked(operation);
         return operation;
@@ -205,6 +200,54 @@ public class OperationsController {
         if (dynamicOutParams != null)
             removeLinked(dynamicOutParams, operation);
         operationFactory.delete(Long.parseLong(id));
+    }
+
+    private List<ActionInstance> getActionInstances(String string) {
+        if(string==null || string.isEmpty()){
+            return new ArrayList<>();
+        }
+        String[] split = string.split("!");
+        List<ActionInstance> actionInstances = new ArrayList<>();
+        for (String str : split) {
+            actionInstances.add(getActionInstance(str));
+        }
+        return actionInstances;
+    }
+
+    /**
+     * Создаёт экземпляр действия из строки
+     *
+     * @param string строка вида `actionId:in,out,type;`
+     * @return экземпляр действия
+     */
+    private ActionInstance getActionInstance(String string) {
+        String[] split = string.split(":");
+        String actiondId = split[0];
+        ActionInstance actionInstance = new ActionInstance();
+        actionInstance.setAction(actionRepository.findOne(Long.valueOf(actiondId)));
+        List<ParamMapping> paramMappings = new ArrayList<>();
+        if (split.length == 2) {
+            String mappings = split[1];
+            for (String mapping : mappings.split(";")) {
+                String[] props = mapping.split(",");
+                ParamMapping paramMapping = new ParamMapping();
+                if (props.length == 0) {
+                    continue;
+                }
+                paramMapping.setIn(props[0]);
+                if (props.length >= 2) {
+                    paramMapping.setOut(props[1]);
+                }
+                if (props.length >= 3) {
+                    paramMapping.setType(Type.valueOf(props[2]));
+                }
+
+                paramMappings.add(paramMapping);
+            }
+        }
+        actionInstance.setMapping(paramMappings);
+        paramMappingRepository.save(paramMappings);
+        return actionInstance;
     }
 
 }

@@ -19,7 +19,7 @@ import {
     Typography
 } from "material-ui";
 import Autosuggest from "react-autosuggest";
-import {Add, Remove} from "material-ui-icons";
+import {Remove} from "material-ui-icons";
 
 
 export default class Operations extends Component {
@@ -29,15 +29,18 @@ export default class Operations extends Component {
             name: "",
             code: "",
             description: "",
-            actions: [""],
+            actions: [],
             inParams: "",
             outParams: "",
             operations: {},
             createDialogOpened: false,
             dynamicParams: [],
             actionsRegistry: [],
-            value:"",
-            suggestions: []
+            value: "",
+            suggestions: [],
+            openAddActionDialog: false,
+            newActionId: "",
+            newMapping:[]
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -115,8 +118,8 @@ export default class Operations extends Component {
             const value = this.state.actions[index] || "";
             const inputProps = {
                 placeholder: 'Type an action code',
-                value:value,
-                onChange: (event,{newValue}) => {
+                value: value,
+                onChange: (event, {newValue}) => {
                     let actions = [...this.state.actions];
                     actions[index] = newValue;
                     this.setState({actions});
@@ -148,13 +151,7 @@ export default class Operations extends Component {
                 <TextField onChange={this.handleChange("name")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
                 <TextField onChange={this.handleChange("description")} label="description" required={true}/>
-                <InputLabel>Actions</InputLabel>
-                {this.renderActionsInputs()}
-                <Add onClick={() => {
-                    let actions = [...this.state.actions];
-                    actions.push("");
-                    this.setState({actions});
-                }}/>
+                {this.renderOperationActions()}
                 <InputLabel htmlFor="inParams">inParams</InputLabel>
                 <Select multiple value={[...this.state.inParams]}
                         renderValue={selected => selected.join(', ')}
@@ -218,17 +215,7 @@ export default class Operations extends Component {
                 })
             })
         }
-        let actions = "";
-        if (this.state.actions) {
-            this.state.actions.forEach((actionCode) => {
-                this.state.actionsRegistry.forEach((action) => {
-                    if (action.code === actionCode) {
-                        actions += action.id + ",";
-                    }
-                })
-
-            })
-        }
+        let actions = this.state.actions.join("!");
         console.log(name + " " + code + " " + description + " " + actions + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/operations/new?"
             + "name=" + name
@@ -316,7 +303,11 @@ export default class Operations extends Component {
         let actions = [];
         if (operation.actions) {
             operation.actions.map((actionInstance) => {
-                actions.push(actionInstance.action.code)
+                let actionMapping = "";
+                actionInstance.mapping.forEach((mapping)=>{
+                    actionMapping += mapping.in +","+mapping.out + "," + mapping.type + ";";
+                });
+                actions.push(actionInstance.action.id+":"+actionMapping)
             });
         }
         this.setState({
@@ -358,6 +349,83 @@ export default class Operations extends Component {
         );
     }
 
+    renderAddActionDialog() {
+        return (
+            <Dialog classes={{paper: "dialog"}} open={this.state.openAddActionDialog}
+                    onClose={() => {
+                        this.setState({openAddActionDialog: false})
+                    }}>
+                <DialogTitle>
+                    <Typography type="headline" gutterBottom>{"Добавление действия"}</Typography>
+                </DialogTitle>
+                <DialogContent classes={{root: "content"}}>
+                    <TextField value={this.state.newActionId}
+                               onChange={(e) => this.setState({newActionId: e.target.value})}
+                               label="actionId"/>
+                    {this.state.newMapping.map((mapping,index)=>{
+
+                        return <div>
+                            <TextField value={mapping.in}
+                                       onChange={(e) => {
+                                           const newMapping = this.state.newMapping;
+                                           newMapping[index].in = e.target.value;
+                                           this.setState({newMapping: newMapping})
+                                       }}
+                                       label="in"/>
+                            <TextField value={mapping.out}
+                                       onChange={(e) => {
+                                           const newMapping = this.state.newMapping;
+                                           newMapping[index].out = e.target.value;
+                                           this.setState({newMapping: newMapping})
+                                       }}
+                                       label="out"/>
+                            <TextField value={mapping.type}
+                                       onChange={(e) => {
+                                           const newMapping = this.state.newMapping;
+                                           newMapping[index].type = e.target.value;
+                                           this.setState({newMapping: newMapping})
+                                       }}
+                                       label="type"/>
+                            <Remove onClick={() => {
+                                let resultMapping = [...this.state.newMapping];
+                                resultMapping.splice(index, 1);
+                                this.setState({newMapping:resultMapping});
+                            }}/>
+                        </div>
+                    })}
+                    <div>
+
+                        <Button raised={true} type="submit" onClick={() => {
+                            const mapping = this.state.newMapping.slice();
+                            mapping.push({
+                                in:"",
+                                out:"",
+                                type:"IN"
+                            })
+                            this.setState({newMapping:mapping});
+                        }}>Добавить маппинг</Button>
+                    </div>
+                    <div>
+                        <Button raised={true} type="submit" onClick={() => {
+                            const actions = this.state.actions.slice();
+                            let newMapping = "";
+                            this.state.newMapping.forEach((mapping)=>{
+                                newMapping += mapping.in +","+mapping.out +","+mapping.type+";";
+                            })
+                            actions.push(this.state.newActionId + ":"+newMapping);
+                            this.setState({
+                                openAddActionDialog: false,
+                                actions,
+                                newActionId:"",
+                                newMapping:[]
+                            });
+                        }} color="accent">Добавить</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        );
+    }
+
     getSuggestions = value => {
         const inputValue = value.trim().toLowerCase();
         const inputLength = inputValue.length;
@@ -377,7 +445,7 @@ export default class Operations extends Component {
 
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
-    onSuggestionsFetchRequested = ({ value }) => {
+    onSuggestionsFetchRequested = ({value}) => {
         this.setState({
             suggestions: this.getSuggestions(value)
         });
@@ -389,6 +457,7 @@ export default class Operations extends Component {
             suggestions: []
         });
     };
+
     renderEditionForm() {
 
         return (
@@ -399,14 +468,7 @@ export default class Operations extends Component {
                            value={this.state.code} label="code"/>
                 <TextField onChange={this.handleChange("description")}
                            value={this.state.description} label="description"/>
-
-                <InputLabel>Actions</InputLabel>
-                {this.renderActionsInputs()}
-                <Add onClick={() => {
-                    let actions = [...this.state.actions];
-                    actions.push("");
-                    this.setState({actions});
-                }}/>
+                {this.renderOperationActions()}
                 <InputLabel htmlFor="inParams">inParams</InputLabel>
                 <Select multiple value={[...this.state.inParams]}
                         renderValue={selected => selected.join(', ')}
@@ -470,18 +532,7 @@ export default class Operations extends Component {
                 })
             })
         }
-        let actions = "";
-        if (this.state.actions) {
-            this.state.actions.forEach((actionCode) => {
-                this.state.actionsRegistry.forEach((action) => {
-
-                    if (action.code === actionCode) {
-                        actions += action.id + ",";
-                    }
-                })
-
-            })
-        }
+        let actions = this.state.actions.join("!");
         console.log(id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
         let url = "http://localhost:8080/api/operations/edit?"
             + "id=" + id;
@@ -521,6 +572,7 @@ export default class Operations extends Component {
                         Создать операцию
                     </Button>
                 </div>
+                {this.renderAddActionDialog()}
                 {this.renderDeleteConfirmOperation()}
                 {this.renderEditionDialog()}
                 {this.renderCreationDialog()}
@@ -539,5 +591,26 @@ export default class Operations extends Component {
             inParams: "",
             outParams: "",
         });
+    }
+
+    renderOperationActions() {
+        return(
+            <div>
+                <Typography type="subheading" gutterBottom>{"Actions"}</Typography>
+                {this.state.actions.map((action,index) => {
+                    return <div>
+                        <span>{action}</span>
+                        <Remove onClick={() => {
+                            let actions = [...this.state.actions];
+                            actions.splice(index, 1);
+                            this.setState({actions});
+                        }}/>
+                    </div>
+                })}
+                <Button raised={true} onClick={() => {
+                    this.setState({openAddActionDialog: true});
+                }}>Добавить действие</Button>
+            </div>
+        );
     }
 }
