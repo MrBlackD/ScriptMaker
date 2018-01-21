@@ -10,9 +10,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    FormControlLabel,
     Paper,
-    Switch,
     Table,
     TableBody,
     TableCell,
@@ -380,7 +378,7 @@ export default class DynamicParams extends Component {
                 }} defaultValue={param.code} label="Code"/>
                 <TextField id="editType" inputRef={(input) => {
                     this.editType = input;
-                }} defaultValue={param.code} label="Type"/>
+                }} defaultValue={param.type} label="Type"/>
                {/* <TextField id="editDescription" inputRef={(input) => {
                     this.editDescription = input;
                 }} defaultValue={param.description} label="Description"/>

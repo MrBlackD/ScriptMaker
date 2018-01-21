@@ -6,10 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.Objects;
 
 @Data
 @Entity
-public class DynamicParamExtended {
+public class DynamicParamInstance {
     @Id
     @GeneratedValue
     private Long id;
@@ -17,8 +18,26 @@ public class DynamicParamExtended {
     private DynamicParam dynamicParam;
     private Boolean required = false;
     private Boolean keepInWorkflow = false;
+    private String defaultValue;
 
-    public DynamicParamExtended() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DynamicParamInstance dynamicParamInstance = (DynamicParamInstance) o;
+        return Objects.equals(dynamicParam.getId(), dynamicParamInstance.dynamicParam.getId()) &&
+                Objects.equals(required, dynamicParamInstance.required) &&
+                Objects.equals(keepInWorkflow, dynamicParamInstance.keepInWorkflow) &&
+                Objects.equals(defaultValue, dynamicParamInstance.defaultValue);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(dynamicParam.getId(), required, keepInWorkflow, defaultValue);
+    }
+
+    public DynamicParamInstance() {
     }
 
     public DynamicParam getDynamicParam() {
@@ -51,5 +70,13 @@ public class DynamicParamExtended {
 
     public void setKeepInWorkflow(Boolean keepInWorkflow) {
         this.keepInWorkflow = keepInWorkflow;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

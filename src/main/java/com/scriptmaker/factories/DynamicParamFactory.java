@@ -11,8 +11,6 @@ import com.scriptmaker.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -59,23 +57,23 @@ public class DynamicParamFactory {
         dynamicParamRepository.delete(id);
     }
 
-    private Boolean isParamLinked(DynamicParam dynamicParam){
-        Boolean isParamLinked = false;
-        for(Action action:actionRepository.findAll()){
-            List<DynamicParam> params = new ArrayList<>();
-            params.addAll(action.getInParams());
-            params.addAll(action.getOutParams());
-            for(DynamicParam param:params){
-                if (Objects.equals(param.getId(), dynamicParam.getId())){
-                    isParamLinked = true;
-                    break;
-                }
-            }
-            if(isParamLinked)
-                break;
-        }
-        return isParamLinked;
-    }
+//    private Boolean isParamLinked(DynamicParam dynamicParam){
+//        Boolean isParamLinked = false;
+//        for(Action action:actionRepository.findAll()){
+//            List<DynamicParam> params = new ArrayList<>();
+//            params.addAll(action.getInParams());
+//            params.addAll(action.getOutParams());
+//            for(DynamicParam param:params){
+//                if (Objects.equals(param.getId(), dynamicParam.getId())){
+//                    isParamLinked = true;
+//                    break;
+//                }
+//            }
+//            if(isParamLinked)
+//                break;
+//        }
+//        return isParamLinked;
+//    }
 
     private void deleteAllLinks(DynamicParam param){
         for(Action action:actionRepository.findAll()) {

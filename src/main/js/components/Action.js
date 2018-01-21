@@ -26,10 +26,13 @@ export default class Action extends Component {
         for(let i=0;i < paramsLength; i++){
             let inParam = "";
             let outParam = "";
-            if(i < inParams.length)
-                inParam = inParams[i];
-            if(i < outParams.length)
-                outParam = outParams[i];
+            if(i < inParams.length){
+                inParam = inParams[i].dynamicParam;
+            }
+            if(i < outParams.length){
+                outParam = outParams[i].dynamicParam;
+            }
+
             params.push(
                 <TableRow key={i}>
                     <TableCell className={inParam.code}>{inParam.code}</TableCell>
@@ -72,7 +75,7 @@ export default class Action extends Component {
                     </TableRow>
                     <TableRow>
                         <TableCell style={{"textAlign":"center"}} colSpan={2}>
-                            {this.props.onEdit&&<Button raised={true} onClick={()=>{this.props.onEdit(action.id)}}>Редактировать</Button>}
+                            {this.props.onEdit&&<Button raised={true} onClick={()=>{this.props.onEdit(action)}}>Редактировать</Button>}
                             {this.props.onDelete&&<Button raised={true} onClick={()=>{this.props.onDelete(action.id)}}>Удалить</Button>}
                         </TableCell>
                     </TableRow>

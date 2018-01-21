@@ -2,7 +2,10 @@ package com.scriptmaker.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,9 +20,9 @@ public class Action {
     private String module;
     private String description;
     @ManyToMany
-    private List<DynamicParam> inParams;
+    private List<DynamicParamInstance> inParams;
     @ManyToMany
-    private List<DynamicParam> outParams;
+    private List<DynamicParamInstance> outParams;
 
     @Override
     public boolean equals(Object o) {
@@ -44,7 +47,12 @@ public class Action {
     public Action() {
     }
 
-    public Action(String name, String code, String module, String description, List<DynamicParam> inParams, List<DynamicParam> outParams) {
+    public Action(String name,
+                  String code,
+                  String module,
+                  String description,
+                  List<DynamicParamInstance> inParams,
+                  List<DynamicParamInstance> outParams) {
         this.name = name;
         this.code = code;
         this.module = module;
@@ -93,19 +101,19 @@ public class Action {
         this.description = description;
     }
 
-    public List<DynamicParam> getInParams() {
+    public List<DynamicParamInstance> getInParams() {
         return inParams;
     }
 
-    public void setInParams(List<DynamicParam> inParams) {
+    public void setInParams(List<DynamicParamInstance> inParams) {
         this.inParams = inParams;
     }
 
-    public List<DynamicParam> getOutParams() {
+    public List<DynamicParamInstance> getOutParams() {
         return outParams;
     }
 
-    public void setOutParams(List<DynamicParam> outParams) {
+    public void setOutParams(List<DynamicParamInstance> outParams) {
         this.outParams = outParams;
     }
 }
