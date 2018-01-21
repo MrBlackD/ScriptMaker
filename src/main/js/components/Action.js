@@ -73,6 +73,47 @@ export default class Action extends Component {
                     <TableRow>
                         <TableCell colSpan={2}>{action.description}</TableCell>
                     </TableRow>
+                    {this.props.mapping&&
+                    <TableRow>
+                        <TableCell colSpan={2}>IN MAPPING</TableCell>
+                    </TableRow>
+                    }
+                    {this.props.mapping&&
+                    <TableRow>
+                        <TableCell>FROM</TableCell>
+                        <TableCell>TO</TableCell>
+                    </TableRow>}
+                    {this.props.mapping&&this.props.mapping.map((item)=>{
+                        if(item.type === "IN"){
+                            return (
+                                <TableRow>
+                                    <TableCell>{item.in}</TableCell>
+                                    <TableCell>{item.out}</TableCell>
+                                </TableRow>
+                            )
+                        }
+                    })}
+                    {this.props.mapping&&
+                    <TableRow>
+                        <TableCell colSpan={2}>OUT MAPPING</TableCell>
+                    </TableRow>
+                    }
+                    {this.props.mapping&&
+                    <TableRow>
+                        <TableCell>FROM</TableCell>
+                        <TableCell>TO</TableCell>
+                    </TableRow>}
+                    {this.props.mapping&&this.props.mapping.map((item)=>{
+                        if(item.type === "OUT"){
+                            return (
+                                <TableRow>
+                                    <TableCell>{item.in}</TableCell>
+                                    <TableCell>{item.out}</TableCell>
+                                </TableRow>
+                            )
+                        }
+                    })}
+
                     <TableRow>
                         <TableCell style={{"textAlign":"center"}} colSpan={2}>
                             {this.props.onEdit&&<Button raised={true} onClick={()=>{this.props.onEdit(action)}}>Редактировать</Button>}

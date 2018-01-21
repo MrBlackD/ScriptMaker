@@ -9,7 +9,10 @@ import {
     DialogContentText,
     DialogTitle,
     FormControlLabel,
+    Input,
+    MenuItem,
     Paper,
+    Select,
     Switch,
     Table,
     TableBody,
@@ -332,13 +335,25 @@ export default class Operations extends Component {
                                            this.setState({newMapping: newMapping})
                                        }}
                                        label="out"/>
-                            <TextField value={mapping.type}
-                                       onChange={(e) => {
-                                           const newMapping = this.state.newMapping;
-                                           newMapping[index].type = e.target.value;
-                                           this.setState({newMapping: newMapping})
-                                       }}
-                                       label="type"/>
+                                <Select
+                                value={mapping.type}
+                                onChange={(e) => {
+                                    const newMapping = this.state.newMapping;
+                                    newMapping[index].type = e.target.value;
+                                    this.setState({newMapping: newMapping})
+                                }}
+                                input={<Input name="type" id="type" />}
+                                >
+                                <MenuItem value="IN">IN</MenuItem>
+                                <MenuItem value="OUT">OUT</MenuItem>
+                            </Select>
+                            {/*<TextField value={mapping.type}*/}
+                                       {/*onChange={(e) => {*/}
+                                           {/*const newMapping = this.state.newMapping;*/}
+                                           {/*newMapping[index].type = e.target.value;*/}
+                                           {/*this.setState({newMapping: newMapping})*/}
+                                       {/*}}*/}
+                                       {/*label="type"/>*/}
                             <Remove onClick={() => {
                                 let resultMapping = [...this.state.newMapping];
                                 resultMapping.splice(index, 1);
@@ -507,8 +522,9 @@ export default class Operations extends Component {
             <div>
                 <Typography type="subheading" gutterBottom>{"Actions"}</Typography>
                 {this.state.actions.map((action,index) => {
+                    const split = action.split(":");
                     return <div>
-                        <span>{action}</span>
+                        <span>{split[0]}</span>
                         <Remove onClick={() => {
                             let actions = [...this.state.actions];
                             actions.splice(index, 1);
