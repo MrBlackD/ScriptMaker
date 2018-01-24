@@ -20,6 +20,7 @@ import {
     Typography
 } from "material-ui";
 import {Remove} from "material-ui-icons";
+import Suggest from "./Suggest";
 
 export default class Actions extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ export default class Actions extends Component {
             inParams: [],
             outParams: [],
             dynamicParams: [],
-            newParamId: "",
+            newParamCode: "",
             newParamRequired: false,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
@@ -234,9 +235,11 @@ export default class Actions extends Component {
                     <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <TextField value={this.state.newParamId}
-                               onChange={(e) => this.setState({newParamId: e.target.value})}
-                               label="paramId"/>
+                    <Suggest value={this.state.newParamCode} onChange={(e,{newValue})=>{
+                        this.setState({newParamCode:newValue});
+                    }}
+                             suggestions={this.state.dynamicParams}
+                             placeholder="Type dynamic param code" field={"code"}/>
                     <TextField value={this.state.newParamDefaultValue}
                                onChange={(e) => {
                                    this.setState({newParamDefaultValue: e.target.value})
@@ -267,11 +270,14 @@ export default class Actions extends Component {
                     <Button raised={true} onClick={() => {
                         let params = this.state[this.state.newParamType].slice();
                         const {
-                            newParamId,
+                            newParamCode,
                             newParamRequired,
                             newParamKeepInWorkflow,
                             newParamDefaultValue
                         } = this.state;
+                        const newParamId = this.state.dynamicParams.filter((param)=>{
+                            return param.code == newParamCode;
+                        })[0].id;
                         const newParam = newParamId + ","
                             + newParamRequired + ","
                             + newParamKeepInWorkflow + ","
@@ -280,7 +286,7 @@ export default class Actions extends Component {
                         const state = {...this.state};
                         state[this.state.newParamType] = params;
                         state.openedAddParamDialog = false;
-                        state.newParamId = "";
+                        state.newParamCode = "";
                         state.newParamRequired = false;
                         state.newParamKeepInWorkflow = false;
                         state.newParamDefaultValue = "";

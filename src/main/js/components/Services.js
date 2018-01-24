@@ -20,8 +20,8 @@ import {
     TextField,
     Typography
 } from "material-ui";
-import Autosuggest from "react-autosuggest";
 import {Add, Remove} from "material-ui-icons";
+import Suggest from "./Suggest";
 
 
 export default class Services extends Component {
@@ -40,9 +40,7 @@ export default class Services extends Component {
             createDialogOpened: false,
             dynamicParams:[],
             operationsRegistry:[],
-            value:"",
-            suggestions: [],
-            newParamId: "",
+            newParamCode: "",
             newParamRequired: false,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
@@ -116,60 +114,19 @@ export default class Services extends Component {
         });
     };
 
-    getSuggestions = value => {
-        const inputValue = value.trim().toLowerCase();
-        const inputLength = inputValue.length;
-
-        return inputLength === 0 ? [] : this.state.operationsRegistry.filter(action =>
-            action.code.toLowerCase().slice(0, inputLength) === inputValue
-        );
-    };
-
-    getSuggestionValue = suggestion => suggestion.code;
-    renderSuggestion = suggestion => (
-        <span>
-            {suggestion.code}
-        </span>
-    );
-
-
-    // Autosuggest will call this function every time you need to update suggestions.
-    // You already implemented this logic above, so just use it.
-    onSuggestionsFetchRequested = ({ value }) => {
-        this.setState({
-            suggestions: this.getSuggestions(value)
-        });
-    };
-
-    // Autosuggest will call this function every time you need to clear suggestions.
-    onSuggestionsClearRequested = () => {
-        this.setState({
-            suggestions: []
-        });
-    };
-
     renderOperationsInputs = () => {
-        const {suggestions} = this.state;
 
         return this.state.operations.map((operation, index) => {
-            const value = this.state.operations[index] || "";
-            const inputProps = {
-                placeholder: 'Type an operation code',
-                value:value,
-                onChange: (event,{newValue}) => {
-                    let operations = [...this.state.operations];
-                    operations[index] = newValue;
-                    this.setState({operations});
-                }
-            };
             return <div key={index}>
-                <Autosuggest
-                    suggestions={suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    inputProps={inputProps}
+
+                <Suggest value={this.state.operations[index]}
+                         onChange={(e,{newValue})=>{
+                             let operations = [...this.state.operations];
+                             operations[index] = newValue;
+                             this.setState({operations});
+                         }}
+                         suggestions={this.state.operationsRegistry}
+                         placeholder="Type dynamic param code" field={"code"}
                 />
                 <Remove onClick={() => {
                     let operations = [...this.state.operations];
@@ -515,9 +472,11 @@ export default class Services extends Component {
                     <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <TextField value={this.state.newParamId}
-                               onChange={(e) => this.setState({newParamId: e.target.value})}
-                               label="paramId"/>
+                    <Suggest value={this.state.newParamCode} onChange={(e,{newValue})=>{
+                        this.setState({newParamCode:newValue});
+                    }}
+                             suggestions={this.state.dynamicParams}
+                             placeholder="Type dynamic param code" field={"code"}/>
                     <TextField value={this.state.newParamDefaultValue}
                                onChange={(e) => {
                                    this.setState({newParamDefaultValue: e.target.value})
@@ -548,11 +507,14 @@ export default class Services extends Component {
                     <Button raised={true} onClick={() => {
                         let params = this.state[this.state.newParamType].slice();
                         const {
-                            newParamId,
+                            newParamCode,
                             newParamRequired,
                             newParamKeepInWorkflow,
                             newParamDefaultValue
                         } = this.state;
+                        const newParamId = this.state.dynamicParams.filter((param)=>{
+                            return param.code == newParamCode;
+                        })[0].id;
                         const newParam = newParamId + ","
                             + newParamRequired + ","
                             + newParamKeepInWorkflow + ","
@@ -561,7 +523,7 @@ export default class Services extends Component {
                         const state = {...this.state};
                         state[this.state.newParamType] = params;
                         state.openedAddParamDialog = false;
-                        state.newParamId = "";
+                        state.newParamCode = "";
                         state.newParamRequired = false;
                         state.newParamKeepInWorkflow = false;
                         state.newParamDefaultValue = "";
