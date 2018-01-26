@@ -5,12 +5,15 @@ import {Button, Table, TableBody, TableCell, TableHead, TableRow} from "material
 export default class Action extends Component {
     constructor(props){
         super(props);
+        this.state = {
+            collapsed: true
+        };
     }
-
     render() {
         let action = this.props.data;
         let onClose = this.props.onClose;
         let onEdit = this.props.onEdit;
+        let collapsed = this.state.collapsed;
 
         if(!action)
             return null;
@@ -48,12 +51,17 @@ export default class Action extends Component {
             <Table id={this.props.id} className="action">
                 <TableHead>
                     <TableRow>
-                        <TableCell className="name" colSpan={2} >
+                        <TableCell className="name" colSpan={2}
+                                onClick={() =>{
+                                    console.log(this);
+                                    console.log(collapsed);
+                                    this.setState({collapsed: !collapsed});
+                                }}>
                             {action.name +"( id:"+action.id+")"}
                         </TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody className={collapsed ? "collapsed" : ""}>
                     <TableRow>
                         <TableCell colSpan={2}>{action.code}</TableCell>
                     </TableRow>
