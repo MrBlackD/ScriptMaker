@@ -30,7 +30,8 @@ export default class DynamicParams extends Component {
             deleteConfirmDialogOpened: false,
             editionDialogOpened: false,
             dynamicParam: {},
-            dynamicParams: {}
+            dynamicParams: {},
+            dynamicSearchParams: {}
         };
 
         this.handleRequestCloseDialog = this.handleRequestCloseDialog.bind(this);
@@ -405,9 +406,32 @@ export default class DynamicParams extends Component {
             </div>
         );
     }
-
+    renderSearchInput() {
+        return (
+            <TextField  onChange={(e) => {
+                        let curentSearchValue = e.target.value.toLowerCase();
+                        let curParams = this.state.dynamicParams;
+                        let result = [];
+                        curParams.map((el) =>{      // ходим по параметрам
+                            if(el.code.indexOf(curentSearchValue)+1) {result.push(el);}     // ищем соответсвия
+                        });
+                        if(result[0] == undefined){         // проверяем на наличие объектов
+                            return this.setState({dynamicSearchParams: 'empty'});       // если не нашли закидываем 'empty'
+                        }else{
+                            return this.setState({dynamicSearchParams: result});
+                        }         
+                        
+                        }} 
+                        label="Search" />
+        );
+    }
     render() {
         let params = this.state.dynamicParams;
+        let searchParams = this.state.dynamicSearchParams;
+        if(searchParams.length > 0){
+            if(searchParams == 'empty') {params = [];}
+            else {params = searchParams;}
+        }
         return (
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
@@ -415,6 +439,7 @@ export default class DynamicParams extends Component {
                         this.setState({openDialog: true});
                     }} raised color="accent">Создать динамический параметр</Button>
                 </div>
+                <div style={{"margin-left": "10px"}}>{this.renderSearchInput()}</div>
                 {this.renderCreationDialog()}
                 {this.renderEditionDialog()}
                 {this.renderDeleteConfirmDialog()}

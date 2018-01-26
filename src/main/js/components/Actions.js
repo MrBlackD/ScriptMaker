@@ -235,7 +235,7 @@ export default class Actions extends Component {
                     <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <Suggest value={this.state.newParamCode} onChange={(e,{newValue})=>{
+                    <Suggest value={this.state.newParamCode} onChange={(e,{newValue}) =>{
                         this.setState({newParamCode:newValue});
                     }}
                              suggestions={this.state.dynamicParams}
@@ -275,7 +275,7 @@ export default class Actions extends Component {
                             newParamKeepInWorkflow,
                             newParamDefaultValue
                         } = this.state;
-                        const newParamId = this.state.dynamicParams.filter((param)=>{
+                        const newParamId = this.state.dynamicParams.filter((param) =>{
                             return param.code == newParamCode;
                         })[0].id;
                         const newParam = newParamId + ","
