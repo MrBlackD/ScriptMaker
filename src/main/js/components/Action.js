@@ -53,8 +53,6 @@ export default class Action extends Component {
                     <TableRow>
                         <TableCell className="name" colSpan={2}
                                 onClick={() =>{
-                                    console.log(this);
-                                    console.log(collapsed);
                                     this.setState({collapsed: !collapsed});
                                 }}>
                             {action.name +"( id:"+action.id+")"}
