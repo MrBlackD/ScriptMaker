@@ -19,6 +19,7 @@ import {
     TextField,
     Typography
 } from "material-ui";
+import SearchField from "./SearchField";
 
 
 export default class DynamicParams extends Component {
@@ -30,7 +31,8 @@ export default class DynamicParams extends Component {
             deleteConfirmDialogOpened: false,
             editionDialogOpened: false,
             dynamicParam: {},
-            dynamicParams: {}
+            dynamicParams: {},
+            filteredParams: []
         };
 
         this.handleRequestCloseDialog = this.handleRequestCloseDialog.bind(this);
@@ -49,7 +51,10 @@ export default class DynamicParams extends Component {
             if (status !== 200) {
                 console.log(statusText);
             } else {
-                this.setState({dynamicParams: res});
+                this.setState({
+                    dynamicParams: res,
+                    filteredParams: res
+                });
             }
         });
     }
@@ -61,20 +66,20 @@ export default class DynamicParams extends Component {
         this.newCode.value = "";
         let type = this.newType.value;
         this.newType.value = "";
-      /*  let description = this.newDescription.value;
-        this.newDescription.value = "";
-        let required = this.newRequired.checked;
-        this.newRequired.checked = false;//не работает
-        let keepInWorkflow = this.newKeepInWorkflow.checked;
-        this.newKeepInWorkflow.checked = false;// не работает*/
-        console.log(name + " " + code+" "+type /*+ " " + description + " " + required + " " + keepInWorkflow*/);
+        /*  let description = this.newDescription.value;
+         this.newDescription.value = "";
+         let required = this.newRequired.checked;
+         this.newRequired.checked = false;//не работает
+         let keepInWorkflow = this.newKeepInWorkflow.checked;
+         this.newKeepInWorkflow.checked = false;// не работает*/
+        console.log(name + " " + code + " " + type /*+ " " + description + " " + required + " " + keepInWorkflow*/);
         let url = "http://localhost:8080/api/dynamicParams/new?"
-            + "name=" + name
-            + "&code=" + code
-            + "&type=" + type
-           /* + "&description=" + description
-            + "&required=" + required
-            + "&keepInWorkflow=" + keepInWorkflow*/;
+                + "name=" + name
+                + "&code=" + code
+                + "&type=" + type
+            /* + "&description=" + description
+             + "&required=" + required
+             + "&keepInWorkflow=" + keepInWorkflow*/;
 
         funcs.get(url, (response, status, statusText) => {
             console.log(response);
@@ -93,14 +98,14 @@ export default class DynamicParams extends Component {
         let type = this.editType.value;
         this.editType.value = "";
         /*let description = this.editDescription.value;
-        this.editDescription.value = "";
-        let required = this.editRequired.checked;
-        let keepInWorkflow = this.editKeepInWorkflow.checked;*/
-        console.log(id + "" + name + " " + code+" "+type /*+ " " + description + " " + required + " " + keepInWorkflow*/);
+         this.editDescription.value = "";
+         let required = this.editRequired.checked;
+         let keepInWorkflow = this.editKeepInWorkflow.checked;*/
+        console.log(id + "" + name + " " + code + " " + type /*+ " " + description + " " + required + " " + keepInWorkflow*/);
         let url = "http://localhost:8080/api/dynamicParams/edit?"
             + "id=" + id;
-            /*+ "&required=" + required
-            + "&keepInWorkflow=" + keepInWorkflow;*/
+        /*+ "&required=" + required
+         + "&keepInWorkflow=" + keepInWorkflow;*/
         if (name) {
             url += "&name=" + name;
         }
@@ -140,10 +145,10 @@ export default class DynamicParams extends Component {
     renderHeader(params) {
         let result = [];
         if (params.length > 0) {
-            let count=0;
+            let count = 0;
             for (let key in params[0]) {
                 count++;
-                if (params[0].hasOwnProperty(key)&&count<5) {
+                if (params[0].hasOwnProperty(key) && count < 5) {
                     result.push(<TableCell key={key}>{key}</TableCell>);
                 }
             }
@@ -153,8 +158,8 @@ export default class DynamicParams extends Component {
         return (<TableRow>{result}</TableRow>);
     }
 
-    openDeleteDialog(param,id) {
-        this.setState({deleteConfirmDialogOpened: true, dynamicParam: param, targetId:id});
+    openDeleteDialog(param, id) {
+        this.setState({deleteConfirmDialogOpened: true, dynamicParam: param, targetId: id});
     }
 
     openEditDialog(id) {
@@ -166,7 +171,7 @@ export default class DynamicParams extends Component {
         let result = [];
         for (let param in params) {
             if (params.hasOwnProperty(param)) {
-                result.push(<DynamicParam onClose={(id) => this.openDeleteDialog(params[param],id)}
+                result.push(<DynamicParam onClose={(id) => this.openDeleteDialog(params[param], id)}
                                           onEdit={(id) => this.openEditDialog(id)}
                                           key={param}
                                           data={params[param]}/>);
@@ -220,15 +225,16 @@ export default class DynamicParams extends Component {
         return (
             <div>
                 <div style={{color: 'red'}}>{"Имеются ссылки:"}</div>
-                {this.state.dynamicParam.refersServices!=null && this.openRefersServices()}
-                {this.state.dynamicParam.refersOperations!=null && this.openRefersOperations()}
-                {this.state.dynamicParam.refersActions!=null && this.openRefersActions()}
+                {this.state.dynamicParam.refersServices != null && this.openRefersServices()}
+                {this.state.dynamicParam.refersOperations != null && this.openRefersOperations()}
+                {this.state.dynamicParam.refersActions != null && this.openRefersActions()}
 
 
             </div>
         )
     }
-    openRefersActions(){
+
+    openRefersActions() {
         return (
             <div>
                 <div>{"Actions:"}</div>
@@ -249,7 +255,8 @@ export default class DynamicParams extends Component {
             </div>
         )
     }
-    openRefersOperations(){
+
+    openRefersOperations() {
         return (
             <div>
                 <div>{"Operations:"}</div>
@@ -270,7 +277,8 @@ export default class DynamicParams extends Component {
             </div>
         )
     }
-    openRefersServices(){
+
+    openRefersServices() {
         return (
             <div>
                 <div>{"Services:"}</div>
@@ -303,7 +311,7 @@ export default class DynamicParams extends Component {
                         {"Удалить динамический параметр?"}
                     </DialogContentText>
                     <DialogContentText>
-                        {this.state.dynamicParam.refersActions != null||this.state.dynamicParam.refersOperations||this.state.dynamicParam.refersServices != null ? this.openRefers() : ""}
+                        {this.state.dynamicParam.refersActions != null || this.state.dynamicParam.refersOperations || this.state.dynamicParam.refersServices != null ? this.openRefers() : ""}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -330,25 +338,25 @@ export default class DynamicParams extends Component {
                 <TextField id="newType" inputRef={(input) => {
                     this.newType = input;
                 }} label="Type" required={true}/>
-               {/* <TextField id="newDescription" inputRef={(input) => {
-                    this.newDescription = input;
-                }} label="Description" required={true}/>*/}
-               {/* <FormControlLabel inputRef={(input) => {
-                    this.newRequired = input
-                }}
-                                  control={
-                                      <Switch id="newRequired"/>
-                                  }
-                                  label="Required"
-                />
-                <FormControlLabel inputRef={(input) => {
-                    this.newKeepInWorkflow = input
-                }}
-                                  control={
-                                      <Switch id="newKeepInWorkflow"/>
-                                  }
-                                  label="KeepInWorkflow"
-                />*/}
+                {/* <TextField id="newDescription" inputRef={(input) => {
+                 this.newDescription = input;
+                 }} label="Description" required={true}/>*/}
+                {/* <FormControlLabel inputRef={(input) => {
+                 this.newRequired = input
+                 }}
+                 control={
+                 <Switch id="newRequired"/>
+                 }
+                 label="Required"
+                 />
+                 <FormControlLabel inputRef={(input) => {
+                 this.newKeepInWorkflow = input
+                 }}
+                 control={
+                 <Switch id="newKeepInWorkflow"/>
+                 }
+                 label="KeepInWorkflow"
+                 />*/}
                 <Button color="accent" raised={true} onClick={() => {
                     this.handleRequestCloseDialog();
                     this.handleCreateParam()
@@ -379,25 +387,25 @@ export default class DynamicParams extends Component {
                 <TextField id="editType" inputRef={(input) => {
                     this.editType = input;
                 }} defaultValue={param.type} label="Type"/>
-               {/* <TextField id="editDescription" inputRef={(input) => {
-                    this.editDescription = input;
-                }} defaultValue={param.description} label="Description"/>
-                <FormControlLabel inputRef={(input) => {
-                    this.editRequired = input;
-                }}
-                                  control={
-                                      <Switch checked={param.required} id="editRequired"/>
-                                  }
-                                  label="Required"
-                />
-                <FormControlLabel inputRef={(input) => {
-                    this.editKeepInWorkflow = input;
-                }}
-                                  control={
-                                      <Switch checked={param.keepInWorkflow} id="editKeepInWorkflow"/>
-                                  }
-                                  label="KeepInWorkflow"
-                />*/}
+                {/* <TextField id="editDescription" inputRef={(input) => {
+                 this.editDescription = input;
+                 }} defaultValue={param.description} label="Description"/>
+                 <FormControlLabel inputRef={(input) => {
+                 this.editRequired = input;
+                 }}
+                 control={
+                 <Switch checked={param.required} id="editRequired"/>
+                 }
+                 label="Required"
+                 />
+                 <FormControlLabel inputRef={(input) => {
+                 this.editKeepInWorkflow = input;
+                 }}
+                 control={
+                 <Switch checked={param.keepInWorkflow} id="editKeepInWorkflow"/>
+                 }
+                 label="KeepInWorkflow"
+                 />*/}
                 <Button color="accent" raised={true} onClick={() => {
                     this.handleRequestEditDialog();
                     this.handleEditParam(this.state.targetId)
@@ -407,14 +415,21 @@ export default class DynamicParams extends Component {
     }
 
     render() {
-        let params = this.state.dynamicParams;
+        let params = this.state.filteredParams;
         return (
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <Button onClick={() => {
                         this.setState({openDialog: true});
                     }} raised color="accent">Создать динамический параметр</Button>
+                    <div>
+                        <SearchField values={this.state.dynamicParams}
+                                 field="code"
+                                 onChange={(value) =>{this.setState({filteredParams: value})}}
+                         />
+                    </div>
                 </div>
+
                 {this.renderCreationDialog()}
                 {this.renderEditionDialog()}
                 {this.renderDeleteConfirmDialog()}
