@@ -19,6 +19,7 @@ import {
     TextField,
     Typography
 } from "material-ui";
+import SearchField from "./SearchField";
 
 
 export default class DynamicParams extends Component {
@@ -31,7 +32,7 @@ export default class DynamicParams extends Component {
             editionDialogOpened: false,
             dynamicParam: {},
             dynamicParams: {},
-            dynamicSearchParams: {}
+            filteredParams: []
         };
 
         this.handleRequestCloseDialog = this.handleRequestCloseDialog.bind(this);
@@ -52,7 +53,7 @@ export default class DynamicParams extends Component {
             } else {
                 this.setState({
                     dynamicParams: res,
-                    dynamicSearchParams: res
+                    filteredParams: res
                 });
             }
         });
@@ -413,32 +414,22 @@ export default class DynamicParams extends Component {
         );
     }
 
-    renderSearchInput() {
-        return (
-            <TextField onChange={(e) => {
-                let currentSearchValue = e.target.value.toLowerCase();
-                let curParams = this.state.dynamicParams.slice();
-                let result = curParams.filter((param) => {
-                    return param.code && param.code.toLowerCase().includes(currentSearchValue);
-                });
-                return this.setState({dynamicSearchParams: result});
-            }}
-                       label="Search"/>
-        );
-    }
-
     render() {
-        let params = this.state.dynamicSearchParams;
-
-
+        let params = this.state.filteredParams;
         return (
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <Button onClick={() => {
                         this.setState({openDialog: true});
                     }} raised color="accent">Создать динамический параметр</Button>
+                    <div>
+                        <SearchField values={this.state.dynamicParams}
+                                 field="code"
+                                 onChange={(value) =>{this.setState({filteredParams: value})}}
+                         />
+                    </div>
                 </div>
-                <div style={{"margin-left": "10px"}}>{this.renderSearchInput()}</div>
+
                 {this.renderCreationDialog()}
                 {this.renderEditionDialog()}
                 {this.renderDeleteConfirmDialog()}

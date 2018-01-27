@@ -25,6 +25,7 @@ import {
 import Autosuggest from "react-autosuggest";
 import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
+import SearchField from "./SearchField";
 
 
 export default class Operations extends Component {
@@ -52,7 +53,8 @@ export default class Operations extends Component {
             newParamRequired: false,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
-            newParamType: ""
+            newParamType: "",
+            filteredOperations: []
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -89,7 +91,10 @@ export default class Operations extends Component {
             if (status !== 200) {
                 console.log(statusText);
             } else {
-                this.setState({operations: res});
+                this.setState({
+                    operations: res,
+                    filteredOperations: res
+                });
             }
         });
     }
@@ -204,7 +209,7 @@ export default class Operations extends Component {
     }
 
     renderOperations() {
-        let params = this.state.operations;
+        let params = this.state.filteredOperations;
         let operations = [];
         for (let i = 0; i < params.length; i++) {
             operations.push(<Operation key={i} data={params[i]}
@@ -488,13 +493,18 @@ export default class Operations extends Component {
     }
 
     render() {
-
         return (
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <Button raised color="accent" onClick={this.openDialog}>
                         Создать операцию
                     </Button>
+                    <div>
+                        <SearchField values={this.state.operations}
+                                     field="code"
+                                     onChange={(value) =>{this.setState({filteredOperations: value})}}
+                        />
+                    </div>
                 </div>
                 {this.renderAddParamDialog()}
                 {this.renderAddActionDialog()}

@@ -21,6 +21,7 @@ import {
 } from "material-ui";
 import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
+import SearchField from "./SearchField";
 
 export default class Actions extends Component {
     constructor(props) {
@@ -40,7 +41,8 @@ export default class Actions extends Component {
             newParamRequired: false,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
-            newParamType: ""
+            newParamType: "",
+            filteredActions: []
         };
         this.handleRequestEditDialog = this.handleRequestEditDialog.bind(this);
         this.handleRequestCreateDialog = this.handleRequestCreateDialog.bind(this);
@@ -68,7 +70,10 @@ export default class Actions extends Component {
             if (status !== 200) {
                 console.log(statusText);
             } else {
-                this.setState({actions: res});
+                this.setState({
+                    actions: res,
+                    filteredActions: res
+                });
             }
         });
     }
@@ -156,7 +161,8 @@ export default class Actions extends Component {
     }
 
     renderActions() {
-        let params = this.state.actions;
+        let params = this.state.filteredActions;
+
         let actions = [];
         for (let i = 0; i < params.length; i++) {
             actions.push(<Action onDelete={(id) => this.openDeleteDialog(id)}
@@ -388,14 +394,20 @@ export default class Actions extends Component {
     }
 
     render() {
-
         return (
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <Button onClick={() => {
                         this.setState({createDialogOpened: true});
                     }} raised color="accent">Создать действие</Button>
+                    <div>
+                        <SearchField values={this.state.actions}
+                                      field="code"
+                                      onChange={(value) =>{this.setState({filteredActions: value})}}
+                        />
+                    </div>
                 </div>
+
                 {this.renderAddParamDialog()}
                 {this.renderCreationDialog()}
                 {this.renderDeleteConfirmDialog()}

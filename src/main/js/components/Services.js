@@ -22,6 +22,7 @@ import {
 } from "material-ui";
 import {Add, Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
+import SearchField from "./SearchField";
 
 
 export default class Services extends Component {
@@ -44,7 +45,8 @@ export default class Services extends Component {
             newParamRequired: false,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
-            newParamType: ""
+            newParamType: "",
+            filteredServices: []
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -81,7 +83,10 @@ export default class Services extends Component {
             if (status !== 200) {
                 console.log(statusText);
             } else {
-                this.setState({services: res});
+                this.setState({
+                    services: res,
+                    filteredServices: res
+                });
             }
         });
     }
@@ -202,7 +207,7 @@ export default class Services extends Component {
     }
 
     renderServices() {
-        let params = this.state.services;
+        let params = this.state.filteredServices;
         let services = [];
         for (let i = 0; i < params.length; i++) {
             services.push(<Service key={i} data={params[i]}
@@ -378,6 +383,12 @@ export default class Services extends Component {
                     <Button raised color="accent" onClick={this.openDialog}>
                         Создать сервис
                     </Button>
+                    <div>
+                        <SearchField values={this.state.services}
+                                     field="code"
+                                     onChange={(value) =>{this.setState({filteredServices: value})}}
+                        />
+                    </div>
                 </div>
                 {this.renderAddParamDialog()}
                 {this.renderDeleteConfirmService()}
