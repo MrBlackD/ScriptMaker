@@ -379,7 +379,14 @@ export default class Services extends Component {
 
         return (
             <Paper>
+
+
                 <div style={{"text-align": "center", "padding": "10px"}}>
+                    <div>
+                        <Button raised onClick={()=>{
+                            window.open("http://localhost:8080/download");
+                        }}>Download XLSX</Button>
+                    </div>
                     <Button raised color="accent" onClick={this.openDialog}>
                         Создать сервис
                     </Button>

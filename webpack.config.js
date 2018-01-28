@@ -45,6 +45,7 @@ var PROD = {
     },
     module: moduleProps,
     plugins:[
+        new CleanWebpackPlugin(['src/main/resources/static/app']),
         new HtmlWebpackPlugin({
             title: 'ScriptMaker',
             filename: 'index.html',
