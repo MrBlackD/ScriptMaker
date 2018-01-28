@@ -14,7 +14,9 @@
   },
   "scripts": {
     "watch": "webpack --watch -d",
+    "preprod": "npm install",
     "prod": "webpack --env=prod --progress --profile --colors",
+    "predev": "npm install",
     "dev": "webpack-dev-server --env=dev --colors --open"
   },
   "devDependencies": {

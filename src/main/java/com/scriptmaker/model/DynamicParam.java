@@ -2,10 +2,9 @@ package com.scriptmaker.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Data
 @Entity
@@ -61,10 +60,6 @@ public class DynamicParam {
     public DynamicParam() {
     }
 
-    public DynamicParam(String name, String code) {
-        this.name = name;
-        this.code = code;
-    }
 
     public Long getId() {
         return id;
