@@ -47,7 +47,7 @@ export default class Operations extends Component {
             value: "",
             suggestions: [],
             openAddActionDialog: false,
-            newActionId: "",
+            newActionCode:"",
             newMapping:[],
             newParamCode: "",
             newParamRequired: false,
@@ -321,9 +321,11 @@ export default class Operations extends Component {
                     <Typography type="headline" gutterBottom>{"Добавление действия"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <TextField value={this.state.newActionId}
-                               onChange={(e) => this.setState({newActionId: e.target.value})}
-                               label="actionId"/>
+                    <Suggest value={this.state.newActionCode} onChange={(e,{newValue})=>{
+                        this.setState({newActionCode:newValue});
+                    }}
+                             suggestions={this.state.actionsRegistry}
+                             placeholder="Type action code" field={"code"}/>
                     {this.state.newMapping.map((mapping,index)=>{
 
                         return <div>
@@ -386,11 +388,14 @@ export default class Operations extends Component {
                             this.state.newMapping.forEach((mapping)=>{
                                 newMapping += mapping.in +","+mapping.out +","+mapping.type+";";
                             })
-                            actions.push(this.state.newActionId + ":"+newMapping);
+                            let newActionId = this.state.actionsRegistry.filter((action)=>{
+                                return action.code === this.state.newActionCode;
+                            })[0].id;
+                            actions.push(newActionId + ":"+newMapping);
                             this.setState({
                                 openAddActionDialog: false,
                                 actions,
-                                newActionId:"",
+                                newActionCode:"",
                                 newMapping:[]
                             });
                         }} color="accent">Добавить</Button>
