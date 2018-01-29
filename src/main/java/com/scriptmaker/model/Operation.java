@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Operation {
+public class Operation extends ScriptEntity{
     @Id
     @GeneratedValue
     private Long id;

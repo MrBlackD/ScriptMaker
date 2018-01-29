@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Data
 @Entity
-public class Action {
+public class Action extends ScriptEntity {
     @Id
     @GeneratedValue
     private Long id;
