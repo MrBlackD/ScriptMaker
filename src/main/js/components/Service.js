@@ -6,7 +6,9 @@ import {Link} from "react-router";
 export default class Service extends Component {
     constructor(props){
         super(props);
-
+        this.state = {
+            collapsed: true
+        };
     }
 
     getParams(service){
@@ -27,8 +29,14 @@ export default class Service extends Component {
                 outParam = outParams[i].dynamicParam;
             params.push(
                 <TableRow key={i}>
+                    <TableCell className={inParam.id}>{inParam.id}</TableCell>
+                    <TableCell className={inParam.name}>{inParam.name}</TableCell>
                     <TableCell className={inParam.code}>{inParam.code}</TableCell>
+                    <TableCell className={inParam.type}>{inParam.type}</TableCell>
+                    <TableCell className={outParam.id}>{outParam.id}</TableCell>
+                    <TableCell className={outParam.name}>{outParam.name}</TableCell>
                     <TableCell className={outParam.code}>{outParam.code}</TableCell>
+                    <TableCell className={outParam.type}>{outParam.type}</TableCell>
                 </TableRow>
             );
         }
@@ -37,39 +45,60 @@ export default class Service extends Component {
 
 
     render() {
-
+        let collapsed = this.state.collapsed;
         let service = this.props.data;
-        if(this.props.collapsed){
-            return (<div id={this.props.id} className="node">{service.name  +"( id:"+service.id+")"}</div>)
+        if(this.state.collapsed){
+            return (<div id={this.props.id} className="gray text-center collapsed_table"
+                         onClick={() =>{
+                             this.setState({collapsed: !collapsed});
+                         }}>{service.name +"( code: "+service.code+" )"}</div>)
         }
         return (
-            <Table id={this.props.id} className="service" >
+            <Table id={this.props.id} className="service table" >
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2}  className={"name"}>
-                            <Link to={"/services/"+service.id}>{service.name}</Link>
+                        <TableCell colSpan={8}  className={"name"}
+                                   onClick={() =>{
+                                       this.setState({collapsed: !collapsed});
+                                   }}>
+                            <Link to={"/services/"+service.id}>{service.name+"( code: "+service.code+" )"}</Link>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     <TableRow>
-                        <TableCell colSpan={2}>{service.code}</TableCell>
+                        <TableCell className="gray bold" colSpan={2}>Имя:</TableCell>
+                        <TableCell colSpan={6}>{service.name}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>входящие параметры</TableCell>
-                        <TableCell>исходящие параметры</TableCell>
+                        <TableCell className="gray bold" colSpan={2}>Код:</TableCell>
+                        <TableCell colSpan={6}>{service.code}</TableCell>
+                    </TableRow>
+                    <TableRow className="bold">
+                        <TableCell className="gray" colSpan={4}>Входящие параметры</TableCell>
+                        <TableCell className="gray" colSpan={4}>Исходящие параметры</TableCell>
+                    </TableRow>
+                    <TableRow className="bold">
+                        <TableCell className="gray" colSpan={1}>ID параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>Имя параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>Код параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>Модуль параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>ID параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>Имя параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>Код параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>Модуль параметра</TableCell>
                     </TableRow>
                     {this.getParams(service)}
                     <TableRow>
-                        <TableCell colSpan={2} style={{"text-align":"center"}}>
+                        <TableCell colSpan={8} className="gray bold text-center">
                             Описание
                         </TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell colSpan={2}>{service.description}</TableCell>
+                        <TableCell colSpan={8}>{service.description}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell style={{"textAlign":"center"}} colSpan={2}>
+                        <TableCell className="text-center" colSpan={8}>
                             {this.props.onEdit&&
                             <Button raised={true}
                                     onClick={()=>{this.props.onEdit(service)}}>Редактировать</Button>}
