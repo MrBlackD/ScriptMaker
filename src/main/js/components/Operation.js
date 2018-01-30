@@ -80,14 +80,14 @@ export default class Operation extends Component {
                         <TableCell className="ligh-blue bold text-center" colSpan={4}>Исходящие параметры</TableCell>
                     </TableRow>
                     <TableRow className="bold">
-                        <TableCell className="ligh-blue" colSpan={1}>ID параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>Имя параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>Код параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>Модуль параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>ID параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>Имя параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>Код параметра</TableCell>
-                        <TableCell className="ligh-blue" colSpan={1}>Модуль параметра</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>ID</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Имя</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Код</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Тип</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>ID</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Имя</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Код</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Тип</TableCell>
                     </TableRow>
                     {this.getParams(operation)}
                     <TableRow>

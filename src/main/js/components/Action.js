@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Table, TableBody, TableCell, Typography, TableHead, TableRow} from "material-ui";
+import {Button, Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
 
 
 export default class Action extends Component {
@@ -84,14 +84,14 @@ export default class Action extends Component {
                         <TableCell className="yellow text-center" colSpan={4}>Исходящие параметры</TableCell>
                     </TableRow>
                     <TableRow className="bold">
-                        <TableCell className="yellow" colSpan={1}>ID параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>Имя параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>Код параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>Модуль параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>ID параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>Имя параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>Код параметра</TableCell>
-                        <TableCell className="yellow" colSpan={1}>Модуль параметра</TableCell>
+                        <TableCell className="yellow" colSpan={1}>ID</TableCell>
+                        <TableCell className="yellow" colSpan={1}>Имя</TableCell>
+                        <TableCell className="yellow" colSpan={1}>Код</TableCell>
+                        <TableCell className="yellow" colSpan={1}>Тип</TableCell>
+                        <TableCell className="yellow" colSpan={1}>ID</TableCell>
+                        <TableCell className="yellow" colSpan={1}>Имя</TableCell>
+                        <TableCell className="yellow" colSpan={1}>Код</TableCell>
+                        <TableCell className="yellow" colSpan={1}>Тип</TableCell>
                     </TableRow>
                     {params}
                     <TableRow>

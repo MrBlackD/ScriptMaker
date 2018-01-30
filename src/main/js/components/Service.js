@@ -79,14 +79,14 @@ export default class Service extends Component {
                         <TableCell className="gray" colSpan={4}>Исходящие параметры</TableCell>
                     </TableRow>
                     <TableRow className="bold">
-                        <TableCell className="gray" colSpan={1}>ID параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>Имя параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>Код параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>Модуль параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>ID параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>Имя параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>Код параметра</TableCell>
-                        <TableCell className="gray" colSpan={1}>Модуль параметра</TableCell>
+                        <TableCell className="gray" colSpan={1}>ID</TableCell>
+                        <TableCell className="gray" colSpan={1}>Имя</TableCell>
+                        <TableCell className="gray" colSpan={1}>Код</TableCell>
+                        <TableCell className="gray" colSpan={1}>Тип</TableCell>
+                        <TableCell className="gray" colSpan={1}>ID</TableCell>
+                        <TableCell className="gray" colSpan={1}>Имя</TableCell>
+                        <TableCell className="gray" colSpan={1}>Код</TableCell>
+                        <TableCell className="gray" colSpan={1}>Тип</TableCell>
                     </TableRow>
                     {this.getParams(service)}
                     <TableRow>
