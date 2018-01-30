@@ -8,16 +8,13 @@ export default class DynamicParam extends Component {
     }
 
     renderRow(item) {
-        let result = [];
+
         let onClose = this.props.onClose;
         let onEdit = this.props.onEdit;
-        let count=0;
-        for (let key in item) {
-            count++;
-            if (item.hasOwnProperty(key)&&count<5) {
-                result.push(<TableCell key={key} className="cell">{"" + item[key]}</TableCell>);
-            }
-        }
+        const fields = ["id","name","code","type"];
+        let result = fields.map((field,index)=>{
+            return <TableCell key={index} className="cell">{item[field]}</TableCell>
+        })
         result.push(
             <TableCell key={item.length} className="cell">
                 <Edit onClick={() => onEdit(item["id"])} className="icon-edit"/>

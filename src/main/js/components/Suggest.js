@@ -1,5 +1,6 @@
 import React from "react";
 import Autosuggest from "react-autosuggest";
+import PropTypes from "prop-types";
 
 export default class Suggest extends React.Component {
     constructor(props) {
@@ -90,5 +91,11 @@ export default class Suggest extends React.Component {
     }
 }
 
-
+Suggest.propTypes = {
+    suggestions: PropTypes.array.isRequired,
+    value: PropTypes.string.isRequired,
+    placeholder: PropTypes.string,
+    onChange: PropTypes.func,
+    field: PropTypes.string
+}
 

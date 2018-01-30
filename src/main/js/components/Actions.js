@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import * as funcs from "../utils/requests";
 import Action from "./Action";
 import {
     Button,
@@ -33,7 +32,7 @@ export default class Actions extends Component {
             target: {},
             deleteConfirmDialogOpened: false,
             openedAddParamDialog: false,
-            actions: {},
+            actions: [],
             inParams: [],
             outParams: [],
             dynamicParams: [],
@@ -53,29 +52,24 @@ export default class Actions extends Component {
     }
 
     loadData() {
-        funcs.get("http://localhost:8080/api/dynamicParams", (response, status, statusText) => {
-            console.log(response);
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({dynamicParams: res});
-            }
+        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({dynamicParams: json});
+
         });
-        funcs.get("http://localhost:8080/api/actions", (response, status, statusText) => {
-            console.log(response);
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({
-                    actions: res,
-                    filteredActions: res
-                });
-            }
+        fetch("http://localhost:8080/api/actions").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({
+                actions: json,
+                filteredActions: json
+            });
+
         });
+
     }
 
     handleCreateAction() {
@@ -102,10 +96,10 @@ export default class Actions extends Component {
         if (outParams) {
             url += "&outParams=" + outParams;
         }
-
-        funcs.get(url, (response, status, statusText) => {
-            console.log(response);
-            console.log(statusText);
+        fetch(url).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
             this.loadData();
         });
     }
@@ -142,10 +136,10 @@ export default class Actions extends Component {
         if (outParams) {
             url += "&outParams=" + outParams;
         }
-
-        funcs.get(url, (response, status, statusText) => {
-            console.log(response);
-            console.log(statusText);
+        fetch(url).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
             this.loadData();
         });
 
@@ -153,9 +147,8 @@ export default class Actions extends Component {
 
     handleDelete(id) {
         let url = "http://localhost:8080/api/actions/delete?id=" + id;
-        funcs.get(url, (response, status, statusText) => {
+        fetch(url).then((response) => {
             console.log(response);
-            console.log(statusText);
             this.loadData();
         });
     }

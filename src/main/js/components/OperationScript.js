@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import * as funcs from "../utils/requests.js";
+import React, {Component} from "react";
 import Container from "./Container";
 import {Paper} from "material-ui";
 
@@ -19,15 +18,11 @@ export default class OperationScript extends Component {
     }
 
     loadData(){
-
-        funcs.get("http://localhost:8080/api/operations/"+this.props.params.id,(response, status, statusText)=>{
-            let res = JSON.parse(response);
-            console.log(res);
-            if(status !== 200){
-                console.log(statusText);
-            } else {
-                this.setState({operation: res});
-            }
+        fetch("http://localhost:8080/api/operations/"+this.props.params.id).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({operation: json});
         });
     }
 

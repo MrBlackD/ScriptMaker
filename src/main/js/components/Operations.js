@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import * as funcs from "../utils/requests";
 import Operation from "./Operation";
 import {
     Button,
@@ -67,36 +66,28 @@ export default class Operations extends Component {
     }
 
     loadData() {
-        funcs.get("http://localhost:8080/api/dynamicParams", (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({dynamicParams: res});
-            }
+        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({dynamicParams: json});
         });
-        funcs.get("http://localhost:8080/api/actions", (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({actionsRegistry: res});
-            }
+        fetch("http://localhost:8080/api/actions").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({actionsRegistry: json});
         });
-        funcs.get("http://localhost:8080/api/operations", (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({
-                    operations: res,
-                    filteredOperations: res
-                });
-            }
+        fetch("http://localhost:8080/api/operations").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({
+                operations: json,
+                filteredOperations: json
+            });
         });
+
     }
 
     closeDialog() {
@@ -201,9 +192,10 @@ export default class Operations extends Component {
             url += "&outParams=" + outParams;
         }
         this.clearState();
-        funcs.get(url, (response, status, statusText) => {
-            console.log(response);
-            console.log(statusText);
+        fetch(url).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
             this.loadData();
         });
     }
@@ -286,9 +278,8 @@ export default class Operations extends Component {
 
     handleDelete(id) {
         let url = "http://localhost:8080/api/operations/delete?id=" + id;
-        funcs.get(url, (response, status, statusText) => {
+        fetch(url).then((response) => {
             console.log(response);
-            console.log(statusText);
             this.loadData();
         });
     }
@@ -355,13 +346,6 @@ export default class Operations extends Component {
                                 <MenuItem value="IN">IN</MenuItem>
                                 <MenuItem value="OUT">OUT</MenuItem>
                             </Select>
-                            {/*<TextField value={mapping.type}*/}
-                                       {/*onChange={(e) => {*/}
-                                           {/*const newMapping = this.state.newMapping;*/}
-                                           {/*newMapping[index].type = e.target.value;*/}
-                                           {/*this.setState({newMapping: newMapping})*/}
-                                       {/*}}*/}
-                                       {/*label="type"/>*/}
                             <Remove onClick={() => {
                                 let resultMapping = [...this.state.newMapping];
                                 resultMapping.splice(index, 1);
@@ -422,15 +406,13 @@ export default class Operations extends Component {
     );
 
 
-    // Autosuggest will call this function every time you need to update suggestions.
-    // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested = ({value}) => {
         this.setState({
             suggestions: this.getSuggestions(value)
         });
     };
 
-    // Autosuggest will call this function every time you need to clear suggestions.
+
     onSuggestionsClearRequested = () => {
         this.setState({
             suggestions: []
@@ -489,9 +471,10 @@ export default class Operations extends Component {
         }
 
 
-        funcs.get(url, (response, status, statusText) => {
-            console.log(response);
-            console.log(statusText);
+        fetch(url).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
             this.loadData();
         });
 

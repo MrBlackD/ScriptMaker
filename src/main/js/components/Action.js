@@ -11,8 +11,6 @@ export default class Action extends Component {
     }
     render() {
         let action = this.props.data;
-        let onClose = this.props.onClose;
-        let onEdit = this.props.onEdit;
         let collapsed = this.state.collapsed;
 
         if(!action)
