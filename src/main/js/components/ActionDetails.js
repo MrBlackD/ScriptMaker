@@ -1,6 +1,5 @@
 import React from "react";
-import * as funcs from "../utils/requests";
-import {Button, Paper} from "material-ui";
+import {Paper} from "material-ui";
 
 import Action from "./Action";
 
@@ -9,7 +8,7 @@ export default class ActionDetails extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            actions:{}
+            action:{}
         }
     }
 
@@ -23,15 +22,13 @@ export default class ActionDetails extends React.Component{
         if(!id){
             return;
         }
-        funcs.get("http://localhost:8080/api/actions/"+id, (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({action: res});
-            }
+        fetch("http://localhost:8080/api/actions/"+id).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({action: json});
         });
+
     }
 
 

@@ -5,12 +5,15 @@ import com.scriptmaker.model.ActionInstance;
 import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.model.Operation;
+import com.scriptmaker.model.ParamMapping;
 import com.scriptmaker.model.Service;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Admin on 27.01.2018.
@@ -33,6 +36,20 @@ public class ExcelHelperTest {
 
         ActionInstance actionInstance = new ActionInstance();
         actionInstance.setAction(action);
+
+        List<ParamMapping> mappings = new ArrayList<>();
+        ParamMapping paramMapping = new ParamMapping();
+        paramMapping.setType(Type.IN);
+        paramMapping.setIn("INPARAMMAPPING");
+        paramMapping.setOut("code");
+        mappings.add(paramMapping);
+
+        ParamMapping paramMapping2 = new ParamMapping();
+        paramMapping2.setType(Type.OUT);
+        paramMapping2.setIn("code");
+        paramMapping2.setOut("OutParamMapping");
+        mappings.add(paramMapping2);
+        actionInstance.setMapping(mappings);
 
         Operation operation = new Operation();
         operation.setName("OperName");

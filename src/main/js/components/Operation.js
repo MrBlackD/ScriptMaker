@@ -6,7 +6,9 @@ import {Link} from "react-router";
 export default class Operation extends Component {
     constructor(props){
         super(props);
-
+        this.state = {
+            collapsed: true
+        };
     }
 
     getParams(operation){
@@ -27,8 +29,14 @@ export default class Operation extends Component {
                 outParam = outParams[i].dynamicParam;
             params.push(
                 <TableRow key={i}>
+                    <TableCell className={inParam.id}>{inParam.id}</TableCell>
+                    <TableCell className={inParam.name}>{inParam.name}</TableCell>
                     <TableCell className={inParam.code}>{inParam.code}</TableCell>
+                    <TableCell className={inParam.type}>{inParam.type}</TableCell>
+                    <TableCell className={outParam.id}>{outParam.id}</TableCell>
+                    <TableCell className={outParam.name}>{outParam.name}</TableCell>
                     <TableCell className={outParam.code}>{outParam.code}</TableCell>
+                    <TableCell className={outParam.type}>{outParam.type}</TableCell>
                 </TableRow>
             );
         }
@@ -38,37 +46,60 @@ export default class Operation extends Component {
 
     render() {
         let operation = this.props.data;
-        if(this.props.collapsed){
-            return (<div id={this.props.id} className="node">{operation.name}</div>)
+        let collapsed = this.state.collapsed;
+        console.log(operation);
+        if(this.state.collapsed){
+            return (<div id={this.props.id} className="ligh-blue text-center collapsed_table"
+                         onClick={() =>{
+                             this.setState({collapsed: !collapsed});
+                         }}>{operation.name +"( code: "+operation.code+" )"}</div>)
         }
         return (
-            <Table id={this.props.id} className="operation" >
+            <Table id={this.props.id} className="operation table" >
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2}  className={"name"}>
-                            <Link to={"/operations/"+operation.id}>{operation.name+"( id:"+operation.id+")"}</Link>
+                        <TableCell colSpan={8}  className={"name"}
+                                   onClick={() =>{
+                                       this.setState({collapsed: !collapsed});
+                                   }}>
+                            <Link to={"/operations/"+operation.id}>{operation.name+"( code: "+operation.code+" )"}</Link>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     <TableRow>
-                        <TableCell colSpan={2}>{operation.code}</TableCell>
+                        <TableCell className="ligh-blue bold" colSpan={2}>Имя:</TableCell>
+                        <TableCell colSpan={6}>{operation.name}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>входящие параметры</TableCell>
-                        <TableCell>исходящие параметры</TableCell>
+                        <TableCell className="ligh-blue bold" colSpan={2}>Код:</TableCell>
+                        <TableCell colSpan={6}>{operation.code}</TableCell>
+                    </TableRow>
+                    <TableRow className="bold">
+                        <TableCell className="ligh-blue bold text-center" colSpan={4}>Входящие параметры</TableCell>
+                        <TableCell className="ligh-blue bold text-center" colSpan={4}>Исходящие параметры</TableCell>
+                    </TableRow>
+                    <TableRow className="bold">
+                        <TableCell className="ligh-blue" colSpan={1}>ID</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Имя</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Код</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Тип</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>ID</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Имя</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Код</TableCell>
+                        <TableCell className="ligh-blue" colSpan={1}>Тип</TableCell>
                     </TableRow>
                     {this.getParams(operation)}
                     <TableRow>
-                        <TableCell colSpan={2}  style={{"text-align":"center"}}>
+                        <TableCell colSpan={8}  className="ligh-blue bold text-center">
                             Описание
                         </TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell colSpan={2}>{operation.description}</TableCell>
+                        <TableCell colSpan={8}>{operation.description}</TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell style={{"textAlign":"center"}} colSpan={2}>
+                        <TableCell className="text-center" colSpan={8}>
                             {this.props.onEdit&&
                             <Button raised={true}
                                     onClick={()=>{this.props.onEdit(operation)}}>Редактировать</Button>}

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import * as funcs from "../utils/requests";
+
 import Service from "./Service";
 import {
     Button,
@@ -59,36 +59,28 @@ export default class Services extends Component {
     }
 
     loadData() {
-        funcs.get("http://localhost:8080/api/dynamicParams", (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({dynamicParams: res});
-            }
+        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({dynamicParams: json});
         });
-        funcs.get("http://localhost:8080/api/operations", (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({operationsRegistry: res});
-            }
+        fetch("http://localhost:8080/api/operations").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({operationsRegistry: json});
         });
-        funcs.get("http://localhost:8080/api/services", (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({
-                    services: res,
-                    filteredServices: res
-                });
-            }
+        fetch("http://localhost:8080/api/services").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({
+                services: json,
+                filteredServices: json
+            });
         });
+
     }
 
     closeDialog() {
@@ -198,10 +190,10 @@ export default class Services extends Component {
         if (outParams) {
             url += "&outParams=" + outParams;
         }
-
-        funcs.get(url, (response, status, statusText) => {
-            console.log(response);
-            console.log(statusText);
+        fetch(url).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
             this.loadData();
         });
     }
@@ -277,9 +269,8 @@ export default class Services extends Component {
 
     handleDelete(id){
         let url = "http://localhost:8080/api/services/delete?id="+id;
-        funcs.get(url,(response, status, statusText)=>{
+        fetch(url).then((response) => {
             console.log(response);
-            console.log(statusText);
             this.loadData();
         });
     }
@@ -367,9 +358,10 @@ export default class Services extends Component {
             url+="&outParams="+outParams;
         }
 
-        funcs.get(url,(response, status, statusText)=>{
-            console.log(response);
-            console.log(statusText);
+        fetch(url).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
             this.loadData();
         });
 

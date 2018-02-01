@@ -1,9 +1,18 @@
-import React, { Component } from 'react'
+import React, {Component} from "react";
 import {
-    Button, Dialog, DialogContent, DialogTitle, Divider, Grid, List, ListItem, ListItemText, Paper, TextField,
+    Button,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    Grid,
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    TextField,
     Typography
 } from "material-ui";
-import * as funcs from "../utils/requests";
 import Script from "./Script";
 
 
@@ -29,28 +38,20 @@ export default class CreateOperation extends Component {
     }
 
     loadDynamicParams(){
-        funcs.get("http://localhost:8080/api/dynamicParams",(response, status, statusText)=>{
-            console.log(response);
-            let res = JSON.parse(response);
-            console.log(res);
-            if(status !== 200){
-                console.log(statusText);
-            } else {
-                this.setState({dynamicParams: res});
-            }
+        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({dynamicParams: json});
         });
     }
 
     loadActions(){
-        funcs.get("http://localhost:8080/api/actions",(response, status, statusText)=>{
-            console.log(response);
-            let res = JSON.parse(response);
-            console.log(res);
-            if(status !== 200){
-                console.log(statusText);
-            } else {
-                this.setState({actions: res});
-            }
+        fetch("http://localhost:8080/api/actions").then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({actions: json});
         });
     }
 

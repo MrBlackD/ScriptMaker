@@ -1,5 +1,4 @@
 import React from "react";
-import * as funcs from "../utils/requests";
 import {Button, Paper} from "material-ui";
 import Operation from "./Operation";
 import Action from "./Action";
@@ -23,15 +22,13 @@ export default class OperationDetails extends React.Component{
         if(!id){
             return;
         }
-        funcs.get("http://localhost:8080/api/operations/"+id, (response, status, statusText) => {
-            let res = JSON.parse(response);
-            console.log(res);
-            if (status !== 200) {
-                console.log(statusText);
-            } else {
-                this.setState({operation: res});
-            }
+        fetch("http://localhost:8080/api/operations/"+id).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            this.setState({operation: json});
         });
+
     }
 
     renderActions(){
