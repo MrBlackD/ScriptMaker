@@ -145,6 +145,7 @@ public class ExcelHelper {
         sheet.addMergedRegion(new CellRangeAddress(startRow + 2, startRow + 3, startCol + 4, startCol + 7));
 
         XSSFRow row3 = getOrCreateRow(sheet, startRow + 4);
+        sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol-1, startCol-1));
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol, startCol));
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol + 1, startCol + 1));
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol + 2, startCol + 2));
@@ -153,6 +154,12 @@ public class ExcelHelper {
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol + 5, startCol + 5));
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol + 6, startCol + 6));
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol + 7, startCol + 7));
+        sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol + 8, startCol + 8));
+        if(mapping!=null){
+            XSSFCell cell6 = row3.createCell(startCol -1);
+            cell6.setCellValue("Входящий маппинг");
+            cell6.setCellStyle(borderWithBackground);
+        }
         XSSFCell cell6 = row3.createCell(startCol);
         cell6.setCellValue("Имя");
         cell6.setCellStyle(borderWithBackground);
@@ -177,7 +184,11 @@ public class ExcelHelper {
         XSSFCell cell13 = row3.createCell(startCol + 7);
         cell13.setCellValue("Обязательность");
         cell13.setCellStyle(borderWithBackground);
-
+        if(mapping!=null){
+            XSSFCell cell14 = row3.createCell(startCol + 8);
+            cell14.setCellValue("Исходящий маппинг");
+            cell14.setCellStyle(borderWithBackground);
+        }
         List<DynamicParamInstance> inParams = scriptEntity.getInParams();
         List<DynamicParamInstance> outParams = scriptEntity.getOutParams();
         int inParamsSize = inParams == null ? 0 : inParams.size();
