@@ -66,20 +66,11 @@ export default class DynamicParams extends Component {
         this.newCode.value = "";
         let type = this.newType.value;
         this.newType.value = "";
-        /*  let description = this.newDescription.value;
-         this.newDescription.value = "";
-         let required = this.newRequired.checked;
-         this.newRequired.checked = false;//не работает
-         let keepInWorkflow = this.newKeepInWorkflow.checked;
-         this.newKeepInWorkflow.checked = false;// не работает*/
-        console.log(name + " " + code + " " + type /*+ " " + description + " " + required + " " + keepInWorkflow*/);
+        console.log(name + " " + code + " " + type );
         let url = "http://localhost:8080/api/dynamicParams/new?"
                 + "name=" + name
                 + "&code=" + code
-                + "&type=" + type
-            /* + "&description=" + description
-             + "&required=" + required
-             + "&keepInWorkflow=" + keepInWorkflow*/;
+                + "&type=" + type;
 
         funcs.get(url, (response, status, statusText) => {
             console.log(response);
@@ -97,15 +88,9 @@ export default class DynamicParams extends Component {
         this.editCode.value = "";
         let type = this.editType.value;
         this.editType.value = "";
-        /*let description = this.editDescription.value;
-         this.editDescription.value = "";
-         let required = this.editRequired.checked;
-         let keepInWorkflow = this.editKeepInWorkflow.checked;*/
-        console.log(id + "" + name + " " + code + " " + type /*+ " " + description + " " + required + " " + keepInWorkflow*/);
+        console.log(id + "" + name + " " + code + " " + type );
         let url = "http://localhost:8080/api/dynamicParams/edit?"
             + "id=" + id;
-        /*+ "&required=" + required
-         + "&keepInWorkflow=" + keepInWorkflow;*/
         if (name) {
             url += "&name=" + name;
         }

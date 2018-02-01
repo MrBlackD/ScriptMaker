@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -40,7 +41,21 @@ public class Operation {
         this.outParams = outParams;
         this.startNode = startNode;
     }
+    public List<DynamicParam> getOutParamsLink(){
+        List<DynamicParam> dynamicParams=new ArrayList<>();
+        for (DynamicParamInstance dpi:outParams) {
+            dynamicParams.add(dpi.getDynamicParam());
+        }
+        return dynamicParams;
+    }
 
+    public List<DynamicParam> getInParamsLink() {
+        List<DynamicParam> dynamicParams=new ArrayList<>();
+        for (DynamicParamInstance dpi:inParams) {
+            dynamicParams.add(dpi.getDynamicParam());
+        }
+        return dynamicParams;
+    }
     public List<ActionInstance> getActions() {
         return actions;
     }

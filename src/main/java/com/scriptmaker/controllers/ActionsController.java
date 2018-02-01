@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
@@ -65,44 +67,42 @@ public class ActionsController {
                 outParamInstances
         );
         actionFactory.create(newAction);
-        //linked(newAction);
+        linked(newAction);
         return newAction;
     }
 
-//    private void linked(Action newAction) {
-//        Set<DynamicParam> dynamicParams = new HashSet<>();
-//        if (newAction.getInParams() != null) {
-//            dynamicParams.addAll(newAction.getInParams());
-//        }
-//        if (newAction.getOutParams() != null)
-//            dynamicParams.addAll(newAction.getOutParams());
-//        if (dynamicParams != null){
-//            Long actionId=actionRepository.findByCode(newAction.getCode()).getId();
-//            for (DynamicParam dynamicParam : dynamicParams) {
-//                String string = dynamicParam.getRefersActions();
-//                if (string != null) {
-//                    String[] strings = string.split(",");
-//                    int count = 0;
-//                    for (int i = 0; i < strings.length; i++) {
-//                        if (!strings[i].equals(newAction.getId().toString()))
-//                            count++;
-//                        else break;
-//                    }
-//                    if (count == strings.length){
-//                        dynamicParam.setRefersActions(string+","+actionId);
-//                        dynamicParamRepository.save(dynamicParam);
-//                    }
-//
-//                }
-//                else {
-//                    dynamicParam.setRefersActions(actionId.toString());
-//                    dynamicParamRepository.save(dynamicParam);
-//                }
-//
-//            }
-//        }
-//
-//    }
+    private void linked(Action newAction) {
+        Set<DynamicParam> dynamicParams = new HashSet<>();
+        if (newAction.getInParams() != null) {
+            dynamicParams.addAll(newAction.getInParamsLink());
+        }
+        if (newAction.getOutParams() != null)
+            dynamicParams.addAll(newAction.getOutParamsLink());
+        if (dynamicParams != null) {
+            Long actionId = actionRepository.findByCode(newAction.getCode()).getId();
+            for (DynamicParam dynamicParam : dynamicParams) {
+                String string = dynamicParam.getRefersActions();
+                if (string != null) {
+                    String[] strings = string.split(",");
+                    int count = 0;
+                    for (int i = 0; i < strings.length; i++) {
+                        if (!strings[i].equals(newAction.getId().toString()))
+                            count++;
+                        else break;
+                    }
+                    if (count == strings.length) {
+                        dynamicParam.setRefersActions(string + "," + actionId);
+                        dynamicParamRepository.save(dynamicParam);
+                    }
+
+                } else {
+                    dynamicParam.setRefersActions(actionId.toString());
+                    dynamicParamRepository.save(dynamicParam);
+                }
+
+            }
+        }
+    }
 
     public static void removeLinked(List<DynamicParam> dynamicParams, Action action) {
         if (dynamicParams != null) {
@@ -111,14 +111,14 @@ public class ActionsController {
                 String string = "";
                 for (int i = 0; i < strings.length; i++) {
                     if (!strings[i].equals(action.getId().toString())) {
-                        string += strings[i]+",";
+                        string += strings[i] + ",";
                     }
                 }
-                if(string.equals(""))
-                    string=null;
-                else{
-                    if(string.charAt(string.length()-1)==',')
-                        string=string.substring(0,string.length()-1);
+                if (string.equals(""))
+                    string = null;
+                else {
+                    if (string.charAt(string.length() - 1) == ',')
+                        string = string.substring(0, string.length() - 1);
                 }
                 dynamicParam.setRefersActions(string);
             }
@@ -138,8 +138,8 @@ public class ActionsController {
         Action action = actionRepository.findOne(Long.parseLong(id));
 
 
-        //List<DynamicParam> oldInParams = action.getInParams();
-        //List<DynamicParam> oldOutParams = action.getOutParams();
+        List<DynamicParam> oldInParams = action.getInParamsLink();
+        List<DynamicParam> oldOutParams = action.getOutParamsLink();
         if (name != null) {
             action.setName(name);
         }
@@ -152,50 +152,42 @@ public class ActionsController {
         if (description != null) {
             action.setDescription(description);
         }
-        if(inParams!=null){
+        if (inParams != null) {
             List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
             dynamicParamInstanceRepository.save(inParamInstances);
             action.setInParams(inParamInstances);
+            if (oldInParams != null) {
+                if (oldInParams.removeAll(action.getInParamsLink()))
+                    removeLinked(oldInParams, action);
+            }
         } else {
             action.setInParams(new ArrayList<>());
         }
-        if(outParams!=null){
+        if (outParams != null) {
             List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
             dynamicParamInstanceRepository.save(outParamInstances);
             action.setOutParams(outParamInstances);
+            if (oldOutParams != null) {
+                if (oldOutParams.removeAll(action.getOutParamsLink()))
+                    removeLinked(oldOutParams, action);
+            }
         } else {
             action.setOutParams(new ArrayList<>());
         }
-//        if (inParams != null) {
-//            List<DynamicParam> dynamicParams = utils.getIdsFromString(inParams, dynamicParamRepository);
-//            action.setInParams(dynamicParams);
-//            if (oldInParams != null) {
-//                if (oldInParams.removeAll(dynamicParams))
-//                    removeLinked(oldInParams, action);
-//            }
-//        }
-//        if (outParams != null) {
-//            List<DynamicParam> dynamicParams = utils.getIdsFromString(outParams, dynamicParamRepository);
-//            action.setOutParams(dynamicParams);
-//            if (oldOutParams != null) {
-//                if (oldOutParams.removeAll(dynamicParams))
-//                    removeLinked(oldOutParams, action);
-//            }
-//        }
         actionFactory.update(action);
-        //linked(action);
+        linked(action);
         return action;
     }
 
     @RequestMapping("/api/actions/delete")
     public void deleteAction(@RequestParam(name = "id") String id) {
-//        Action action = actionRepository.findOne(Long.parseLong(id));
-//        List<DynamicParam> dynamicInParams = action.getInParams();
-//        List<DynamicParam> dynamicOutParams = action.getOutParams();
-//        if (dynamicInParams != null)
-//            removeLinked(dynamicInParams, action);
-//        if (dynamicOutParams != null)
-//            removeLinked(dynamicOutParams, action);
+        Action action = actionRepository.findOne(Long.parseLong(id));
+        List<DynamicParam> dynamicInParams = action.getInParamsLink();
+        List<DynamicParam> dynamicOutParams = action.getOutParamsLink();
+        if (dynamicInParams != null)
+            removeLinked(dynamicInParams, action);
+        if (dynamicOutParams != null)
+            removeLinked(dynamicOutParams, action);
         actionFactory.delete(Long.parseLong(id));
 
     }

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +24,22 @@ public class Action {
     private List<DynamicParamInstance> inParams;
     @ManyToMany
     private List<DynamicParamInstance> outParams;
+
+    public List<DynamicParam> getOutParamsLink(){
+        List<DynamicParam> dynamicParams=new ArrayList<>();
+        for (DynamicParamInstance dpi:outParams) {
+            dynamicParams.add(dpi.getDynamicParam());
+        }
+        return dynamicParams;
+    }
+
+    public List<DynamicParam> getInParamsLink() {
+        List<DynamicParam> dynamicParams=new ArrayList<>();
+        for (DynamicParamInstance dpi:inParams) {
+            dynamicParams.add(dpi.getDynamicParam());
+        }
+        return dynamicParams;
+    }
 
     @Override
     public boolean equals(Object o) {
