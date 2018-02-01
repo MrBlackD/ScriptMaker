@@ -63,8 +63,8 @@ export default class DynamicParams extends Component {
         this.newCode.value = "";
         let type = this.newType.value;
         this.newType.value = "";
+        console.log(name + " " + code + " " + type );
 
-        console.log(name + " " + code + " " + type);
         let url = "http://localhost:8080/api/dynamicParams/new?"
                 + "name=" + name
                 + "&code=" + code
