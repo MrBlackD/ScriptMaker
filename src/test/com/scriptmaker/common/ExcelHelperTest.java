@@ -39,13 +39,13 @@ public class ExcelHelperTest {
 
         List<ParamMapping> mappings = new ArrayList<>();
         ParamMapping paramMapping = new ParamMapping();
-        paramMapping.setType(Type.IN);
+        paramMapping.setType(Type.INPARAM);
         paramMapping.setIn("INPARAMMAPPING");
         paramMapping.setOut("code");
         mappings.add(paramMapping);
 
         ParamMapping paramMapping2 = new ParamMapping();
-        paramMapping2.setType(Type.OUT);
+        paramMapping2.setType(Type.OUTPARAM);
         paramMapping2.setIn("code");
         paramMapping2.setOut("OutParamMapping");
         mappings.add(paramMapping2);

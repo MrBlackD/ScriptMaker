@@ -197,7 +197,7 @@ public class ExcelHelper {
             if (inParams != null && inParams.size() > i) {
                 if (mapping != null) {
                     for (ParamMapping paramMapping : mapping) {
-                        if (paramMapping.getType() == Type.IN
+                        if ((paramMapping.getType() == Type.INPARAM ||paramMapping.getType() == Type.INVALUE)
                                 && paramMapping.getOut().equals(inParams.get(i).getDynamicParam().getCode())) {
                             XSSFCell cell14 = row4.createCell(startCol - 1);
                             cell14.setCellValue(paramMapping.getIn());
@@ -238,7 +238,7 @@ public class ExcelHelper {
             if (outParams != null && outParams.size() > i) {
                 if (mapping != null) {
                     for (ParamMapping paramMapping : mapping) {
-                        if (paramMapping.getType() == Type.OUT
+                        if ((paramMapping.getType() == Type.OUTPARAM||paramMapping.getType() == Type.OUTVALUE)
                                 && paramMapping.getIn().equals(outParams.get(i).getDynamicParam().getCode())) {
                             XSSFCell cell14 = row4.createCell(startCol + 7 + 1);
                             cell14.setCellValue(paramMapping.getOut());

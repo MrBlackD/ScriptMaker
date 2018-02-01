@@ -343,8 +343,10 @@ export default class Operations extends Component {
                                 }}
                                 input={<Input name="type" id="type" />}
                                 >
-                                <MenuItem value="IN">IN</MenuItem>
-                                <MenuItem value="OUT">OUT</MenuItem>
+                                <MenuItem value="INPARAM">INPARAM</MenuItem>
+                                <MenuItem value="INVALUE">INVALUE</MenuItem>
+                                <MenuItem value="OUTPARAM">OUTPARAM</MenuItem>
+                                <MenuItem value="OUTVALUE">OUTVALUE</MenuItem>
                             </Select>
                             <Remove onClick={() => {
                                 let resultMapping = [...this.state.newMapping];
@@ -360,7 +362,7 @@ export default class Operations extends Component {
                             mapping.push({
                                 in:"",
                                 out:"",
-                                type:"IN"
+                                type:"INPARAM"
                             })
                             this.setState({newMapping:mapping});
                         }}>Добавить маппинг</Button>
