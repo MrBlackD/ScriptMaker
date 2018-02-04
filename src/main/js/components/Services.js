@@ -154,7 +154,7 @@ export default class Services extends Component {
                     this.closeDialog();
                     this.clearState();
                     this.createService();
-                }}>{"Создать сервис"}</Button>
+                }} color="accent">{"Создать сервис"}</Button>
             </div>
         );
     }
@@ -376,7 +376,7 @@ export default class Services extends Component {
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <div>
                         <Button raised onClick={()=>{
-                            window.open("http://localhost:8080/download");
+                            window.open(window.location.origin + "/download");
                         }}>Download XLSX</Button>
                     </div>
                     <Button raised color="accent" onClick={this.openDialog}>

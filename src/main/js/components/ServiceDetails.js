@@ -34,9 +34,16 @@ export default class ServiceDetails extends React.Component{
         if(!this.state.service.operations){
             return null;
         }
-
+        let serviceContext = [];
+        this.state.service.inParams.forEach((paramInstance)=>{
+            serviceContext.push(paramInstance.dynamicParam.code);
+        });
         return this.state.service.operations.map((operation) =>{
-            return <Operation data={operation}/>;
+            const currentContext = serviceContext.slice();
+            operation.outParams.forEach((paramInstance)=>{
+                serviceContext.push(paramInstance.dynamicParam.code);
+            })
+            return <Operation data={operation} context={currentContext}/>;
         })
     }
     render(){

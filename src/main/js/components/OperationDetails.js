@@ -35,9 +35,16 @@ export default class OperationDetails extends React.Component{
         if(!this.state.operation.actions){
             return null;
         }
-
+        let operationContext = [];
+        this.state.operation.inParams.forEach((paramInstance)=>{
+            operationContext.push(paramInstance.dynamicParam.code);
+        });
         return this.state.operation.actions.map((actionInstance) =>{
-            return <Action data={actionInstance.action} mapping={actionInstance.mapping}/>;
+            const currentContext = operationContext.slice();
+            actionInstance.action.outParams.forEach((paramInstance)=>{
+                operationContext.push(paramInstance.dynamicParam.code);
+            })
+            return <Action data={actionInstance.action} mapping={actionInstance.mapping} context={currentContext}/>;
         })
     }
 

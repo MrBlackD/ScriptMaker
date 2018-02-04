@@ -16,7 +16,6 @@ export default class Action extends Component {
 
         if(!action)
             return null;
-        console.log(action);
         let inParams = [];
         let outParams = [];
         if(action.inParams&&action.inParams.length > 0)
@@ -25,6 +24,7 @@ export default class Action extends Component {
             outParams = action.outParams;
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
+        let className = "";
         for(let i=0;i < paramsLength; i++){
             let inParam = "";
             let outParam = "";
@@ -43,34 +43,44 @@ export default class Action extends Component {
                     return mapping.type.includes("OUT") && mapping.in === outParam.code;
                 })[0] || {};
 
+            let inMappingClassName = "";
+            let inParamClassName = "";
+            if(this.props.context){
+                if(!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code){
+                    inParamClassName = className = "action-param__context-error";
+                }
+                if(inMapping.type==="INPARAM" && !this.props.context.includes(inMapping.in)){
+                    inMappingClassName = className = "action-param__context-error";
+                }
+            }
             params.push(
                 <TableRow key={i}>
-                    {this.props.mapping&&<TableCell >{inMapping.in}</TableCell>}
-                    <TableCell className={inParam.id}>{inParam.id}</TableCell>
-                    <TableCell className={inParam.name}>{inParam.name}</TableCell>
-                    <TableCell className={inParam.code}>{inParam.code}</TableCell>
-                    <TableCell className={inParam.type}>{inParam.type}</TableCell>
-                    <TableCell className={outParam.id}>{outParam.id}</TableCell>
-                    <TableCell className={outParam.name}>{outParam.name}</TableCell>
-                    <TableCell className={outParam.code}>{outParam.code}</TableCell>
-                    <TableCell className={outParam.type}>{outParam.type}</TableCell>
-                    {this.props.mapping&&<TableCell >{outMapping.out}</TableCell>}
+                    {inMapping.in&&<TableCell className={inMappingClassName}>{inMapping.in}</TableCell>}
+                    <TableCell className={inParamClassName}>{inParam.id}</TableCell>
+                    <TableCell className={inParamClassName}>{inParam.name}</TableCell>
+                    <TableCell className={inParamClassName}>{inParam.code}</TableCell>
+                    <TableCell className={inParamClassName}>{inParam.type}</TableCell>
+                    <TableCell>{outParam.id}</TableCell>
+                    <TableCell>{outParam.name}</TableCell>
+                    <TableCell>{outParam.code}</TableCell>
+                    <TableCell>{outParam.type}</TableCell>
+                    {outMapping.out&&<TableCell >{outMapping.out}</TableCell>}
                 </TableRow>
             );
         }
         if(this.state.collapsed){
-            return (<div id={this.props.id} className="yellow text-center collapsed_table name"
+            return (<div id={this.props.id} className={"yellow text-center collapsed_table name " + className}
                          onClick={() =>{
                              this.setState({collapsed: !collapsed});
                          }}>{action.name +"( code: "+action.code+" )"}</div>)
         }
-        if(this.props.mapping){
+        if(this.props.mapping&&this.props.mapping.length>0){
             return (
                 <Table id={this.props.id} className="action table">
                     <TableHead>
                         <TableRow>
                             <InvisibleTableCell/>
-                            <TableCell className="name" colSpan={8}
+                            <TableCell className={"name " + className} colSpan={8}
                                        onClick={() => {
                                            this.setState({collapsed: !collapsed});
                                        }}>
@@ -82,7 +92,7 @@ export default class Action extends Component {
                     <TableBody>
                         <TableRow>
                             <InvisibleTableCell/>
-                            <TableCell className="yellow bold" colSpan={2}>Имя:</TableCell>
+                            <TableCell className="yellow bold " colSpan={2}>Имя:</TableCell>
                             <TableCell colSpan={6}>{action.name}</TableCell>
                             <InvisibleTableCell/>
                         </TableRow>
@@ -149,7 +159,7 @@ export default class Action extends Component {
                 <Table id={this.props.id} className="action table">
                     <TableHead>
                         <TableRow>
-                            <TableCell className="name" colSpan={8}
+                            <TableCell className={"name " + className} colSpan={8}
                                        onClick={() => {
                                            this.setState({collapsed: !collapsed});
                                        }}>

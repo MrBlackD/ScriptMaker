@@ -4,43 +4,52 @@ import {Link} from "react-router";
 
 
 export default class Operation extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             collapsed: true
         };
     }
 
-    getParams(operation){
+    getParams(operation) {
         let inParams = [];
         let outParams = [];
-        if(operation.inParams&&operation.inParams.length > 0)
+        if (operation.inParams && operation.inParams.length > 0)
             inParams = operation.inParams;
-        if(operation.outParams&&operation.outParams.length > 0)
+        if (operation.outParams && operation.outParams.length > 0)
             outParams = operation.outParams;
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
-        for(let i=0;i < paramsLength; i++){
+        let className = "";
+        for (let i = 0; i < paramsLength; i++) {
             let inParam = "";
             let outParam = "";
-            if(i < inParams.length)
+            if (i < inParams.length) {
                 inParam = inParams[i].dynamicParam;
-            if(i < outParams.length)
+            }
+            if (i < outParams.length) {
                 outParam = outParams[i].dynamicParam;
+            }
+
+            if (this.props.context) {
+                if (!this.props.context.includes(inParam.code)) {
+                    className = "action-param__context-error";
+                }
+            }
             params.push(
                 <TableRow key={i}>
-                    <TableCell className={inParam.id}>{inParam.id}</TableCell>
-                    <TableCell className={inParam.name}>{inParam.name}</TableCell>
-                    <TableCell className={inParam.code}>{inParam.code}</TableCell>
-                    <TableCell className={inParam.type}>{inParam.type}</TableCell>
-                    <TableCell className={outParam.id}>{outParam.id}</TableCell>
-                    <TableCell className={outParam.name}>{outParam.name}</TableCell>
-                    <TableCell className={outParam.code}>{outParam.code}</TableCell>
-                    <TableCell className={outParam.type}>{outParam.type}</TableCell>
+                    <TableCell className={className}>{inParam.id}</TableCell>
+                    <TableCell className={className}>{inParam.name}</TableCell>
+                    <TableCell className={className}>{inParam.code}</TableCell>
+                    <TableCell className={className}>{inParam.type}</TableCell>
+                    <TableCell>{outParam.id}</TableCell>
+                    <TableCell>{outParam.name}</TableCell>
+                    <TableCell>{outParam.code}</TableCell>
+                    <TableCell>{outParam.type}</TableCell>
                 </TableRow>
             );
         }
-        return params;
+        return {className,params};
     }
 
 
@@ -48,21 +57,23 @@ export default class Operation extends Component {
         let operation = this.props.data;
         let collapsed = this.state.collapsed;
         console.log(operation);
-        if(this.state.collapsed){
-            return (<div id={this.props.id} className="ligh-blue text-center collapsed_table"
-                         onClick={() =>{
+        const {className,params} = this.getParams(operation);
+        if (this.state.collapsed) {
+            return (<div id={this.props.id} className={"ligh-blue text-center collapsed_table " + className}
+                         onClick={() => {
                              this.setState({collapsed: !collapsed});
-                         }}>{operation.name +"( code: "+operation.code+" )"}</div>)
+                         }}>{operation.name + "( code: " + operation.code + " )"}</div>)
         }
         return (
-            <Table id={this.props.id} className="operation table" >
+            <Table id={this.props.id} className="operation table">
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={8}  className={"name"}
-                                   onClick={() =>{
+                        <TableCell colSpan={8} className={"name " +className}
+                                   onClick={() => {
                                        this.setState({collapsed: !collapsed});
                                    }}>
-                            <Link to={"/operations/"+operation.id}>{operation.name+"( code: "+operation.code+" )"}</Link>
+                            <Link
+                                to={"/operations/" + operation.id}>{operation.name + "( code: " + operation.code + " )"}</Link>
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -89,9 +100,9 @@ export default class Operation extends Component {
                         <TableCell className="ligh-blue" colSpan={1}>Код</TableCell>
                         <TableCell className="ligh-blue" colSpan={1}>Тип</TableCell>
                     </TableRow>
-                    {this.getParams(operation)}
+                    {params}
                     <TableRow>
-                        <TableCell colSpan={8}  className="ligh-blue bold text-center">
+                        <TableCell colSpan={8} className="ligh-blue bold text-center">
                             Описание
                         </TableCell>
                     </TableRow>
@@ -100,12 +111,16 @@ export default class Operation extends Component {
                     </TableRow>
                     <TableRow>
                         <TableCell className="text-center" colSpan={8}>
-                            {this.props.onEdit&&
+                            {this.props.onEdit &&
                             <Button raised={true}
-                                    onClick={()=>{this.props.onEdit(operation)}}>Редактировать</Button>}
-                            {this.props.onDelete&&
+                                    onClick={() => {
+                                        this.props.onEdit(operation)
+                                    }}>Редактировать</Button>}
+                            {this.props.onDelete &&
                             <Button raised={true}
-                                    onClick={()=>{this.props.onDelete(operation.id)}}>Удалить</Button>}
+                                    onClick={() => {
+                                        this.props.onDelete(operation.id)
+                                    }}>Удалить</Button>}
                         </TableCell>
                     </TableRow>
                 </TableBody>

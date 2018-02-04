@@ -11,19 +11,18 @@ export default class DynamicParam extends Component {
 
         let onClose = this.props.onClose;
         let onEdit = this.props.onEdit;
-        const fields = ["id","name","code","type"];
-        let result = fields.map((field,index)=>{
-            return <TableCell key={index} className="cell">{item[field]}</TableCell>
-        })
-        result.push(
-            <TableCell key={item.length} className="cell">
+        return [
+            <TableCell key={item.id} className="cell">{item.id}</TableCell>,
+            <TableCell key={item.id + "name" + item.name} className="cell">{item.name}</TableCell>,
+            <TableCell key={item.id + "code" + item.code} className="cell">{item.code}</TableCell>,
+            <TableCell key={item.id + "type" + item.type} className="cell">{item.type}</TableCell>,
+            <TableCell key={item.id + "edit"} className="cell">
                 <Edit onClick={() => onEdit(item["id"])} className="icon-edit"/>
-            </TableCell>);
-        result.push(
-            <TableCell key={item.length + 1} className="cell">
+            </TableCell>,
+            <TableCell key={item.id + "delete"} className="cell">
                 <Delete onClick={() => onClose(item["id"])} className="icon-delete"/>
-            </TableCell>);
-        return result;
+            </TableCell>
+        ];
     }
 
     render() {

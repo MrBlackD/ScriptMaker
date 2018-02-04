@@ -14,10 +14,12 @@ export default class Service extends Component {
     getParams(service){
         let inParams = [];
         let outParams = [];
-        if(service.inParams&&service.inParams.length > 0)
+        if(service.inParams&&service.inParams.length > 0){
             inParams = service.inParams;
-        if(service.outParams&&service.outParams.length > 0)
+        }
+        if(service.outParams&&service.outParams.length > 0){
             outParams = service.outParams;
+        }
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
         for(let i=0;i < paramsLength; i++){
@@ -29,14 +31,14 @@ export default class Service extends Component {
                 outParam = outParams[i].dynamicParam;
             params.push(
                 <TableRow key={i}>
-                    <TableCell className={inParam.id}>{inParam.id}</TableCell>
-                    <TableCell className={inParam.name}>{inParam.name}</TableCell>
-                    <TableCell className={inParam.code}>{inParam.code}</TableCell>
-                    <TableCell className={inParam.type}>{inParam.type}</TableCell>
-                    <TableCell className={outParam.id}>{outParam.id}</TableCell>
-                    <TableCell className={outParam.name}>{outParam.name}</TableCell>
-                    <TableCell className={outParam.code}>{outParam.code}</TableCell>
-                    <TableCell className={outParam.type}>{outParam.type}</TableCell>
+                    <TableCell>{inParam.id}</TableCell>
+                    <TableCell>{inParam.name}</TableCell>
+                    <TableCell>{inParam.code}</TableCell>
+                    <TableCell>{inParam.type}</TableCell>
+                    <TableCell>{outParam.id}</TableCell>
+                    <TableCell>{outParam.name}</TableCell>
+                    <TableCell>{outParam.code}</TableCell>
+                    <TableCell>{outParam.type}</TableCell>
                 </TableRow>
             );
         }

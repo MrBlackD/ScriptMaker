@@ -524,8 +524,11 @@ export default class Operations extends Component {
                 <Typography type="subheading" gutterBottom>{"Actions"}</Typography>
                 {this.state.actions.map((action,index) => {
                     const split = action.split(":");
+                    const actionItem = this.state.actionsRegistry.filter((action)=>{
+                        return action.id == split[0];
+                    })[0] || {};
                     return <div>
-                        <span>{split[0]}</span>
+                        <span>{actionItem.name + " ( " + actionItem.code + " ) "}</span>
                         <Remove onClick={() => {
                             let actions = [...this.state.actions];
                             actions.splice(index, 1);
