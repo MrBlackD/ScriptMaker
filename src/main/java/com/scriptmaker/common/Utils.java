@@ -1,13 +1,17 @@
 package com.scriptmaker.common;
 
+import com.scriptmaker.model.DynamicParam;
 import com.scriptmaker.model.DynamicParamInstance;
+import com.scriptmaker.model.ScriptEntity;
 import com.scriptmaker.repository.DynamicParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Admin on 15.06.2017.
@@ -58,5 +62,43 @@ public class Utils {
             dynamicParamInstances.add(dynamicParamInstance);
         }
         return dynamicParamInstances;
+    }
+    public<T extends ScriptEntity,E extends CrudRepository<T, Long>> void linked(T controller, E repository) {
+        Set<DynamicParam> dynamicParams = new HashSet<>();
+        if (controller.getInParams() != null) {
+            dynamicParams.addAll(controller.getInParamsLink());
+        }
+        if (controller.getOutParams() != null)
+            dynamicParams.addAll(controller.getOutParamsLink());
+        if (dynamicParams != null) {
+            Long id=null;
+            for (T t:repository.findAll()) {
+                if(t.getName().equals(controller.getName())) {
+                    id = t.getId();
+                    break;
+                }
+            }
+            for (DynamicParam dynamicParam : dynamicParams) {
+                String string = dynamicParam.getRefersActions();
+                if (string != null) {
+                    String[] strings = string.split(",");
+                    int count = 0;
+                    for (int i = 0; i < strings.length; i++) {
+                        if (!strings[i].equals(controller.getId().toString()))
+                            count++;
+                        else break;
+                    }
+                    if (count == strings.length) {
+                        dynamicParam.setRefersActions(string + "," + id);
+                        dynamicParamRepository.save(dynamicParam);
+                    }
+
+                } else {
+                    dynamicParam.setRefersActions(id.toString());
+                    dynamicParamRepository.save(dynamicParam);
+                }
+
+            }
+        }
     }
 }

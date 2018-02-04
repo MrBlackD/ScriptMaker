@@ -24,7 +24,7 @@ public class Action extends ScriptEntity {
     private List<DynamicParamInstance> inParams;
     @ManyToMany
     private List<DynamicParamInstance> outParams;
-
+    @Override
     public List<DynamicParam> getOutParamsLink(){
         List<DynamicParam> dynamicParams=new ArrayList<>();
         for (DynamicParamInstance dpi:outParams) {
@@ -32,7 +32,7 @@ public class Action extends ScriptEntity {
         }
         return dynamicParams;
     }
-
+    @Override
     public List<DynamicParam> getInParamsLink() {
         List<DynamicParam> dynamicParams=new ArrayList<>();
         for (DynamicParamInstance dpi:inParams) {

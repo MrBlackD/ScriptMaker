@@ -1,5 +1,6 @@
 package com.scriptmaker.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,9 +10,28 @@ public class ScriptEntity {
     protected String name;
     protected String code;
     protected String description;
+    private Long id;
     private List<DynamicParamInstance> inParams;
     private List<DynamicParamInstance> outParams;
+    public List<DynamicParam> getOutParamsLink(){
+        List<DynamicParam> dynamicParams=new ArrayList<>();
+        for (DynamicParamInstance dpi:outParams) {
+            dynamicParams.add(dpi.getDynamicParam());
+        }
+        return dynamicParams;
+    }
 
+    public List<DynamicParam> getInParamsLink() {
+        List<DynamicParam> dynamicParams=new ArrayList<>();
+        for (DynamicParamInstance dpi:inParams) {
+            dynamicParams.add(dpi.getDynamicParam());
+        }
+        return dynamicParams;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
