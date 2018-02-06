@@ -38,7 +38,7 @@ export default class CreateOperation extends Component {
     }
 
     loadDynamicParams(){
-        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+        fetch(window.location.origin + "/api/dynamicParams").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
@@ -47,7 +47,7 @@ export default class CreateOperation extends Component {
     }
 
     loadActions(){
-        fetch("http://localhost:8080/api/actions").then((response) => {
+        fetch(window.location.origin + "/api/actions").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);

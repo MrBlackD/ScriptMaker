@@ -52,14 +52,14 @@ export default class Actions extends Component {
     }
 
     loadData() {
-        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+        fetch(window.location.origin + "/api/dynamicParams").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
             this.setState({dynamicParams: json});
 
         });
-        fetch("http://localhost:8080/api/actions").then((response) => {
+        fetch(window.location.origin + "/api/actions").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
@@ -85,7 +85,7 @@ export default class Actions extends Component {
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
         console.log(name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
-        let url = "http://localhost:8080/api/actions/new?"
+        let url = window.location.origin + "/api/actions/new?"
             + "name=" + name
             + "&code=" + code
             + "&module=" + module
@@ -116,7 +116,7 @@ export default class Actions extends Component {
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
         console.log(action.id + " " + name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
-        let url = "http://localhost:8080/api/actions/edit?"
+        let url = window.location.origin + "/api/actions/edit?"
             + "id=" + action.id;
         if (name) {
             url += "&name=" + name;
@@ -146,7 +146,7 @@ export default class Actions extends Component {
     }
 
     handleDelete(id) {
-        let url = "http://localhost:8080/api/actions/delete?id=" + id;
+        let url = window.location.origin + "/api/actions/delete?id=" + id;
         fetch(url).then((response) => {
             console.log(response);
             this.loadData();

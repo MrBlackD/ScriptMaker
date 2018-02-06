@@ -22,7 +22,7 @@ export default class ActionDetails extends React.Component{
         if(!id){
             return;
         }
-        fetch("http://localhost:8080/api/actions/"+id).then((response) => {
+        fetch(window.location.origin + "/api/actions/"+id).then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);

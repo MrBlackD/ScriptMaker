@@ -22,7 +22,7 @@ export default class OperationDetails extends React.Component{
         if(!id){
             return;
         }
-        fetch("http://localhost:8080/api/operations/"+id).then((response) => {
+        fetch(window.location.origin + "/api/operations/"+id).then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);

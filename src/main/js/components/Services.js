@@ -59,19 +59,19 @@ export default class Services extends Component {
     }
 
     loadData() {
-        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+        fetch(window.location.origin + "/api/dynamicParams").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
             this.setState({dynamicParams: json});
         });
-        fetch("http://localhost:8080/api/operations").then((response) => {
+        fetch(window.location.origin + "/api/operations").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
             this.setState({operationsRegistry: json});
         });
-        fetch("http://localhost:8080/api/services").then((response) => {
+        fetch(window.location.origin + "/api/services").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
@@ -177,7 +177,7 @@ export default class Services extends Component {
             })
         }
         console.log(name + " " + code + " " + description + " " + operations + " " + inParams + " " + outParams);
-        let url = "http://localhost:8080/api/services/new?"
+        let url = window.location.origin + "/api/services/new?"
             + "name=" + name
             + "&code=" + code
             + "&description=" + description;
@@ -268,7 +268,7 @@ export default class Services extends Component {
     }
 
     handleDelete(id){
-        let url = "http://localhost:8080/api/services/delete?id="+id;
+        let url = window.location.origin + "/api/services/delete?id="+id;
         fetch(url).then((response) => {
             console.log(response);
             this.loadData();
@@ -337,7 +337,7 @@ export default class Services extends Component {
             })
         }
         console.log(operation.id+" "+name+" "+code+" "+operations+" "+description+" "+inParams+" "+outParams);
-        let url = "http://localhost:8080/api/services/edit?"
+        let url = window.location.origin + "/api/services/edit?"
             +"id="+operation.id;
         if(name){
             url+="&name="+name;

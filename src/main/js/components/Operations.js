@@ -66,19 +66,19 @@ export default class Operations extends Component {
     }
 
     loadData() {
-        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+        fetch(window.location.origin + "/api/dynamicParams").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
             this.setState({dynamicParams: json});
         });
-        fetch("http://localhost:8080/api/actions").then((response) => {
+        fetch(window.location.origin + "/api/actions").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
             this.setState({actionsRegistry: json});
         });
-        fetch("http://localhost:8080/api/operations").then((response) => {
+        fetch(window.location.origin + "/api/operations").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
@@ -178,7 +178,7 @@ export default class Operations extends Component {
         let outParams = this.state.outParams.join("");
         let actions = this.state.actions.join("!");
         console.log(name + " " + code + " " + description + " " + actions + " " + inParams + " " + outParams);
-        let url = "http://localhost:8080/api/operations/new?"
+        let url = window.location.origin + "/api/operations/new?"
             + "name=" + name
             + "&code=" + code
             + "&description=" + description;
@@ -277,7 +277,7 @@ export default class Operations extends Component {
     }
 
     handleDelete(id) {
-        let url = "http://localhost:8080/api/operations/delete?id=" + id;
+        let url = window.location.origin + "/api/operations/delete?id=" + id;
         fetch(url).then((response) => {
             console.log(response);
             this.loadData();
@@ -451,7 +451,7 @@ export default class Operations extends Component {
         let outParams = this.state.outParams.join("");
         let actions = this.state.actions.join("!");
         console.log(operation.id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
-        let url = "http://localhost:8080/api/operations/edit?"
+        let url = window.location.origin + "/api/operations/edit?"
             + "id=" + operation.id;
         if (name) {
             url += "&name=" + name;

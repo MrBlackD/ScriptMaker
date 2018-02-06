@@ -22,7 +22,7 @@ export default class ServiceDetails extends React.Component{
         if(!id){
             return;
         }
-        fetch("http://localhost:8080/api/services/"+id).then((response) => {
+        fetch(window.location.origin + "/api/services/"+id).then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);

@@ -44,7 +44,7 @@ export default class DynamicParams extends Component {
     }
 
     loadData() {
-        fetch("http://localhost:8080/api/dynamicParams").then((response) => {
+        fetch(window.location.origin + "/api/dynamicParams").then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
@@ -65,7 +65,7 @@ export default class DynamicParams extends Component {
         this.newType.value = "";
         console.log(name + " " + code + " " + type );
 
-        let url = "http://localhost:8080/api/dynamicParams/new?"
+        let url = window.location.origin + "/api/dynamicParams/new?"
                 + "name=" + name
                 + "&code=" + code
                 + "&type=" + type
@@ -88,7 +88,7 @@ export default class DynamicParams extends Component {
         this.editType.value = "";
 
         console.log(id + "" + name + " " + code + " " + type );
-        let url = "http://localhost:8080/api/dynamicParams/edit?"
+        let url = window.location.origin + "/api/dynamicParams/edit?"
             + "id=" + id;
         if (name) {
             url += "&name=" + name;
@@ -110,7 +110,7 @@ export default class DynamicParams extends Component {
     }
 
     handleDelete(id) {
-        let url = "http://localhost:8080/api/dynamicParams/delete?id=" + id;
+        let url = window.location.origin + "/api/dynamicParams/delete?id=" + id;
         fetch(url).then((response) => {
             console.log(response);
             this.loadData();

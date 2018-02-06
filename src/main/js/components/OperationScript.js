@@ -18,7 +18,7 @@ export default class OperationScript extends Component {
     }
 
     loadData(){
-        fetch("http://localhost:8080/api/operations/"+this.props.params.id).then((response) => {
+        fetch(window.location.origin + "/api/operations/"+this.props.params.id).then((response) => {
             return response.json();
         }).then((json) => {
             console.log(json);
