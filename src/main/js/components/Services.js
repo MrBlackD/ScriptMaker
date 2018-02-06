@@ -314,7 +314,7 @@ export default class Services extends Component {
                 <Button raised={true} type="submit" onClick={()=>{
                     this.closeEditDialog();
                     this.handleEditService(this.state.target)}
-                } color="accent">РЕДАКТИРОВАТЬ</Button>
+                } color="accent">ПРИМЕНИТЬ</Button>
             </div>
         );
     }
@@ -414,10 +414,11 @@ export default class Services extends Component {
         return (
             <div>
                 <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
-                {this.renderTableParams("inParams")}
+
                 <Button raised={true} onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
                 }}>Добавить входящий параметр</Button>
+                {this.renderTableParams("inParams")}
             </div>
         );
     }
@@ -426,10 +427,11 @@ export default class Services extends Component {
         return(
             <div>
                 <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
-                {this.renderTableParams("outParams")}
+
                 <Button raised={true} onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
                 }}>Добавить исходящий параметр</Button>
+                {this.renderTableParams("outParams")}
             </div>
         );
     }
