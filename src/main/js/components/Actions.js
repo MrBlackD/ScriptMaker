@@ -10,17 +10,12 @@ import {
     FormControlLabel,
     Paper,
     Switch,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
     TextField,
     Typography
 } from "material-ui";
-import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
+import Params from "./Params";
 
 export default class Actions extends Component {
     constructor(props) {
@@ -36,6 +31,10 @@ export default class Actions extends Component {
             inParams: [],
             outParams: [],
             dynamicParams: [],
+            newName: "",
+            newCode: "",
+            newDescription: "",
+            newModule: "",
             newParamCode: "",
             newParamRequired: false,
             newParamKeepInWorkflow: false,
@@ -72,16 +71,18 @@ export default class Actions extends Component {
 
     }
 
+    handleChange = name => event => {
+        this.setState({
+            [name]: event.target.value,
+        });
+    };
+
     handleCreateAction() {
         this.clearForm();
-        let name = this.newName.value;
-        this.newName.value = "";
-        let code = this.newCode.value;
-        this.newCode.value = "";
-        let module = this.newModule.value;
-        this.newModule.value = "";
-        let description = this.newDescription.value;
-        this.newDescription.value = "";
+        let name = this.state.newName;
+        let code = this.state.newCode;
+        let module = this.state.newModule;
+        let description = this.state.newDescription;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
         console.log(name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
@@ -170,11 +171,11 @@ export default class Actions extends Component {
     }
 
     handleRequestEditDialog() {
-        this.setState({editionDialogOpened: false,inParams:[],outParams:[]});
+        this.setState({editionDialogOpened: false, inParams: [], outParams: []});
     }
 
     openDeleteDialog(id) {
-        this.setState({deleteConfirmDialogOpened: true, targetId: id,inParams:[],outParams:[]});
+        this.setState({deleteConfirmDialogOpened: true, targetId: id, inParams: [], outParams: []});
     }
 
     openEditDialog(action) {
@@ -218,7 +219,8 @@ export default class Actions extends Component {
                         this.handleDelete(this.state.targetId)
                     }
                     } color="secondary" variant="raised">{"Удалить"}</Button>
-                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})} variant="raised">{"Отмена"}</Button>
+                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})}
+                            variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -234,8 +236,8 @@ export default class Actions extends Component {
                     <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <Suggest value={this.state.newParamCode} onChange={(e,{newValue}) =>{
-                        this.setState({newParamCode:newValue});
+                    <Suggest value={this.state.newParamCode} onChange={(e, {newValue}) => {
+                        this.setState({newParamCode: newValue});
                     }}
                              suggestions={this.state.dynamicParams}
                              placeholder="Type dynamic param code" field={"code"}/>
@@ -274,7 +276,7 @@ export default class Actions extends Component {
                             newParamKeepInWorkflow,
                             newParamDefaultValue
                         } = this.state;
-                        const newParamId = this.state.dynamicParams.filter((param) =>{
+                        const newParamId = this.state.dynamicParams.filter((param) => {
                             return param.code == newParamCode;
                         })[0].id;
                         const newParam = newParamId + ","
@@ -314,18 +316,10 @@ export default class Actions extends Component {
 
         return (
             <div className={"dialog__content"}>
-                <TextField inputRef={(input) => {
-                    this.newName = input;
-                }} label="name" id="newName" required={true}/>
-                <TextField inputRef={(input) => {
-                    this.newCode = input;
-                }} label="code" id="newCode" required={true}/>
-                <TextField inputRef={(input) => {
-                    this.newModule = input;
-                }} label="module" id="newModule" required={true}/>
-                <TextField inputRef={(input) => {
-                    this.newDescription = input;
-                }} label="description" id="newDescription" required={true}/>
+                <TextField onChange={this.handleChange("newName")} label="name" required={true}/>
+                <TextField onChange={this.handleChange("newCode")} label="code" required={true}/>
+                <TextField onChange={this.handleChange("newModule")} label="module" required={true}/>
+                <TextField onChange={this.handleChange("newDescription")} label="description" required={true}/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
                 <Button variant="raised" onClick={() => {
@@ -395,8 +389,10 @@ export default class Actions extends Component {
                     }} variant="raised" color="secondary">Создать действие</Button>
                     <div>
                         <SearchField values={this.state.actions}
-                                      field="code"
-                                      onChange={(value) =>{this.setState({filteredActions: value})}}
+                                     field="code"
+                                     onChange={(value) => {
+                                         this.setState({filteredActions: value})
+                                     }}
                         />
                     </div>
                 </div>
@@ -427,7 +423,7 @@ export default class Actions extends Component {
     }
 
     renderOutParams() {
-        return(
+        return (
             <div>
                 <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
                 <Button variant="raised" onClick={() => {
@@ -439,40 +435,24 @@ export default class Actions extends Component {
     }
 
     renderTableParams(params) {
-        return(
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>paramId</TableCell>
-                        <TableCell>defaultValue</TableCell>
-                        <TableCell>required</TableCell>
-                        <TableCell>keepInWorkflow</TableCell>
-                        <TableCell>Remove</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        this.state[params].map((param) => {
-                            const splittedParam = param.slice(0,param.length-1).split(",");
-                            return <TableRow>
-                                <TableCell>{splittedParam[0]}</TableCell>
-                                <TableCell>{splittedParam[3]}</TableCell>
-                                <TableCell>{splittedParam[1]}</TableCell>
-                                <TableCell>{splittedParam[2]}</TableCell>
-                                <TableCell>
-                                    <Remove onClick={() => {
-                                        let resultParams = [...this.state[params]];
-                                        resultParams.splice(resultParams.indexOf(param), 1);
-                                        const state = {...this.state};
-                                        state[params] = resultParams;
-                                        this.setState(state);
-                                    }}/>
-                                </TableCell>
-                            </TableRow>;
-                        })
-                    }
-                </TableBody>
-            </Table>
-        );
+        const resultParams = this.state[params].map((param) => {
+            const splittedParam = param.slice(0, param.length - 1).split(",");
+            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam[0])[0];
+            return {
+                id: paramInst.id,
+                code: paramInst.code,
+                name: paramInst.name,
+                required: splittedParam[1],
+                keepInWorkflow: splittedParam[2],
+                defaultValue: splittedParam[3],
+            }
+        });
+        return <Params params={resultParams} onRemoveClick={(param) => {
+            let resultParams = [...this.state[params]];
+            resultParams.splice(resultParams.indexOf(param), 1);
+            const state = {...this.state};
+            state[params] = resultParams;
+            this.setState(state);
+        }}/>
     }
 }

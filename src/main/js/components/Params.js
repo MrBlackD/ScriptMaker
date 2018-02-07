@@ -1,0 +1,48 @@
+import React from "react";
+import PropTypes from "prop-types";
+import {Table, TableBody, TableCell, TableHead, TableRow} from "material-ui";
+import {Remove} from "material-ui-icons";
+
+export default class Params extends React.Component{
+
+    render(){
+        const {params, onRemoveClick} = this.props;
+        return(
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Code</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>DefaultValue</TableCell>
+                        <TableCell>Required</TableCell>
+                        <TableCell>KeepInWorkflow</TableCell>
+                        <TableCell>Remove</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                        params.map((param) => {
+                            return <TableRow>
+                                <TableCell>{param.id}</TableCell>
+                                <TableCell>{param.code}</TableCell>
+                                <TableCell>{param.name}</TableCell>
+                                <TableCell>{param.defaultValue}</TableCell>
+                                <TableCell>{param.required}</TableCell>
+                                <TableCell>{param.keepInWorkflow}</TableCell>
+                                <TableCell>
+                                    <Remove onClick={()=>{onRemoveClick(param)}}/>
+                                </TableCell>
+                            </TableRow>;
+                        })
+                    }
+                </TableBody>
+            </Table>
+        );
+    }
+}
+
+Params.propTypes ={
+    params:PropTypes.array.isRequired,
+    onRemoveClick:PropTypes.func
+}

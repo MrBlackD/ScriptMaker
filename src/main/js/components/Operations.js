@@ -13,11 +13,6 @@ import {
     Paper,
     Select,
     Switch,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
     TextField,
     Typography
 } from "material-ui";
@@ -25,6 +20,7 @@ import Autosuggest from "react-autosuggest";
 import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
+import Params from "./Params";
 
 
 export default class Operations extends Component {
@@ -285,7 +281,7 @@ export default class Operations extends Component {
     }
 
     closeEditDialog = () => {
-        this.setState({showEditDialog: false});
+        this.setState({showEditDialog: false,inParams:[],outParams:[]});
     }
 
     renderEditionDialog() {
@@ -569,41 +565,25 @@ export default class Operations extends Component {
     }
 
     renderTableParams(params) {
-        return(
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>paramId</TableCell>
-                        <TableCell>defaultValue</TableCell>
-                        <TableCell>required</TableCell>
-                        <TableCell>keepInWorkflow</TableCell>
-                        <TableCell>Remove</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        this.state[params].map((param) => {
-                            const splittedParam = param.slice(0,param.length-1).split(",");
-                            return <TableRow>
-                                <TableCell>{splittedParam[0]}</TableCell>
-                                <TableCell>{splittedParam[3]}</TableCell>
-                                <TableCell>{splittedParam[1]}</TableCell>
-                                <TableCell>{splittedParam[2]}</TableCell>
-                                <TableCell>
-                                    <Remove onClick={() => {
-                                        let resultParams = [...this.state[params]];
-                                        resultParams.splice(resultParams.indexOf(param), 1);
-                                        const state = {...this.state};
-                                        state[params] = resultParams;
-                                        this.setState(state);
-                                    }}/>
-                                </TableCell>
-                            </TableRow>;
-                        })
-                    }
-                </TableBody>
-            </Table>
-        );
+        const resultParams = this.state[params].map((param) => {
+            const splittedParam = param.slice(0, param.length - 1).split(",");
+            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam[0])[0];
+            return {
+                id: paramInst.id,
+                code: paramInst.code,
+                name: paramInst.name,
+                required: splittedParam[1],
+                keepInWorkflow: splittedParam[2],
+                defaultValue: splittedParam[3],
+            }
+        });
+        return <Params params={resultParams} onRemoveClick={(param) => {
+            let resultParams = [...this.state[params]];
+            resultParams.splice(resultParams.indexOf(param), 1);
+            const state = {...this.state};
+            state[params] = resultParams;
+            this.setState(state);
+        }}/>
     }
 
     renderAddParamDialog() {
