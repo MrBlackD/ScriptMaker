@@ -162,10 +162,10 @@ export default class Operations extends Component {
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.closeDialog();
                     this.createOperation();
-                }} color="accent">{"Создать операцию"}</Button>
+                }} color="secondary">{"Создать операцию"}</Button>
             </div>
         );
     }
@@ -227,8 +227,8 @@ export default class Operations extends Component {
                         this.setState({showDeleteDialog: false});
                         this.handleDelete(this.state.targetId)
                     }
-                    } color="accent" raised>{"Удалить"}</Button>
-                    <Button onClick={() => this.setState({showDeleteDialog: false})} raised>{"Отмена"}</Button>
+                    } color="secondary" variant="raised">{"Удалить"}</Button>
+                    <Button onClick={() => this.setState({showDeleteDialog: false})} variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -357,7 +357,7 @@ export default class Operations extends Component {
                     })}
                     <div>
 
-                        <Button raised={true} type="submit" onClick={() => {
+                        <Button variant="raised" type="submit" onClick={() => {
                             const mapping = this.state.newMapping.slice();
                             mapping.push({
                                 in:"",
@@ -368,7 +368,7 @@ export default class Operations extends Component {
                         }}>Добавить маппинг</Button>
                     </div>
                     <div>
-                        <Button raised={true} type="submit" onClick={() => {
+                        <Button variant="raised" type="submit" onClick={() => {
                             const actions = this.state.actions.slice();
                             let newMapping = "";
                             this.state.newMapping.forEach((mapping)=>{
@@ -384,7 +384,7 @@ export default class Operations extends Component {
                                 newActionCode:"",
                                 newMapping:[]
                             });
-                        }} color="accent">Добавить</Button>
+                        }} color="secondary">Добавить</Button>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -434,11 +434,11 @@ export default class Operations extends Component {
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button raised={true} type="submit" onClick={() => {
+                <Button variant="raised" type="submit" onClick={() => {
                     this.closeEditDialog();
                     this.handleEditOperation(this.state.target)
                 }
-                } color="accent">ПРИМЕНИТЬ</Button>
+                } color="secondary">ПРИМЕНИТЬ</Button>
             </div>
         );
     }
@@ -486,7 +486,7 @@ export default class Operations extends Component {
         return (
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
-                    <Button raised color="accent" onClick={this.openDialog}>
+                    <Button variant="raised" color="secondary" onClick={this.openDialog}>
                         Создать операцию
                     </Button>
                     <div>
@@ -536,7 +536,7 @@ export default class Operations extends Component {
                         }}/>
                     </div>
                 })}
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openAddActionDialog: true});
                 }}>Добавить действие</Button>
             </div>
@@ -547,7 +547,7 @@ export default class Operations extends Component {
             <div>
                 <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
 
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
                 }}>Добавить входящий параметр</Button>
                 {this.renderTableParams("inParams")}
@@ -560,7 +560,7 @@ export default class Operations extends Component {
             <div>
                 <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
 
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
                 }}>Добавить исходящий параметр</Button>
                 {this.renderTableParams("outParams")}
@@ -648,7 +648,7 @@ export default class Operations extends Component {
                         }
                         label="KeepInWorkflow"
                     />
-                    <Button raised={true} onClick={() => {
+                    <Button variant="raised" onClick={() => {
                         let params = this.state[this.state.newParamType].slice();
                         const {
                             newParamCode,

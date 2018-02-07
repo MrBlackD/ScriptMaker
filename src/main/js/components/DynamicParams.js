@@ -299,8 +299,8 @@ export default class DynamicParams extends Component {
                         this.setState({deleteConfirmDialogOpened: false});
                         this.handleDelete(this.state.targetId)
                     }
-                    } color="accent" raised>{"Удалить"}</Button>
-                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})} raised>{"Отмена"}</Button>
+                    } color="secondary" variant="raised">{"Удалить"}</Button>
+                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})} variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -319,7 +319,7 @@ export default class DynamicParams extends Component {
                     this.newType = input;
                 }} label="Type" required={true}/>
 
-                <Button color="accent" raised={true} onClick={() => {
+                <Button color="secondary" variant="raised" onClick={() => {
                     this.handleRequestCloseDialog();
                     this.handleCreateParam()
                 }}>Create new</Button>
@@ -349,7 +349,7 @@ export default class DynamicParams extends Component {
                 <TextField id="editType" inputRef={(input) => {
                     this.editType = input;
                 }} defaultValue={param.type} label="Type"/>
-                <Button color="accent" raised={true} onClick={() => {
+                <Button color="secondary" variant="raised" onClick={() => {
                     this.handleRequestEditDialog();
                     this.handleEditParam(this.state.targetId)
                 }}>Редактировать</Button>
@@ -364,7 +364,7 @@ export default class DynamicParams extends Component {
                 <div style={{"textAlign": "center", "padding": "10px"}}>
                     <Button onClick={() => {
                         this.setState({openDialog: true});
-                    }} raised color="accent">Создать динамический параметр</Button>
+                    }} variant="raised" color="secondary">Создать динамический параметр</Button>
                     <div>
                         <SearchField values={this.state.dynamicParams}
                                      field="code"

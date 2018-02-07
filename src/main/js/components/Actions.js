@@ -217,8 +217,8 @@ export default class Actions extends Component {
                         this.setState({deleteConfirmDialogOpened: false});
                         this.handleDelete(this.state.targetId)
                     }
-                    } color="accent" raised>{"Удалить"}</Button>
-                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})} raised>{"Отмена"}</Button>
+                    } color="secondary" variant="raised">{"Удалить"}</Button>
+                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})} variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -266,7 +266,7 @@ export default class Actions extends Component {
                         }
                         label="KeepInWorkflow"
                     />
-                    <Button raised={true} onClick={() => {
+                    <Button variant="raised" onClick={() => {
                         let params = this.state[this.state.newParamType].slice();
                         const {
                             newParamCode,
@@ -328,10 +328,10 @@ export default class Actions extends Component {
                 }} label="description" id="newDescription" required={true}/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.handleRequestCreateDialog();
                     this.handleCreateAction()
-                }} color="accent">Создать действие</Button>
+                }} color="secondary">Создать действие</Button>
             </div>
         );
     }
@@ -378,10 +378,10 @@ export default class Actions extends Component {
                            defaultValue={action.description} label="description" id="editDescription"/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button raised={true} type="submit" onClick={() => {
+                <Button variant="raised" type="submit" onClick={() => {
                     this.handleRequestEditDialog();
                     this.handleEditAction(this.state.target)
-                }} color="accent">ПРИМЕНИТЬ</Button>
+                }} color="secondary">ПРИМЕНИТЬ</Button>
             </div>
         );
     }
@@ -392,7 +392,7 @@ export default class Actions extends Component {
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <Button onClick={() => {
                         this.setState({createDialogOpened: true});
-                    }} raised color="accent">Создать действие</Button>
+                    }} variant="raised" color="secondary">Создать действие</Button>
                     <div>
                         <SearchField values={this.state.actions}
                                       field="code"
@@ -418,7 +418,7 @@ export default class Actions extends Component {
         return (
             <div>
                 <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
                 }}>Добавить входящий параметр</Button>
                 {this.renderTableParams("inParams")}
@@ -430,7 +430,7 @@ export default class Actions extends Component {
         return(
             <div>
                 <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
                 }}>Добавить исходящий параметр</Button>
                 {this.renderTableParams("outParams")}

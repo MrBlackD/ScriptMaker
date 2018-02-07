@@ -76,7 +76,7 @@ export default class CreateOperation extends Component {
                 <TextField inputRef={(input) => { this.description = input; }} label="description" id="description" required={true}/>
                 <TextField inputRef={(input) => { this.inParams = input; }} label="inParams" id="inParams" />
                 <TextField inputRef={(input) => { this.outParams = input; }} label="outParams" id="outParams" />
-                <Button raised={true} onClick={()=>this.createOperation()}>Создать операцию</Button>
+                <Button variant="raised" onClick={()=>this.createOperation()}>Создать операцию</Button>
             </div>
         );
     }
@@ -125,7 +125,7 @@ export default class CreateOperation extends Component {
         return(
             <div className={"dialog__content"}>
                 <TextField id="newCondition"  inputRef={(input) => { this.newCondition = input; }} label="Condition" required={true}/>
-                <Button color="accent"  raised={true} onClick={()=>{this.handleRequestCloseDialog();this.handleCreateCondition()}}>Add condition</Button>
+                <Button color="secondary"  variant="raised" onClick={()=>{this.handleRequestCloseDialog();this.handleCreateCondition()}}>Add condition</Button>
             </div>
         );
     }

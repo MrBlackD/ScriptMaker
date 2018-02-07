@@ -67,6 +67,7 @@ export default class Action extends Component {
                     {outMapping.out&&<TableCell >{outMapping.out}</TableCell>}
                 </TableRow>
             );
+
         }
         if(this.state.collapsed){
             return (<div id={this.props.id} className={"yellow text-center collapsed_table name " + className}
@@ -142,10 +143,10 @@ export default class Action extends Component {
                         <TableRow>
                             <InvisibleTableCell/>
                             <TableCell className="text-center" colSpan={8}>
-                                {this.props.onEdit && <Button raised={true} onClick={() => {
+                                {this.props.onEdit && <Button variant="raised" onClick={() => {
                                     this.props.onEdit(action)
                                 }}>Редактировать</Button>}
-                                {this.props.onDelete && <Button raised={true} onClick={() => {
+                                {this.props.onDelete && <Button variant="raised" onClick={() => {
                                     this.props.onDelete(action.id)
                                 }}>Удалить</Button>}
                             </TableCell>
@@ -206,10 +207,10 @@ export default class Action extends Component {
                         </TableRow>
                         <TableRow>
                             <TableCell className="text-center" colSpan={8}>
-                                {this.props.onEdit && <Button raised={true} onClick={() => {
+                                {this.props.onEdit && <Button variant="raised" onClick={() => {
                                     this.props.onEdit(action)
                                 }}>Редактировать</Button>}
-                                {this.props.onDelete && <Button raised={true} onClick={() => {
+                                {this.props.onDelete && <Button variant="raised" onClick={() => {
                                     this.props.onDelete(action.id)
                                 }}>Удалить</Button>}
                             </TableCell>

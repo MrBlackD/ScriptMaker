@@ -50,7 +50,7 @@ export default class ServiceDetails extends React.Component{
         return(
             <Paper>
                 <div style={{"text-align": "center", "padding": "10px"}}>
-                    <Button raised disabled color="accent" onClick={this.openDialog}>
+                    <Button variant="raised" disabled color="secondary" onClick={this.openDialog}>
                         Добавить операцию
                     </Button>
                 </div>

@@ -112,12 +112,12 @@ export default class Operation extends Component {
                     <TableRow>
                         <TableCell className="text-center" colSpan={8}>
                             {this.props.onEdit &&
-                            <Button raised={true}
+                            <Button variant="raised"
                                     onClick={() => {
                                         this.props.onEdit(operation)
                                     }}>Редактировать</Button>}
                             {this.props.onDelete &&
-                            <Button raised={true}
+                            <Button variant="raised"
                                     onClick={() => {
                                         this.props.onDelete(operation.id)
                                     }}>Удалить</Button>}

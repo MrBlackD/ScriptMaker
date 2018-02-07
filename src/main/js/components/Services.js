@@ -150,11 +150,11 @@ export default class Services extends Component {
                 }}/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.closeDialog();
                     this.clearState();
                     this.createService();
-                }} color="accent">{"Создать сервис"}</Button>
+                }} color="secondary">{"Создать сервис"}</Button>
             </div>
         );
     }
@@ -224,8 +224,8 @@ export default class Services extends Component {
                     <Button onClick={()=>{
                         this.setState({showDeleteDialog:false});
                         this.handleDelete(this.state.targetId)}
-                    } color="accent" raised>{"Удалить"}</Button>
-                    <Button onClick={()=>this.setState({showDeleteDialog:false})} raised>{"Отмена"}</Button>
+                    } color="secondary" variant="raised">{"Удалить"}</Button>
+                    <Button onClick={()=>this.setState({showDeleteDialog:false})} variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -311,10 +311,10 @@ export default class Services extends Component {
                 }}/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button raised={true} type="submit" onClick={()=>{
+                <Button variant="raised" type="submit" onClick={()=>{
                     this.closeEditDialog();
                     this.handleEditService(this.state.target)}
-                } color="accent">ПРИМЕНИТЬ</Button>
+                } color="secondary">ПРИМЕНИТЬ</Button>
             </div>
         );
     }
@@ -375,11 +375,11 @@ export default class Services extends Component {
 
                 <div style={{"text-align": "center", "padding": "10px"}}>
                     <div>
-                        <Button raised onClick={()=>{
+                        <Button variant="raised" onClick={()=>{
                             window.open(window.location.origin + "/download");
                         }}>Download XLSX</Button>
                     </div>
-                    <Button raised color="accent" onClick={this.openDialog}>
+                    <Button variant="raised" color="secondary" onClick={this.openDialog}>
                         Создать сервис
                     </Button>
                     <div>
@@ -415,7 +415,7 @@ export default class Services extends Component {
             <div>
                 <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
 
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
                 }}>Добавить входящий параметр</Button>
                 {this.renderTableParams("inParams")}
@@ -428,7 +428,7 @@ export default class Services extends Component {
             <div>
                 <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
 
-                <Button raised={true} onClick={() => {
+                <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
                 }}>Добавить исходящий параметр</Button>
                 {this.renderTableParams("outParams")}
@@ -516,7 +516,7 @@ export default class Services extends Component {
                         }
                         label="KeepInWorkflow"
                     />
-                    <Button raised={true} onClick={() => {
+                    <Button variant="raised" onClick={() => {
                         let params = this.state[this.state.newParamType].slice();
                         const {
                             newParamCode,
