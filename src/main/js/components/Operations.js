@@ -293,20 +293,21 @@ export default class Operations extends Component {
                     {this.state.newMapping.map((mapping,index)=>{
 
                         return <div>
-                            <TextField value={mapping.in}
-                                       onChange={(e) => {
-                                           const newMapping = this.state.newMapping;
-                                           newMapping[index].in = e.target.value;
-                                           this.setState({newMapping: newMapping})
-                                       }}
-                                       label="in"/>
                             <TextField value={mapping.out}
                                        onChange={(e) => {
                                            const newMapping = this.state.newMapping;
                                            newMapping[index].out = e.target.value;
                                            this.setState({newMapping: newMapping})
                                        }}
-                                       label="out"/>
+                                       label="Параметр"/>
+                            <TextField value={mapping.in}
+                                       onChange={(e) => {
+                                           const newMapping = this.state.newMapping;
+                                           newMapping[index].in = e.target.value;
+                                           this.setState({newMapping: newMapping})
+                                       }}
+                                       label="Значение"/>
+
                                 <Select
                                 value={mapping.type}
                                 onChange={(e) => {
@@ -316,10 +317,10 @@ export default class Operations extends Component {
                                 }}
                                 input={<Input name="type" id="type" />}
                                 >
-                                <MenuItem value="INPARAM">INPARAM</MenuItem>
-                                <MenuItem value="INVALUE">INVALUE</MenuItem>
-                                <MenuItem value="OUTPARAM">OUTPARAM</MenuItem>
-                                <MenuItem value="OUTVALUE">OUTVALUE</MenuItem>
+                                <MenuItem value="INPARAM">Входящий маппинг(параметр)</MenuItem>
+                                <MenuItem value="INVALUE">Входящий маппинг(константа)</MenuItem>
+                                <MenuItem value="OUTPARAM">Исходящий маппинг(параметр)</MenuItem>
+                                <MenuItem value="OUTVALUE">Исходящий маппинг(константа)</MenuItem>
                             </Select>
                             <Remove onClick={() => {
                                 let resultMapping = [...this.state.newMapping];
