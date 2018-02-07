@@ -104,6 +104,12 @@ export default class Operations extends Component {
                 <DialogContent classes={{root: "content"}}>
                     {this.renderCreationForm()}
                 </DialogContent>
+                <DialogActions className={"dialog__actions"}>
+                    <Button variant="raised" onClick={() => {
+                        this.closeDialog();
+                        this.createOperation();
+                    }} color="secondary">{"Создать операцию"}</Button>
+                </DialogActions>
             </Dialog>
         );
     }
@@ -158,10 +164,7 @@ export default class Operations extends Component {
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button variant="raised" onClick={() => {
-                    this.closeDialog();
-                    this.createOperation();
-                }} color="secondary">{"Создать операцию"}</Button>
+
             </div>
         );
     }
@@ -294,6 +297,13 @@ export default class Operations extends Component {
                 <DialogContent classes={{root: "content"}}>
                     {this.renderEditionForm()}
                 </DialogContent>
+                <DialogActions className={"dialog__actions"}>
+                    <Button variant="raised" type="submit" onClick={() => {
+                        this.closeEditDialog();
+                        this.handleEditOperation(this.state.target)
+                    }
+                    } color="secondary">ПРИМЕНИТЬ</Button>
+                </DialogActions>
             </Dialog>
         );
     }
@@ -430,11 +440,6 @@ export default class Operations extends Component {
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button variant="raised" type="submit" onClick={() => {
-                    this.closeEditDialog();
-                    this.handleEditOperation(this.state.target)
-                }
-                } color="secondary">ПРИМЕНИТЬ</Button>
             </div>
         );
     }

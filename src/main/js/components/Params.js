@@ -7,6 +7,9 @@ export default class Params extends React.Component{
 
     render(){
         const {params, onRemoveClick} = this.props;
+        if(params.length === 0){
+            return null;
+        }
         return(
             <Table>
                 <TableHead>
@@ -23,7 +26,7 @@ export default class Params extends React.Component{
                 <TableBody>
                     {
                         params.map((param) => {
-                            return <TableRow>
+                            return <TableRow key={param.id}>
                                 <TableCell>{param.id}</TableCell>
                                 <TableCell>{param.code}</TableCell>
                                 <TableCell>{param.name}</TableCell>

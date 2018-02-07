@@ -308,6 +308,12 @@ export default class Actions extends Component {
                 <DialogContent classes={{root: "content"}}>
                     {this.renderCreationForm()}
                 </DialogContent>
+                <DialogActions className={"dialog__actions"}>
+                    <Button variant="raised" onClick={() => {
+                        this.handleRequestCreateDialog();
+                        this.handleCreateAction()
+                    }} color="secondary">Создать действие</Button>
+                </DialogActions>
             </Dialog>
         );
     }
@@ -322,10 +328,6 @@ export default class Actions extends Component {
                 <TextField onChange={this.handleChange("newDescription")} label="description" required={true}/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button variant="raised" onClick={() => {
-                    this.handleRequestCreateDialog();
-                    this.handleCreateAction()
-                }} color="secondary">Создать действие</Button>
             </div>
         );
     }
@@ -341,6 +343,12 @@ export default class Actions extends Component {
                 <DialogContent classes={{root: "content"}}>
                     {this.renderEditionForm()}
                 </DialogContent>
+                <DialogActions className={"dialog__actions"}>
+                    <Button variant="raised" type="submit" onClick={() => {
+                        this.handleRequestEditDialog();
+                        this.handleEditAction(this.state.target)
+                    }} color="secondary">ПРИМЕНИТЬ</Button>
+                </DialogActions>
             </Dialog>
         );
     }
@@ -372,10 +380,7 @@ export default class Actions extends Component {
                            defaultValue={action.description} label="description" id="editDescription"/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
-                <Button variant="raised" type="submit" onClick={() => {
-                    this.handleRequestEditDialog();
-                    this.handleEditAction(this.state.target)
-                }} color="secondary">ПРИМЕНИТЬ</Button>
+
             </div>
         );
     }
