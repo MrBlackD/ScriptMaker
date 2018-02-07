@@ -34,7 +34,11 @@ export default class Actions extends Component {
             newName: "",
             newCode: "",
             newDescription: "",
-            newModule: "",
+            newModule: "dul-module",
+            editName:"",
+            editCode:"",
+            editModule:"",
+            editDescription:"",
             newParamCode: "",
             newParamRequired: false,
             newParamKeepInWorkflow: false,
@@ -106,14 +110,10 @@ export default class Actions extends Component {
     }
 
     handleEditAction(action) {
-        let name = this.editName.value;
-        this.editName.value = "";
-        let code = this.editCode.value;
-        this.editCode.value = "";
-        let module = this.editModule.value;
-        this.editModule.value = "";
-        let description = this.editDescription.value;
-        this.editDescription.value = "";
+        let name = this.state.editName;
+        let code = this.state.editCode;
+        let module = this.state.editModule.value;
+        let description = this.state.editDescription.value;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
         console.log(action.id + " " + name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
@@ -197,6 +197,10 @@ export default class Actions extends Component {
         this.setState({
             editionDialogOpened: true,
             target: action,
+            editName:action.name,
+            editCode:action.code,
+            editModule:action.module,
+            editDescription:action.description,
             inParams: inParams,
             outParams: outParams
         });
@@ -233,14 +237,14 @@ export default class Actions extends Component {
                         this.setState({openedAddParamDialog: false})
                     }}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     <Suggest value={this.state.newParamCode} onChange={(e, {newValue}) => {
                         this.setState({newParamCode: newValue});
                     }}
                              suggestions={this.state.dynamicParams}
-                             placeholder="Type dynamic param code" field={"code"}/>
+                             placeholder="Код динамического параметра" field={"code"}/>
                     <TextField value={this.state.newParamDefaultValue}
                                onChange={(e) => {
                                    this.setState({newParamDefaultValue: e.target.value})
@@ -303,7 +307,7 @@ export default class Actions extends Component {
             <Dialog classes={{paper: "dialog"}} open={this.state.createDialogOpened}
                     onClose={this.handleRequestCreateDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Создание действия"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Создание действия"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderCreationForm()}
@@ -338,7 +342,7 @@ export default class Actions extends Component {
             <Dialog classes={{paper: "dialog"}} open={this.state.editionDialogOpened}
                     onClose={this.handleRequestEditDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Редактирование действия"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Редактирование действия"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderEditionForm()}
@@ -362,25 +366,12 @@ export default class Actions extends Component {
 
         return (
             <div className={"dialog__content"}>
-                <TextField inputRef={(input) => {
-                    this.editName = input;
-                }}
-                           defaultValue={action.name} label="name" id="editName"/>
-                <TextField inputRef={(input) => {
-                    this.editCode = input;
-                }}
-                           defaultValue={action.code} label="code" id="editCode"/>
-                <TextField inputRef={(input) => {
-                    this.editModule = input;
-                }}
-                           defaultValue={action.module} label="module" id="editModule"/>
-                <TextField inputRef={(input) => {
-                    this.editDescription = input;
-                }}
-                           defaultValue={action.description} label="description" id="editDescription"/>
+                <TextField onChange={this.handleChange("editName")} value={this.state.editName} label="name" />
+                <TextField onChange={this.handleChange("editCode")} value={this.state.editCode} label="code"/>
+                <TextField onChange={this.handleChange("editModule")} value={this.state.editModule} label="module"/>
+                <TextField onChange={this.handleChange("editDescription")} value={this.state.editDescription} label="description" />
                 {this.renderInParams()}
                 {this.renderOutParams()}
-
             </div>
         );
     }
@@ -412,13 +403,13 @@ export default class Actions extends Component {
     }
 
     clearForm() {
-        this.setState({inParams: []});
+        this.setState({inParams: [],newModule:"dul-module"});
     }
 
     renderInParams() {
         return (
             <div>
-                <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Входящие параметры"}</Typography>
                 <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
                 }}>Добавить входящий параметр</Button>
@@ -430,7 +421,7 @@ export default class Actions extends Component {
     renderOutParams() {
         return (
             <div>
-                <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
                 <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
                 }}>Добавить исходящий параметр</Button>

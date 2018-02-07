@@ -27,7 +27,7 @@ export default class Services extends Component {
         this.state = {
             name: "",
             code: "",
-            description: "",
+            description: "dul-module",
             targetId:0,
             target:{},
             inParams: [],
@@ -92,7 +92,7 @@ export default class Services extends Component {
             <Dialog classes={{paper: "dialog"}} open={this.state.createDialogOpened}
                     onClose={this.closeDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Создание сервиса"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Создание сервиса"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderCreationForm()}
@@ -126,7 +126,7 @@ export default class Services extends Component {
                              this.setState({operations});
                          }}
                          suggestions={this.state.operationsRegistry}
-                         placeholder="Type dynamic param code" field={"code"}
+                         placeholder="Код операции" field={"code"}
                 />
                 <Remove onClick={() => {
                     let operations = [...this.state.operations];
@@ -282,7 +282,7 @@ export default class Services extends Component {
             <Dialog classes={{paper:"dialog"}} open={this.state.showEditDialog}
                     onClose={this.closeEditDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Редактирование сервиса"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Редактирование сервиса"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root:"content"}}>
                     {this.renderEditionForm()}
@@ -402,7 +402,7 @@ export default class Services extends Component {
         this.setState({
             name: "",
             code: "",
-            description: "",
+            description: "dul-module",
             module: "",
             actions: "",
             inParams: [],
@@ -413,7 +413,7 @@ export default class Services extends Component {
     renderInParams() {
         return (
             <div>
-                <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Входящие параметры"}</Typography>
 
                 <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
@@ -426,7 +426,7 @@ export default class Services extends Component {
     renderOutParams() {
         return(
             <div>
-                <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
 
                 <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
@@ -465,7 +465,7 @@ export default class Services extends Component {
                         this.setState({openedAddParamDialog: false})
                     }}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     <Suggest value={this.state.newParamCode} onChange={(e,{newValue})=>{

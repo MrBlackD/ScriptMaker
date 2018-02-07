@@ -59,7 +59,7 @@ export default class CreateOperation extends Component {
         return (
             <div>
                 <Button color={"accent"} className={"button_fullwidth"}>
-                    <Typography color={"accent"} type="headline">{this.state.operation.name}</Typography>
+                    <Typography color={"secondary"} variant="headline">{this.state.operation.name}</Typography>
                 </Button>
                 <Divider/>
                 <Script nodes={this.state.script}/>
@@ -112,7 +112,7 @@ export default class CreateOperation extends Component {
         return(
             <Dialog classes={{paper:"dialog"}} open={this.state.conditionCreationDialogOpened} onRequestClose={this.handleRequestCloseDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Добавление условия"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Добавление условия"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root:"content"}}>
                     {this.renderConditionCreationForm()}

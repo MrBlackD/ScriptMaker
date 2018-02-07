@@ -180,7 +180,7 @@ export default class DynamicParams extends Component {
         return (
             <Dialog classes={{paper: "dialog"}} open={this.state.openDialog} onClose={this.handleRequestCloseDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Создание динамического параметра"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Создание динамического параметра"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderCreationForm()}
@@ -194,7 +194,7 @@ export default class DynamicParams extends Component {
             <Dialog classes={{paper: "dialog"}} open={this.state.editionDialogOpened}
                     onClose={this.handleRequestEditDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Редактирование динамического параметра"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Редактирование динамического параметра"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderEditionForm()}

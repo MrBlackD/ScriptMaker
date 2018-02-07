@@ -16,7 +16,7 @@ import {
     TextField,
     Typography
 } from "material-ui";
-import Autosuggest from "react-autosuggest";
+
 import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
@@ -31,12 +31,13 @@ export default class Operations extends Component {
             targetId:0,
             target:{},
             code: "",
-            description: "",
+            description: "dul-module",
             actions: [],
             inParams: [],
             outParams: [],
             operations: {},
             createDialogOpened: false,
+            showEditDialog:false,
             dynamicParams: [],
             actionsRegistry: [],
             value: "",
@@ -99,7 +100,7 @@ export default class Operations extends Component {
             <Dialog classes={{paper: "dialog"}} open={this.state.createDialogOpened}
                     onClose={this.closeDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Создание операции"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Создание операции"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderCreationForm()}
@@ -120,40 +121,6 @@ export default class Operations extends Component {
         });
     };
 
-    renderActionsInputs = () => {
-        console.log(this.state.actions);
-        const {suggestions} = this.state;
-
-        return this.state.actions.map((action, index) => {
-            const value = this.state.actions[index] || "";
-            const inputProps = {
-                placeholder: 'Type an action code',
-                value: value,
-                onChange: (event, {newValue}) => {
-                    let actions = [...this.state.actions];
-                    actions[index] = newValue;
-                    this.setState({actions});
-                }
-            };
-            return <div key={index}>
-                <Autosuggest
-                    suggestions={suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    inputProps={inputProps}
-                />
-                <Remove onClick={() => {
-                    let actions = [...this.state.actions];
-                    actions.splice(index, 1);
-                    console.log(index);
-                    this.setState({actions});
-                }}/>
-            </div>
-        });
-
-    }
 
     renderCreationForm() {
         return (
@@ -292,7 +259,7 @@ export default class Operations extends Component {
             <Dialog classes={{paper: "dialog"}} open={this.state.showEditDialog}
                     onClose={this.closeEditDialog}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Редактирование операции"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Редактирование операции"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     {this.renderEditionForm()}
@@ -315,7 +282,7 @@ export default class Operations extends Component {
                         this.setState({openAddActionDialog: false})
                     }}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Добавление действия"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Добавление действия"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     <Suggest value={this.state.newActionCode} onChange={(e,{newValue})=>{
@@ -397,35 +364,6 @@ export default class Operations extends Component {
         );
     }
 
-    getSuggestions = value => {
-        const inputValue = value.trim().toLowerCase();
-        const inputLength = inputValue.length;
-
-        return inputLength === 0 ? [] : this.state.actionsRegistry.filter(action =>
-            action.code.toLowerCase().slice(0, inputLength) === inputValue
-        );
-    };
-
-    getSuggestionValue = suggestion => suggestion.code;
-    renderSuggestion = suggestion => (
-        <span>
-            {suggestion.code}
-        </span>
-    );
-
-
-    onSuggestionsFetchRequested = ({value}) => {
-        this.setState({
-            suggestions: this.getSuggestions(value)
-        });
-    };
-
-
-    onSuggestionsClearRequested = () => {
-        this.setState({
-            suggestions: []
-        });
-    };
 
     renderEditionForm() {
 
@@ -511,7 +449,7 @@ export default class Operations extends Component {
         this.setState({
             name: "",
             code: "",
-            description: "",
+            description: "dul-module",
             module: "",
             actions: [],
             inParams: [],
@@ -522,7 +460,7 @@ export default class Operations extends Component {
     renderOperationActions() {
         return(
             <div>
-                <Typography type="subheading" gutterBottom>{"Actions"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Actions"}</Typography>
                 {this.state.actions.map((action,index) => {
                     const split = action.split(":");
                     const actionItem = this.state.actionsRegistry.filter((action)=>{
@@ -546,7 +484,7 @@ export default class Operations extends Component {
     renderInParams() {
         return (
             <div>
-                <Typography type="subheading" gutterBottom>{"Входящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Входящие параметры"}</Typography>
 
                 <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "inParams"});
@@ -559,7 +497,7 @@ export default class Operations extends Component {
     renderOutParams() {
         return(
             <div>
-                <Typography type="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
 
                 <Button variant="raised" onClick={() => {
                     this.setState({openedAddParamDialog: true, newParamType: "outParams"});
@@ -598,7 +536,7 @@ export default class Operations extends Component {
                         this.setState({openedAddParamDialog: false})
                     }}>
                 <DialogTitle>
-                    <Typography type="headline" gutterBottom>{"Динамический параметр"}</Typography>
+                    <Typography variant="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
                     <Suggest value={this.state.newParamCode} onChange={(e,{newValue})=>{
