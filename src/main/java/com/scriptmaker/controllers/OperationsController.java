@@ -67,7 +67,7 @@ public class OperationsController {
     public Operation newOperation(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "code") String code,
-            @RequestParam(name = "description") String description,
+            @RequestParam(name = "description",defaultValue = "") String description,
             @RequestParam(name = "inParams", required = false) String inParams,
             @RequestParam(name = "outParams", required = false) String outParams,
             @RequestParam(name = "startNode", required = false) String node,
@@ -155,7 +155,7 @@ public class OperationsController {
             @RequestParam(name = "id") String id,
             @RequestParam(name = "name") String name,
             @RequestParam(name = "code") String code,
-            @RequestParam(name = "description") String description,
+            @RequestParam(name = "description",defaultValue = "") String description,
             @RequestParam(name = "inParams", required = false) String inParams,
             @RequestParam(name = "outParams", required = false) String outParams,
             @RequestParam(name = "actions", required = false) String actions

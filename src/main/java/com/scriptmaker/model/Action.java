@@ -2,6 +2,7 @@ package com.scriptmaker.model;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ public class Action extends ScriptEntity {
     private String name;
     private String code;
     private String module;
+    @Column( length = 100000 )
     private String description;
     @ManyToMany
     private List<DynamicParamInstance> inParams;
