@@ -112,8 +112,8 @@ export default class Actions extends Component {
     handleEditAction(action) {
         let name = this.state.editName;
         let code = this.state.editCode;
-        let module = this.state.editModule.value;
-        let description = this.state.editDescription.value;
+        let module = this.state.editModule;
+        let description = this.state.editDescription;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
         console.log(action.id + " " + name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);

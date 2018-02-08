@@ -101,8 +101,8 @@ public class ExcelHelper {
 
 
         XSSFCell cell = row.createCell(startCol);
-        cell.setCellValue("Действие");
-        XSSFCellStyle simpleBorder = cell.getCellStyle();
+        cell.setCellValue("Наименование");
+        XSSFCellStyle simpleBorder = workbook.createCellStyle();
         addCommonStyle(simpleBorder, BorderStyle.MEDIUM);
         XSSFCellStyle borderWithBackground = workbook.createCellStyle();
         addCommonStyle(borderWithBackground, BorderStyle.MEDIUM);
@@ -118,15 +118,32 @@ public class ExcelHelper {
         borderWithBackground.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         cell.setCellStyle(borderWithBackground);
         sheet.addMergedRegion(new CellRangeAddress(startRow, startRow, startCol, startCol + 1));
+
+
         XSSFCell cell1 = row.createCell(startCol + 2);
         cell1.setCellValue(scriptEntity.getName());
         cell1.setCellStyle(simpleBorder);
         sheet.addMergedRegion(new CellRangeAddress(startRow, startRow, startCol + 2, startCol + 7));
 
+        for(int i = startCol;i<=startCol+1;i++){
+            XSSFCell tmp = row.getCell(i);
+            if(tmp == null){
+                tmp = row.createCell(i);
+            }
+            tmp.setCellStyle(borderWithBackground);
+        }
+        for(int i = startCol +2;i<=startCol+7;i++){
+            XSSFCell tmp = row.getCell(i);
+            if(tmp == null){
+                tmp = row.createCell(i);
+            }
+            tmp.setCellStyle(simpleBorder);
+        }
+
         XSSFRow row1 = getOrCreateRow(sheet, startRow + 1);
 
         XSSFCell cell2 = row1.createCell(startCol);
-        cell2.setCellValue("Код действия");
+        cell2.setCellValue("Код");
         cell2.setCellStyle(borderWithBackground);
         sheet.addMergedRegion(new CellRangeAddress(startRow + 1, startRow + 1, startCol, startCol + 1));
         XSSFCell cell3 = row1.createCell(startCol + 2);
@@ -134,15 +151,49 @@ public class ExcelHelper {
         cell3.setCellStyle(simpleBorder);
         sheet.addMergedRegion(new CellRangeAddress(startRow + 1, startRow + 1, startCol + 2, startCol + 7));
 
+        for(int i = startCol;i<=startCol+1;i++){
+            XSSFCell tmp = row1.getCell(i);
+            if(tmp == null){
+                tmp = row1.createCell(i);
+            }
+            tmp.setCellStyle(borderWithBackground);
+        }
+        for(int i = startCol +2;i<=startCol+7;i++){
+            XSSFCell tmp = row1.getCell(i);
+            if(tmp == null){
+                tmp = row1.createCell(i);
+            }
+            tmp.setCellStyle(simpleBorder);
+        }
+
+
         XSSFRow row2 = getOrCreateRow(sheet, startRow + 2);
         XSSFCell cell4 = row2.createCell(startCol);
         cell4.setCellValue("Входящие параметры");
         cell4.setCellStyle(borderWithBackground);
         sheet.addMergedRegion(new CellRangeAddress(startRow + 2, startRow + 3, startCol, startCol + 3));
+
         XSSFCell cell5 = row2.createCell(startCol + 4);
         cell5.setCellValue("Исходящие параметры");
         cell5.setCellStyle(borderWithBackground);
         sheet.addMergedRegion(new CellRangeAddress(startRow + 2, startRow + 3, startCol + 4, startCol + 7));
+
+
+        for(int i = startCol;i<=startCol+7;i++){
+            XSSFCell tmp = row2.getCell(i);
+            if(tmp == null){
+                tmp = row2.createCell(i);
+            }
+            tmp.setCellStyle(borderWithBackground);
+        }
+        XSSFRow row2_2 = getOrCreateRow(sheet, startRow + 3);
+        for(int i = startCol;i<=startCol+7;i++){
+            XSSFCell tmp = row2_2.getCell(i);
+            if(tmp == null){
+                tmp = row2_2.createCell(i);
+            }
+            tmp.setCellStyle(borderWithBackground);
+        }
 
         XSSFRow row3 = getOrCreateRow(sheet, startRow + 4);
         sheet.addMergedRegion(new CellRangeAddress(startRow + 4, startRow + 5, startCol-1, startCol-1));
@@ -159,6 +210,9 @@ public class ExcelHelper {
             XSSFCell cell6 = row3.createCell(startCol -1);
             cell6.setCellValue("Входящий маппинг");
             cell6.setCellStyle(borderWithBackground);
+            XSSFRow row3_2 = getOrCreateRow(sheet,row3.getRowNum() + 1);
+            XSSFCell cell15 = row3_2.createCell(startCol -1);
+            cell15.setCellStyle(borderWithBackground);
         }
         XSSFCell cell6 = row3.createCell(startCol);
         cell6.setCellValue("Имя");
@@ -188,6 +242,25 @@ public class ExcelHelper {
             XSSFCell cell14 = row3.createCell(startCol + 8);
             cell14.setCellValue("Исходящий маппинг");
             cell14.setCellStyle(borderWithBackground);
+            XSSFRow row3_2 = getOrCreateRow(sheet,row3.getRowNum() + 1);
+            XSSFCell cell15 = row3_2.createCell(startCol + 8);
+            cell15.setCellStyle(borderWithBackground);
+        }
+
+        for(int i = startCol;i<=startCol+7;i++){
+            XSSFCell tmp = row3.getCell(i);
+            if(tmp == null){
+                tmp = row3.createCell(i);
+            }
+            tmp.setCellStyle(borderWithBackground);
+        }
+        XSSFRow row3_2 = getOrCreateRow(sheet, row3.getRowNum() +1);
+        for(int i = startCol;i<=startCol+7;i++){
+            XSSFCell tmp = row3_2.getCell(i);
+            if(tmp == null){
+                tmp = row3_2.createCell(i);
+            }
+            tmp.setCellStyle(borderWithBackground);
         }
         List<DynamicParamInstance> inParams = scriptEntity.getInParams();
         List<DynamicParamInstance> outParams = scriptEntity.getOutParams();
@@ -232,6 +305,15 @@ public class ExcelHelper {
                 XSSFCell cell17 = row4.createCell(startCol + 3);
                 cell17.setCellValue(inParams.get(i).getRequired());
                 cell17.setCellStyle(simpleBorder);
+
+                XSSFRow row4_2 = getOrCreateRow(sheet, row4.getRowNum() + 1);
+                for(int ind = startCol;ind<=startCol+3;ind++){
+                    XSSFCell tmp = row4_2.getCell(ind);
+                    if(tmp == null){
+                        tmp = row4_2.createCell(ind);
+                    }
+                    tmp.setCellStyle(simpleBorder);
+                }
             } else {
                 XSSFCell cell14 = row4.createCell(startCol);
                 cell14.setCellValue("");
@@ -245,6 +327,14 @@ public class ExcelHelper {
                 XSSFCell cell17 = row4.createCell(startCol + 3);
                 cell17.setCellValue("");
                 cell17.setCellStyle(simpleBorder);
+                XSSFRow row4_2 = getOrCreateRow(sheet, row4.getRowNum() + 1);
+                for(int ind = startCol;ind<=startCol+3;ind++){
+                    XSSFCell tmp = row4_2.getCell(ind);
+                    if(tmp == null){
+                        tmp = row4_2.createCell(ind);
+                    }
+                    tmp.setCellStyle(simpleBorder);
+                }
             }
             if (outParams != null && outParams.size() > i) {
                 if (mapping != null) {
@@ -273,6 +363,15 @@ public class ExcelHelper {
                 XSSFCell cell17 = row4.createCell(startCol + 7);
                 cell17.setCellValue(outParams.get(i).getRequired());
                 cell17.setCellStyle(simpleBorder);
+
+                XSSFRow row4_2 = getOrCreateRow(sheet, row4.getRowNum() + 1);
+                for(int ind = startCol + 4;ind<=startCol+7;ind++){
+                    XSSFCell tmp = row4_2.getCell(ind);
+                    if(tmp == null){
+                        tmp = row4_2.createCell(ind);
+                    }
+                    tmp.setCellStyle(simpleBorder);
+                }
             } else {
                 XSSFCell cell14 = row4.createCell(startCol + 4);
                 cell14.setCellValue("");
@@ -286,6 +385,14 @@ public class ExcelHelper {
                 XSSFCell cell17 = row4.createCell(startCol + 7);
                 cell17.setCellValue("");
                 cell17.setCellStyle(simpleBorder);
+                XSSFRow row4_2 = getOrCreateRow(sheet, row4.getRowNum() + 1);
+                for(int ind = startCol + 4;ind<=startCol+7;ind++){
+                    XSSFCell tmp = row4_2.getCell(ind);
+                    if(tmp == null){
+                        tmp = row4_2.createCell(ind);
+                    }
+                    tmp.setCellStyle(simpleBorder);
+                }
             }
         }
         XSSFRow row5 = getOrCreateRow(sheet, startRow + 6 + 2 * size);
@@ -294,11 +401,30 @@ public class ExcelHelper {
         cell14.setCellValue("Алгоритм");
         cell14.setCellStyle(borderWithBackground);
 
+        for(int ind = startCol;ind<=startCol+7;ind++){
+            XSSFCell tmp = row5.getCell(ind);
+            if(tmp == null){
+                tmp = row5.createCell(ind);
+            }
+            tmp.setCellStyle(borderWithBackground);
+        }
+
         XSSFRow row6 = getOrCreateRow(sheet, startRow + 6 + 2 * size + 1);
         sheet.addMergedRegion(new CellRangeAddress(row6.getRowNum(), row6.getRowNum() + 3, startCol, startCol + 7));
         XSSFCell cell15 = row6.createCell(startCol);
         cell15.setCellValue(scriptEntity.getDescription());
         cell15.setCellStyle(simpleBorder);
+        for(int j = row6.getRowNum();j<=row6.getRowNum()+3;j++) {
+            XSSFRow xssfRow = getOrCreateRow(sheet, j);
+            for (int ind = startCol; ind <= startCol + 7; ind++) {
+                XSSFCell tmp = xssfRow.getCell(ind);
+                if (tmp == null) {
+                    tmp = xssfRow.createCell(ind);
+                }
+                tmp.setCellStyle(simpleBorder);
+            }
+        }
+
 
         for (int i = startRow; i <= row6.getRowNum() + 3; i++) {
             for (int j = startCol; j <= startCol + 7; j++) {
@@ -310,12 +436,10 @@ public class ExcelHelper {
                 XSSFCellStyle cellStyle = tmpCell.getCellStyle();
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
                 cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-                addCommonStyle(cellStyle, BorderStyle.MEDIUM);
                 tmpCell.setCellStyle(cellStyle);
             }
         }
     }
-
     private static void addCommonStyle(XSSFCellStyle cellStyle, BorderStyle borderStyle) {
         cellStyle.setBorderBottom(borderStyle);
         cellStyle.setBorderRight(borderStyle);
