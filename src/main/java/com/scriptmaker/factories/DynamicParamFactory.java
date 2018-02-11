@@ -2,15 +2,19 @@ package com.scriptmaker.factories;
 
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
+import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.model.Operation;
 import com.scriptmaker.model.Service;
 import com.scriptmaker.repository.ActionRepository;
+import com.scriptmaker.repository.DynamicParamInstanceRepository;
 import com.scriptmaker.repository.DynamicParamRepository;
 import com.scriptmaker.repository.OperationRepository;
 import com.scriptmaker.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,6 +24,8 @@ import java.util.Objects;
 public class DynamicParamFactory {
     @Autowired
     private DynamicParamRepository dynamicParamRepository;
+    @Autowired
+    private DynamicParamInstanceRepository dynamicParamInstanceRepository;
     @Autowired
     private ActionRepository actionRepository;
     @Autowired
@@ -53,7 +59,43 @@ public class DynamicParamFactory {
     }
 
     public void delete(Long id){
-        deleteAllLinks(dynamicParamRepository.findOne(id));
+        DynamicParam param = dynamicParamRepository.findOne(id);
+        List<DynamicParamInstance> paramInstances = dynamicParamInstanceRepository.findByDynamicParam(param);
+
+        List<Action> actions = new ArrayList<>();
+        List<Operation> operations = new ArrayList<>();
+        List<Service> services = new ArrayList<>();
+        for(DynamicParamInstance dynamicParamInstance:paramInstances){
+            actions.addAll(actionRepository.findActionsByInParamsContains(dynamicParamInstance));
+            actions.addAll(actionRepository.findActionsByOutParamsContains(dynamicParamInstance));
+
+            operations.addAll(operationRepository.findActionsByInParamsContains(dynamicParamInstance));
+            operations.addAll(operationRepository.findActionsByOutParamsContains(dynamicParamInstance));
+
+            services.addAll(serviceRepository.findActionsByInParamsContains(dynamicParamInstance));
+            services.addAll(serviceRepository.findActionsByOutParamsContains(dynamicParamInstance));
+        }
+
+        for(Action action:actions){
+            action.getInParams().removeAll(paramInstances);
+            action.getOutParams().removeAll(paramInstances);
+        }
+        for(Operation operation:operations){
+            operation.getInParams().removeAll(paramInstances);
+            operation.getOutParams().removeAll(paramInstances);
+        }
+        for(Service service:services){
+            service.getInParams().removeAll(paramInstances);
+            service.getOutParams().removeAll(paramInstances);
+        }
+        actionRepository.save(actions);
+        operationRepository.save(operations);
+        serviceRepository.save(services);
+
+
+
+        dynamicParamInstanceRepository.delete(paramInstances);
+
         dynamicParamRepository.delete(id);
     }
 
