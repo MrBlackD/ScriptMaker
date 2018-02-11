@@ -73,11 +73,7 @@ public class ActionsController {
 
     private void linked(Action newAction) {
         Set<DynamicParam> dynamicParams = new HashSet<>();
-        if (newAction.getInParams() != null) {
-            dynamicParams.addAll(newAction.getInParamsLink());
-        }
-        if (newAction.getOutParams() != null)
-            dynamicParams.addAll(newAction.getOutParamsLink());
+
         if (dynamicParams != null) {
             Long actionId = actionRepository.findByCode(newAction.getCode()).getId();
             for (DynamicParam dynamicParam : dynamicParams) {
@@ -138,8 +134,7 @@ public class ActionsController {
         Action action = actionRepository.findOne(Long.parseLong(id));
 
 
-        List<DynamicParam> oldInParams = action.getInParamsLink();
-        List<DynamicParam> oldOutParams = action.getOutParamsLink();
+
         if (name != null) {
             action.setName(name);
         }
@@ -156,10 +151,6 @@ public class ActionsController {
             List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
             dynamicParamInstanceRepository.save(inParamInstances);
             action.setInParams(inParamInstances);
-            if (oldInParams != null) {
-                if (oldInParams.removeAll(action.getInParamsLink()))
-                    removeLinked(oldInParams, action);
-            }
         } else {
             action.setInParams(new ArrayList<>());
         }
@@ -167,10 +158,6 @@ public class ActionsController {
             List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
             dynamicParamInstanceRepository.save(outParamInstances);
             action.setOutParams(outParamInstances);
-            if (oldOutParams != null) {
-                if (oldOutParams.removeAll(action.getOutParamsLink()))
-                    removeLinked(oldOutParams, action);
-            }
         } else {
             action.setOutParams(new ArrayList<>());
         }
@@ -181,13 +168,6 @@ public class ActionsController {
 
     @RequestMapping("/api/actions/delete")
     public void deleteAction(@RequestParam(name = "id") String id) {
-        Action action = actionRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> dynamicInParams = action.getInParamsLink();
-        List<DynamicParam> dynamicOutParams = action.getOutParamsLink();
-        if (dynamicInParams != null)
-            removeLinked(dynamicInParams, action);
-        if (dynamicOutParams != null)
-            removeLinked(dynamicOutParams, action);
         actionFactory.delete(Long.parseLong(id));
 
     }

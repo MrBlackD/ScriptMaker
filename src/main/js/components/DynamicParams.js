@@ -288,10 +288,12 @@ export default class DynamicParams extends Component {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {"Удалить динамический параметр?"}
+                        {"Удалить динамический параметр ?"}
                     </DialogContentText>
                     <DialogContentText>
-                        {this.state.dynamicParam.refersActions != null || this.state.dynamicParam.refersOperations || this.state.dynamicParam.refersServices != null ? this.openRefers() : ""}
+                        {this.state.dynamicParam.refersActions ||
+                        this.state.dynamicParam.refersOperations ||
+                        this.state.dynamicParam.refersServices ? this.openRefers() : ""}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

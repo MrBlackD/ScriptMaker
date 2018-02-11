@@ -1,10 +1,19 @@
 package com.scriptmaker.factories;
 
 import com.scriptmaker.model.Action;
+import com.scriptmaker.model.ActionInstance;
+import com.scriptmaker.model.Operation;
+import com.scriptmaker.model.ParamMapping;
+import com.scriptmaker.repository.ActionInstanceRepository;
 import com.scriptmaker.repository.ActionRepository;
+import com.scriptmaker.repository.DynamicParamInstanceRepository;
+import com.scriptmaker.repository.OperationRepository;
+import com.scriptmaker.repository.ParamMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,6 +23,15 @@ import java.util.Objects;
 public class ActionFactory {
     @Autowired
     private ActionRepository actionRepository;
+    @Autowired
+    private ActionInstanceRepository actionInstanceRepository;
+    @Autowired
+    private OperationRepository operationRepository;
+    @Autowired
+    private DynamicParamInstanceRepository dynamicParamInstanceRepository;
+    @Autowired
+    private ParamMappingRepository paramMappingRepository;
+
 
     public void create(Action action) throws Exception {
         if(actionRepository.findByCode(action.getCode()) != null){
@@ -40,6 +58,25 @@ public class ActionFactory {
     }
 
     public void delete(Long id){
+        Action action = actionRepository.findOne(id);
+
+        List<ActionInstance> actionInstances = actionInstanceRepository.findByAction(action);
+        List<Operation> operations = new ArrayList<>();
+        for(ActionInstance actionInstance:actionInstances){
+            List<ParamMapping> mapping = actionInstance.getMapping();
+            actionInstance.setMapping(new ArrayList<>());
+            paramMappingRepository.delete(mapping);
+            operations.addAll(operationRepository.findByActionsContains(actionInstance));
+        }
+        for (Operation operation:operations){
+            operation.getActions().removeAll(actionInstances);
+        }
+        operationRepository.save(operations);
+
+        actionInstanceRepository.delete(actionInstances);
+
+        dynamicParamInstanceRepository.delete(action.getInParams());
+        dynamicParamInstanceRepository.delete(action.getOutParams());
         actionRepository.delete(id);
     }
 }
