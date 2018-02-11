@@ -1,11 +1,14 @@
 package com.scriptmaker.factories;
 
-import com.scriptmaker.model.Operation;
+import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.model.Service;
-import com.scriptmaker.repository.OperationRepository;
+import com.scriptmaker.repository.DynamicParamInstanceRepository;
 import com.scriptmaker.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 /**
  * Created by Sergey on 11.01.2018.
@@ -15,6 +18,8 @@ import java.util.Objects;
 public class ServiceFactory {
     @Autowired
     private ServiceRepository serviceRepository;
+    @Autowired
+    private DynamicParamInstanceRepository dynamicParamInstanceRepository;
 
     public void create(Service service) throws Exception {
         if(serviceRepository.findByCode(service.getCode()) != null){
@@ -42,6 +47,13 @@ public class ServiceFactory {
     }
 
     public void delete(Long id){
+        Service service = serviceRepository.findOne(id);
+        List<DynamicParamInstance> dynamicParamInstances = new ArrayList<>();
+        dynamicParamInstances.addAll(service.getInParams());
+        dynamicParamInstances.addAll(service.getOutParams());
+        service.setInParams(new ArrayList<>());
+        service.setOperations(new ArrayList<>());
+        dynamicParamInstanceRepository.delete(dynamicParamInstances);
         serviceRepository.delete(id);
     }
 }

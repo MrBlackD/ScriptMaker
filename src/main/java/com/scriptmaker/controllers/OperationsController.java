@@ -96,11 +96,6 @@ public class OperationsController {
 
     private void linked(Operation newOperation) {
         Set<DynamicParam> dynamicParams = new HashSet<>();
-        if (newOperation.getInParams() != null) {
-            dynamicParams.addAll(newOperation.getInParamsLink());
-        }
-        if (newOperation.getOutParams() != null)
-            dynamicParams.addAll(newOperation.getOutParamsLink());
         if (dynamicParams != null) {
             Long operationId = operationRepository.findByCode(newOperation.getCode()).getId();
             for (DynamicParam dynamicParam : dynamicParams) {
@@ -162,8 +157,6 @@ public class OperationsController {
 
     ) throws Exception {
         Operation operation = operationRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> oldInParams = operation.getInParamsLink();
-        List<DynamicParam> oldOutParams = operation.getOutParamsLink();
         if (name != null) {
             operation.setName(name);
         }
@@ -177,10 +170,7 @@ public class OperationsController {
             List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
             dynamicParamInstanceRepository.save(inParamInstances);
             operation.setInParams(inParamInstances);
-            if (oldInParams != null) {
-                if (oldInParams.removeAll(operation.getInParamsLink()))
-                    removeLinked(oldInParams, operation);
-            }
+
         } else {
             operation.setInParams(new ArrayList<>());
         }
@@ -188,10 +178,7 @@ public class OperationsController {
             List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
             dynamicParamInstanceRepository.save(outParamInstances);
             operation.setOutParams(outParamInstances);
-            if (oldOutParams != null) {
-                if (oldOutParams.removeAll(operation.getOutParamsLink()))
-                    removeLinked(oldOutParams, operation);
-            }
+
         } else {
             operation.setOutParams(new ArrayList<>());
         }
@@ -205,13 +192,6 @@ public class OperationsController {
 
     @RequestMapping("/api/operations/delete")
     public void deleteOperation(@RequestParam(name = "id") String id) {
-        Operation operation = operationRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> dynamicInParams = operation.getInParamsLink();
-        List<DynamicParam> dynamicOutParams = operation.getOutParamsLink();
-        if (dynamicInParams != null)
-            removeLinked(dynamicInParams, operation);
-        if (dynamicOutParams != null)
-            removeLinked(dynamicOutParams, operation);
         operationFactory.delete(Long.parseLong(id));
     }
 

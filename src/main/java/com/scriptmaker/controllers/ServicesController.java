@@ -85,11 +85,6 @@ public class ServicesController {
 
     private void linked(Service newService) {
         Set<DynamicParam> dynamicParams = new HashSet<>();
-        if (newService.getInParams() != null) {
-            dynamicParams.addAll(newService.getInParamsLink());
-        }
-        if (newService.getOutParams() != null)
-            dynamicParams.addAll(newService.getOutParamsLink());
         if (dynamicParams != null) {
             Long serviceId = serviceRepository.findByCode(newService.getCode()).getId();
             for (DynamicParam dynamicParam : dynamicParams) {
@@ -150,8 +145,6 @@ public class ServicesController {
 
     ) throws Exception {
         Service service = serviceRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> oldInParams = service.getInParamsLink();
-        List<DynamicParam> oldOutParams = service.getOutParamsLink();
         if (name != null) {
             service.setName(name);
         }
@@ -165,10 +158,6 @@ public class ServicesController {
             List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
             dynamicParamInstanceRepository.save(inParamInstances);
             service.setInParams(inParamInstances);
-            if (oldInParams != null) {
-                if (oldInParams.removeAll(service.getInParamsLink()))
-                    removeLinked(oldInParams, service);
-            }
         } else {
             service.setInParams(new ArrayList<>());
         }
@@ -176,10 +165,6 @@ public class ServicesController {
             List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
             dynamicParamInstanceRepository.save(outParamInstances);
             service.setOutParams(outParamInstances);
-            if (oldOutParams != null) {
-                if (oldOutParams.removeAll(service.getOutParamsLink()))
-                    removeLinked(oldOutParams, service);
-            }
         } else {
             service.setOutParams(new ArrayList<>());
         }
@@ -193,13 +178,6 @@ public class ServicesController {
 
     @RequestMapping("/api/services/delete")
     public void deleteService(@RequestParam(name = "id") String id) {
-        Service service = serviceRepository.findOne(Long.parseLong(id));
-        List<DynamicParam> dynamicInParams = service.getInParamsLink();
-        List<DynamicParam> dynamicOutParams = service.getOutParamsLink();
-        if (dynamicInParams != null)
-            removeLinked(dynamicInParams, service);
-        if (dynamicOutParams != null)
-            removeLinked(dynamicOutParams, service);
         serviceFactory.delete(Long.parseLong(id));
     }
 

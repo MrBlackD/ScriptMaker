@@ -403,7 +403,7 @@ export default class Actions extends Component {
     }
 
     clearForm() {
-        this.setState({inParams: [],newModule:"dul-module"});
+        this.setState({inParams: [],outParams: [],newModule:"dul-module"});
     }
 
     renderInParams() {

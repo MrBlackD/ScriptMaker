@@ -2,6 +2,7 @@ package com.scriptmaker.factories;
 
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.ActionInstance;
+import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.model.Operation;
 import com.scriptmaker.model.ParamMapping;
 import com.scriptmaker.repository.ActionInstanceRepository;
@@ -74,9 +75,12 @@ public class ActionFactory {
         operationRepository.save(operations);
 
         actionInstanceRepository.delete(actionInstances);
-
-        dynamicParamInstanceRepository.delete(action.getInParams());
-        dynamicParamInstanceRepository.delete(action.getOutParams());
+        List<DynamicParamInstance> dynamicParamInstances = new ArrayList<>();
+        dynamicParamInstances.addAll(action.getInParams());
+        dynamicParamInstances.addAll(action.getOutParams());
+        action.setInParams(new ArrayList<>());
+        action.setOutParams(new ArrayList<>());
+        dynamicParamInstanceRepository.delete(dynamicParamInstances);
         actionRepository.delete(id);
     }
 }
