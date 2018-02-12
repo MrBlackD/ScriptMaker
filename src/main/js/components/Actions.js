@@ -35,10 +35,10 @@ export default class Actions extends Component {
             newCode: "",
             newDescription: "",
             newModule: "dul-module",
-            editName:"",
-            editCode:"",
-            editModule:"",
-            editDescription:"",
+            editName: "",
+            editCode: "",
+            editModule: "",
+            editDescription: "",
             newParamCode: "",
             newParamRequired: false,
             newParamKeepInWorkflow: false,
@@ -197,10 +197,10 @@ export default class Actions extends Component {
         this.setState({
             editionDialogOpened: true,
             target: action,
-            editName:action.name,
-            editCode:action.code,
-            editModule:action.module,
-            editDescription:action.description,
+            editName: action.name,
+            editCode: action.code,
+            editModule: action.module,
+            editDescription: action.description,
             inParams: inParams,
             outParams: outParams
         });
@@ -272,31 +272,41 @@ export default class Actions extends Component {
                         }
                         label="KeepInWorkflow"
                     />
-                    <Button variant="raised" onClick={() => {
-                        let params = this.state[this.state.newParamType].slice();
-                        const {
-                            newParamCode,
-                            newParamRequired,
-                            newParamKeepInWorkflow,
-                            newParamDefaultValue
-                        } = this.state;
-                        const newParamId = this.state.dynamicParams.filter((param) => {
-                            return param.code == newParamCode;
-                        })[0].id;
-                        const newParam = newParamId + ","
-                            + newParamRequired + ","
-                            + newParamKeepInWorkflow + ","
-                            + newParamDefaultValue + ";";
-                        params.push(newParam);
-                        const state = {...this.state};
-                        state[this.state.newParamType] = params;
-                        state.openedAddParamDialog = false;
-                        state.newParamCode = "";
-                        state.newParamRequired = false;
-                        state.newParamKeepInWorkflow = false;
-                        state.newParamDefaultValue = "";
-                        this.setState(state)
-                    }}>Добавить параметр</Button>
+                    <Button variant="raised"
+                            disabled={this.state.dynamicParams.filter(param => param.code == this.state.newParamCode).length == 0}
+                            onClick={() => {
+                                let params = this.state[this.state.newParamType].slice();
+                                const {
+                                    newParamCode,
+                                    newParamRequired,
+                                    newParamKeepInWorkflow,
+                                    newParamDefaultValue
+                                } = this.state;
+                                const newParamId = this.state.dynamicParams.filter((param) => {
+                                    return param.code == newParamCode;
+                                })[0].id;
+                                if (params.filter(param => param.split(",")[0] == newParamId).length > 0) {
+                                    console.error("Параметр " + this.state.newParamCode
+                                        + " уже добавлен в " + this.state.newParamType);
+                                    this.setState({openedAddParamDialog:false})
+                                    return;
+                                }
+
+
+                                const newParam = newParamId + ","
+                                    + newParamRequired + ","
+                                    + newParamKeepInWorkflow + ","
+                                    + newParamDefaultValue + ";";
+                                params.push(newParam);
+                                const state = {...this.state};
+                                state[this.state.newParamType] = params;
+                                state.openedAddParamDialog = false;
+                                state.newParamCode = "";
+                                state.newParamRequired = false;
+                                state.newParamKeepInWorkflow = false;
+                                state.newParamDefaultValue = "";
+                                this.setState(state)
+                            }}>Добавить параметр</Button>
                 </DialogContent>
             </Dialog>
         );
@@ -329,7 +339,8 @@ export default class Actions extends Component {
                 <TextField onChange={this.handleChange("newName")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("newCode")} label="code" required={true}/>
                 <TextField onChange={this.handleChange("newModule")} label="module" required={true}/>
-                <TextField onChange={this.handleChange("newDescription")} label="description" required={true}/>
+                <TextField onChange={this.handleChange("newDescription")} label="description" multiline rows={4}
+                           required={true}/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
             </div>
@@ -366,10 +377,11 @@ export default class Actions extends Component {
 
         return (
             <div className={"dialog__content"}>
-                <TextField onChange={this.handleChange("editName")} value={this.state.editName} label="name" />
+                <TextField onChange={this.handleChange("editName")} value={this.state.editName} label="name"/>
                 <TextField onChange={this.handleChange("editCode")} value={this.state.editCode} label="code"/>
                 <TextField onChange={this.handleChange("editModule")} value={this.state.editModule} label="module"/>
-                <TextField onChange={this.handleChange("editDescription")} value={this.state.editDescription} label="description" />
+                <TextField onChange={this.handleChange("editDescription")} value={this.state.editDescription} multiline rows={4}
+                           label="description"/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
             </div>
@@ -403,7 +415,7 @@ export default class Actions extends Component {
     }
 
     clearForm() {
-        this.setState({inParams: [],outParams: [],newModule:"dul-module"});
+        this.setState({inParams: [], outParams: [], newModule: "dul-module"});
     }
 
     renderInParams() {

@@ -29,8 +29,8 @@ export default class Operations extends Component {
         super(props);
         this.state = {
             name: "",
-            targetId:0,
-            target:{},
+            targetId: 0,
+            target: {},
             code: "",
             description: "dul-module",
             actions: [],
@@ -38,14 +38,14 @@ export default class Operations extends Component {
             outParams: [],
             operations: {},
             createDialogOpened: false,
-            showEditDialog:false,
+            showEditDialog: false,
             dynamicParams: [],
             actionsRegistry: [],
             value: "",
             suggestions: [],
             openAddActionDialog: false,
-            newActionCode:"",
-            newMapping:[],
+            newActionCode: "",
+            newMapping: [],
             newParamCode: "",
             newParamRequired: false,
             newParamKeepInWorkflow: false,
@@ -128,7 +128,7 @@ export default class Operations extends Component {
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("name")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
-                <TextField onChange={this.handleChange("description")} label="description" required={true}/>
+                <TextField onChange={this.handleChange("description")} multiline rows={4} label="description" required={true}/>
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
@@ -195,7 +195,8 @@ export default class Operations extends Component {
                         this.handleDelete(this.state.targetId)
                     }
                     } color="secondary" variant="raised">{"Удалить"}</Button>
-                    <Button onClick={() => this.setState({showDeleteDialog: false})} variant="raised">{"Отмена"}</Button>
+                    <Button onClick={() => this.setState({showDeleteDialog: false})}
+                            variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -225,10 +226,10 @@ export default class Operations extends Component {
         if (operation.actions) {
             operation.actions.map((actionInstance) => {
                 let actionMapping = "";
-                actionInstance.mapping.forEach((mapping)=>{
-                    actionMapping += mapping.in +","+mapping.out + "," + mapping.type + ";";
+                actionInstance.mapping.forEach((mapping) => {
+                    actionMapping += mapping.in + "," + mapping.out + "," + mapping.type + ";";
                 });
-                actions.push(actionInstance.action.id+":"+actionMapping)
+                actions.push(actionInstance.action.id + ":" + actionMapping)
             });
         }
         this.setState({
@@ -252,7 +253,7 @@ export default class Operations extends Component {
     }
 
     closeEditDialog = () => {
-        this.setState({showEditDialog: false,inParams:[],outParams:[]});
+        this.setState({showEditDialog: false, inParams: [], outParams: []});
     }
 
     renderEditionDialog() {
@@ -286,12 +287,12 @@ export default class Operations extends Component {
                     <Typography variant="headline" gutterBottom>{"Добавление действия"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <Suggest value={this.state.newActionCode} onChange={(e,{newValue})=>{
-                        this.setState({newActionCode:newValue});
+                    <Suggest value={this.state.newActionCode} onChange={(e, {newValue}) => {
+                        this.setState({newActionCode: newValue});
                     }}
                              suggestions={this.state.actionsRegistry}
                              placeholder="Type action code" field={"code"}/>
-                    {this.state.newMapping.map((mapping,index)=>{
+                    {this.state.newMapping.map((mapping, index) => {
 
                         return <div>
                             <TextField value={mapping.out}
@@ -309,15 +310,15 @@ export default class Operations extends Component {
                                        }}
                                        label="Значение"/>
 
-                                <Select
+                            <Select
                                 value={mapping.type}
                                 onChange={(e) => {
                                     const newMapping = this.state.newMapping;
                                     newMapping[index].type = e.target.value;
                                     this.setState({newMapping: newMapping})
                                 }}
-                                input={<Input name="type" id="type" />}
-                                >
+                                input={<Input name="type" id="type"/>}
+                            >
                                 <MenuItem value="INPARAM">Входящий маппинг(параметр)</MenuItem>
                                 <MenuItem value="INVALUE">Входящий маппинг(константа)</MenuItem>
                                 <MenuItem value="OUTPARAM">Исходящий маппинг(параметр)</MenuItem>
@@ -326,7 +327,7 @@ export default class Operations extends Component {
                             <Remove onClick={() => {
                                 let resultMapping = [...this.state.newMapping];
                                 resultMapping.splice(index, 1);
-                                this.setState({newMapping:resultMapping});
+                                this.setState({newMapping: resultMapping});
                             }}/>
                         </div>
                     })}
@@ -335,29 +336,29 @@ export default class Operations extends Component {
                         <Button variant="raised" type="submit" onClick={() => {
                             const mapping = this.state.newMapping.slice();
                             mapping.push({
-                                in:"",
-                                out:"",
-                                type:"INPARAM"
+                                in: "",
+                                out: "",
+                                type: "INPARAM"
                             })
-                            this.setState({newMapping:mapping});
+                            this.setState({newMapping: mapping});
                         }}>Добавить маппинг</Button>
                     </div>
                     <div>
                         <Button variant="raised" type="submit" onClick={() => {
                             const actions = this.state.actions.slice();
                             let newMapping = "";
-                            this.state.newMapping.forEach((mapping)=>{
-                                newMapping += mapping.in +","+mapping.out +","+mapping.type+";";
+                            this.state.newMapping.forEach((mapping) => {
+                                newMapping += mapping.in + "," + mapping.out + "," + mapping.type + ";";
                             })
-                            let newActionId = this.state.actionsRegistry.filter((action)=>{
+                            let newActionId = this.state.actionsRegistry.filter((action) => {
                                 return action.code === this.state.newActionCode;
                             })[0].id;
-                            actions.push(newActionId + ":"+newMapping);
+                            actions.push(newActionId + ":" + newMapping);
                             this.setState({
                                 openAddActionDialog: false,
                                 actions,
-                                newActionCode:"",
-                                newMapping:[]
+                                newActionCode: "",
+                                newMapping: []
                             });
                         }} color="secondary">Добавить</Button>
                     </div>
@@ -376,7 +377,7 @@ export default class Operations extends Component {
                 <TextField onChange={this.handleChange("code")}
                            value={this.state.code} label="code"/>
                 <TextField onChange={this.handleChange("description")}
-                           value={this.state.description} label="description"/>
+                           value={this.state.description} multiline rows={4} label="description"/>
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
@@ -433,7 +434,9 @@ export default class Operations extends Component {
                     <div>
                         <SearchField values={this.state.operations}
                                      field="code"
-                                     onChange={(value) =>{this.setState({filteredOperations: value})}}
+                                     onChange={(value) => {
+                                         this.setState({filteredOperations: value})
+                                     }}
                         />
                     </div>
                 </div>
@@ -458,22 +461,23 @@ export default class Operations extends Component {
             outParams: [],
         });
     }
-    onDropElement =(prevId,nextId)=>{
+
+    onDropElement = (prevId, nextId) => {
         const actions = this.state.actions.slice();
-        const prevItem =actions.splice(prevId,1)[0];
-        actions.splice(nextId,0,prevItem);
+        const prevItem = actions.splice(prevId, 1)[0];
+        actions.splice(nextId, 0, prevItem);
         this.setState({actions})
     }
 
     renderOperationActions() {
-        return(
+        return (
             <div>
                 <Typography variant="subheading" gutterBottom>{"Actions"}</Typography>
-                {this.state.actions.map((action,index) => {
+                {this.state.actions.map((action, index) => {
                     const split = action.split(":");
-                    const actionItem = this.state.actionsRegistry.filter((action)=>{
-                        return action.id == split[0];
-                    })[0] || {};
+                    const actionItem = this.state.actionsRegistry.filter((action) => {
+                            return action.id == split[0];
+                        })[0] || {};
                     return <Element key={index} index={index} onDropElement={this.onDropElement}>
                         <span>{actionItem.name + " ( " + actionItem.code + " ) "}</span>
                         <Remove onClick={() => {
@@ -489,6 +493,7 @@ export default class Operations extends Component {
             </div>
         );
     }
+
     renderInParams() {
         return (
             <div>
@@ -503,7 +508,7 @@ export default class Operations extends Component {
     }
 
     renderOutParams() {
-        return(
+        return (
             <div>
                 <Typography variant="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
 
@@ -547,8 +552,8 @@ export default class Operations extends Component {
                     <Typography variant="headline" gutterBottom>{"Динамический параметр"}</Typography>
                 </DialogTitle>
                 <DialogContent classes={{root: "content"}}>
-                    <Suggest value={this.state.newParamCode} onChange={(e,{newValue})=>{
-                        this.setState({newParamCode:newValue});
+                    <Suggest value={this.state.newParamCode} onChange={(e, {newValue}) => {
+                        this.setState({newParamCode: newValue});
                     }}
                              suggestions={this.state.dynamicParams}
                              placeholder="Type dynamic param code" field={"code"}/>
@@ -579,31 +584,41 @@ export default class Operations extends Component {
                         }
                         label="KeepInWorkflow"
                     />
-                    <Button variant="raised" onClick={() => {
-                        let params = this.state[this.state.newParamType].slice();
-                        const {
-                            newParamCode,
-                            newParamRequired,
-                            newParamKeepInWorkflow,
-                            newParamDefaultValue
-                        } = this.state;
-                        const newParamId = this.state.dynamicParams.filter((param)=>{
-                            return param.code == newParamCode;
-                        })[0].id;
-                        const newParam = newParamId + ","
-                            + newParamRequired + ","
-                            + newParamKeepInWorkflow + ","
-                            + newParamDefaultValue + ";";
-                        params.push(newParam);
-                        const state = {...this.state};
-                        state[this.state.newParamType] = params;
-                        state.openedAddParamDialog = false;
-                        state.newParamCode = "";
-                        state.newParamRequired = false;
-                        state.newParamKeepInWorkflow = false;
-                        state.newParamDefaultValue = "";
-                        this.setState(state)
-                    }}>Добавить параметр</Button>
+                    <Button variant="raised"
+                            disabled={this.state.dynamicParams.filter(param => param.code == this.state.newParamCode).length == 0}
+                            onClick={() => {
+                                let params = this.state[this.state.newParamType].slice();
+                                const {
+                                    newParamCode,
+                                    newParamRequired,
+                                    newParamKeepInWorkflow,
+                                    newParamDefaultValue
+                                } = this.state;
+                                const newParamId = this.state.dynamicParams.filter((param) => {
+                                    return param.code == newParamCode;
+                                })[0].id;
+                                if (params.filter(param => param.split(",")[0] == newParamId).length > 0) {
+                                    console.error("Параметр " + this.state.newParamCode
+                                        + " уже добавлен в " + this.state.newParamType);
+                                    this.setState({openedAddParamDialog:false})
+                                    return;
+                                }
+
+
+                                const newParam = newParamId + ","
+                                    + newParamRequired + ","
+                                    + newParamKeepInWorkflow + ","
+                                    + newParamDefaultValue + ";";
+                                params.push(newParam);
+                                const state = {...this.state};
+                                state[this.state.newParamType] = params;
+                                state.openedAddParamDialog = false;
+                                state.newParamCode = "";
+                                state.newParamRequired = false;
+                                state.newParamKeepInWorkflow = false;
+                                state.newParamDefaultValue = "";
+                                this.setState(state)
+                            }}>Добавить параметр</Button>
                 </DialogContent>
             </Dialog>
         );
