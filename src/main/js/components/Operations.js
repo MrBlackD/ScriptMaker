@@ -21,6 +21,7 @@ import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
 import Params from "./Params";
+import Element from "./Element";
 
 
 export default class Operations extends Component {
@@ -457,6 +458,13 @@ export default class Operations extends Component {
             outParams: [],
         });
     }
+    onDropElement =(prevId,nextId)=>{
+        const actions = this.state.actions.slice();
+        const prevItem =actions.splice(prevId,1)[0];
+        actions.splice(nextId,0,prevItem);
+        console.log("actions",actions)
+        this.setState({actions})
+    }
 
     renderOperationActions() {
         return(
@@ -467,14 +475,14 @@ export default class Operations extends Component {
                     const actionItem = this.state.actionsRegistry.filter((action)=>{
                         return action.id == split[0];
                     })[0] || {};
-                    return <div>
+                    return <Element key={index} index={index} onDropElement={this.onDropElement}>
                         <span>{actionItem.name + " ( " + actionItem.code + " ) "}</span>
                         <Remove onClick={() => {
                             let actions = [...this.state.actions];
                             actions.splice(index, 1);
                             this.setState({actions});
                         }}/>
-                    </div>
+                    </Element>
                 })}
                 <Button variant="raised" onClick={() => {
                     this.setState({openAddActionDialog: true});

@@ -5,6 +5,8 @@ import HeadBar from "../components/HeadBar";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Grid from "material-ui/Grid";
 import {createMuiTheme} from "material-ui/styles";
+import {DragDropContext} from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
 const theme = createMuiTheme({
     palette: {
@@ -23,7 +25,7 @@ const theme = createMuiTheme({
     },
 });
 
-export default class Application extends React.Component {
+class Application extends React.Component {
 
     constructor(props) {
         super(props);
@@ -52,3 +54,6 @@ export default class Application extends React.Component {
         )
     }
 }
+
+
+export default DragDropContext(HTML5Backend)(Application);
