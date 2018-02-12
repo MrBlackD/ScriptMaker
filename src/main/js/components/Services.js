@@ -15,10 +15,11 @@ import {
     TextField,
     Typography
 } from "material-ui";
-import {Add, Remove} from "material-ui-icons";
+import {Remove} from "material-ui-icons";
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
 import Params from "./Params";
+import Element from "./Element";
 
 
 export default class Services extends Component {
@@ -33,6 +34,7 @@ export default class Services extends Component {
             inParams: [],
             outParams: [],
             operations: [],
+            newOperationCode:"",
             services:[],
             createDialogOpened: false,
             dynamicParams:[],
@@ -42,7 +44,8 @@ export default class Services extends Component {
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
             newParamType: "",
-            filteredServices: []
+            filteredServices: [],
+            openAddOperationDialog:false
         };
         this.closeDialog = this.closeDialog.bind(this);
         this.openDialog = this.openDialog.bind(this);
@@ -114,6 +117,29 @@ export default class Services extends Component {
         });
     };
 
+    onDropElement =(prevId,nextId)=>{
+        const operations = this.state.operations.slice();
+        const prevItem =operations.splice(prevId,1)[0];
+        operations.splice(nextId,0,prevItem);
+        this.setState({operations})
+    }
+    renderOperations = () => {
+
+        return this.state.operations.map((id, index) => {
+            const operation = this.state.operationsRegistry.filter((operation)=> {return operation.id === id})[0];
+            return<Element onDropElement={this.onDropElement} key={index} index={index}>
+                    <span>{operation.name + " ( " + operation.code + " ) "}</span>
+                    <Remove onClick={() => {
+                        let operations = [...this.state.operations];
+                        operations.splice(index, 1);
+                        this.setState({operations});
+                    }}/>
+                </Element>
+
+        });
+
+    }
+
     renderOperationsInputs = () => {
 
         return this.state.operations.map((operation, index) => {
@@ -138,6 +164,44 @@ export default class Services extends Component {
 
     }
 
+    renderAddOperationDialog() {
+        return (
+            <Dialog classes={{paper: "dialog"}} open={this.state.openAddOperationDialog}
+                    onClose={() => {
+                        this.setState({openAddOperationDialog: false})
+                    }}>
+                <DialogTitle>
+                    <Typography variant="headline" gutterBottom>{"Добавление операции"}</Typography>
+                </DialogTitle>
+                <DialogContent classes={{root: "content"}}>
+
+                    <Suggest value={this.state.newOperationCode}
+                             onChange={(e,{newValue})=>{
+                                 this.setState({newOperationCode:newValue});
+                             }}
+                             suggestions={this.state.operationsRegistry}
+                             placeholder="Код операции" field={"code"}
+                    />
+                    <div>
+                        <Button variant="raised" type="submit" onClick={() => {
+                            let newOperationId = this.state.operationsRegistry.filter((opertaion)=>{
+                                return opertaion.code === this.state.newOperationCode;
+                            })[0].id;
+                            const operations = this.state.operations.slice();
+                            operations.push(newOperationId);
+                            this.setState({
+                                openAddOperationDialog: false,
+                                operations,
+                                newOperationCode:""
+                            });
+                        }} color="secondary">Добавить</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        );
+    }
+
+
     renderCreationForm() {
         return (
             <div className={"dialog__content"}>
@@ -145,17 +209,19 @@ export default class Services extends Component {
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
                 <TextField onChange={this.handleChange("description")} label="description" required={true}/>
                 <InputLabel>Operations</InputLabel>
-                {this.renderOperationsInputs()}
-                <Add onClick={() => {
-                    let operations = [...this.state.operations];
-                    operations.push("");
-                    this.setState({operations});
-                }}/>
+                {this.renderOperations()}
+                <Button variant="raised" onClick={() => {
+                    this.setState({openAddOperationDialog: true});
+                }}>Добавить операцию</Button>
+
                 {this.renderInParams()}
                 {this.renderOutParams()}
+
             </div>
         );
     }
+
+
 
     createService() {
         let name = this.state.name;
@@ -163,17 +229,8 @@ export default class Services extends Component {
         let description = this.state.description;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
-        let operations = "";
-        if(this.state.operations) {
-            this.state.operationsRegistry.forEach((operation) => {
-                this.state.operations.forEach((operationCode) => {
-                    if (operation.code === operationCode) {
-                        operations += operation.id + ",";
-                    }
-                })
+        let operations = this.state.operations.join(",");
 
-            })
-        }
         console.log(name + " " + code + " " + description + " " + operations + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/services/new?"
             + "name=" + name
@@ -251,7 +308,7 @@ export default class Services extends Component {
         let operations =[];
         if (service.operations) {
             service.operations.map((item) => {
-                operations.push(item.code)
+                operations.push(item.id)
             });
         }
         this.setState({
@@ -307,12 +364,10 @@ export default class Services extends Component {
                 <TextField onChange={this.handleChange("description")}
                            value={this.state.description} label="description"/>
                 <InputLabel>Operations</InputLabel>
-                {this.renderOperationsInputs()}
-                <Add onClick={() => {
-                    let operations = [...this.state.operations];
-                    operations.push("");
-                    this.setState({operations});
-                }}/>
+                {this.renderOperations()}
+                <Button variant="raised" onClick={() => {
+                    this.setState({openAddOperationDialog: true});
+                }}>Добавить операцию</Button>
                 {this.renderInParams()}
                 {this.renderOutParams()}
             </div>
@@ -325,17 +380,8 @@ export default class Services extends Component {
         let description = this.state.description;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
-        let operations = "";
-        if(this.state.operations) {
-            this.state.operationsRegistry.forEach((operation) => {
-                this.state.operations.forEach((operationCode) => {
-                    if (operation.code === operationCode) {
-                        operations += operation.id + ",";
-                    }
-                })
+        let operations = this.state.operations.join(",");
 
-            })
-        }
         console.log(operation.id+" "+name+" "+code+" "+operations+" "+description+" "+inParams+" "+outParams);
         let url = window.location.origin + "/api/services/edit?"
             +"id="+operation.id;
@@ -389,6 +435,7 @@ export default class Services extends Component {
                         />
                     </div>
                 </div>
+                {this.renderAddOperationDialog()}
                 {this.renderAddParamDialog()}
                 {this.renderDeleteConfirmService()}
                 {this.renderEditionDialog()}

@@ -462,7 +462,6 @@ export default class Operations extends Component {
         const actions = this.state.actions.slice();
         const prevItem =actions.splice(prevId,1)[0];
         actions.splice(nextId,0,prevItem);
-        console.log("actions",actions)
         this.setState({actions})
     }
 
