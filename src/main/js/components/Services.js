@@ -505,7 +505,8 @@ export default class Services extends Component {
         });
         return <Params params={resultParams} onRemoveClick={(param) => {
             let resultParams = [...this.state[params]];
-            resultParams.splice(resultParams.indexOf(param), 1);
+            const indexes = resultParams.map((item)=>{return Number(item.split(",")[0])})
+            resultParams.splice(indexes.indexOf(param.id), 1);
             const state = {...this.state};
             state[params] = resultParams;
             this.setState(state);
