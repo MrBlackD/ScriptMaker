@@ -16,8 +16,9 @@ import {
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
 import Params from "./Params";
+import {connect} from "react-redux";
 
-export default class Actions extends Component {
+class Actions extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -464,3 +465,5 @@ export default class Actions extends Component {
         }}/>
     }
 }
+
+export default connect(state=>({test:state.actions}))(Actions)
