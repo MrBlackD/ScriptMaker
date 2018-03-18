@@ -18,6 +18,7 @@ export default class Action extends Component {
             return null;
         let inParams = [];
         let outParams = [];
+        console.log("this.props.mapping",this.props.mapping)
         if(action.inParams&&action.inParams.length > 0)
             inParams = action.inParams;
         if(action.outParams&&action.outParams.length > 0)
@@ -37,25 +38,25 @@ export default class Action extends Component {
 
             let inMapping = this.props.mapping&&this.props.mapping.filter((mapping)=>{
                 return mapping.type.includes("IN") && mapping.out === inParam.code;
-            })[0] || {};
+            })[0];
 
             let outMapping = this.props.mapping&&this.props.mapping.filter((mapping)=>{
                     return mapping.type.includes("OUT") && mapping.in === outParam.code;
-                })[0] || {};
+                })[0];
 
             let inMappingClassName = "";
             let inParamClassName = "";
             if(this.props.context){
-                if(!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code){
+                if(inMapping&&!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code){
                     inParamClassName = className = "action-param__context-error";
                 }
-                if(inMapping.type==="INPARAM" && !this.props.context.includes(inMapping.in)){
+                if(inMapping&&inMapping.type==="INPARAM" && !this.props.context.includes(inMapping.in)){
                     inMappingClassName = className = "action-param__context-error";
                 }
             }
             params.push(
                 <TableRow key={i}>
-                    {inMapping.in&&<TableCell className={inMappingClassName}>{inMapping.in}</TableCell>}
+                    <TableCell className={inMappingClassName}>{inMapping&&inMapping.in}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.id}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.name}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.code}</TableCell>
@@ -64,7 +65,7 @@ export default class Action extends Component {
                     <TableCell>{outParam.name}</TableCell>
                     <TableCell>{outParam.code}</TableCell>
                     <TableCell>{outParam.type}</TableCell>
-                    {outMapping.out&&<TableCell >{outMapping.out}</TableCell>}
+                    <TableCell >{outMapping&&outMapping.out}</TableCell>
                 </TableRow>
             );
 
