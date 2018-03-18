@@ -126,20 +126,14 @@ export default class DynamicParams extends Component {
         this.setState({editionDialogOpened: false});
     }
 
-    renderHeader(params) {
-        let result = [];
-        if (params.length > 0) {
-            let count = 0;
-            for (let key in params[0]) {
-                count++;
-                if (params[0].hasOwnProperty(key) && count < 5) {
-                    result.push(<TableCell key={key}>{key}</TableCell>);
-                }
-            }
-            result.push(<TableCell key={params.length}>{"Edit"}</TableCell>);
-            result.push(<TableCell key={params.length + 1}>{"Delete"}</TableCell>);
-        }
-        return (<TableRow>{result}</TableRow>);
+    renderHeader() {
+        return (<TableRow>
+            <TableCell>{"NAME"}</TableCell>
+            <TableCell>{"CODE"}</TableCell>
+            <TableCell>{"TYPE"}</TableCell>
+            <TableCell>{"EDIT"}</TableCell>
+            <TableCell>{"DELETE"}</TableCell>
+        </TableRow>);
     }
 
     openDeleteDialog(param, id) {

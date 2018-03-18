@@ -245,7 +245,7 @@ class Actions extends Component {
                         this.setState({newParamCode: newValue});
                     }}
                              suggestions={this.state.dynamicParams}
-                             placeholder="Код динамического параметра2" field={"code"}/>
+                             placeholder="Код динамического параметра" field={"code"}/>
                     <TextField value={this.state.newParamDefaultValue}
                                onChange={(e) => {
                                    this.setState({newParamDefaultValue: e.target.value})

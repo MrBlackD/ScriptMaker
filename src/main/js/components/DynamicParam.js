@@ -12,7 +12,6 @@ export default class DynamicParam extends Component {
         let onClose = this.props.onClose;
         let onEdit = this.props.onEdit;
         return [
-            <TableCell key={item.id} className="cell">{item.id}</TableCell>,
             <TableCell key={item.id + "name" + item.name} className="cell">{item.name}</TableCell>,
             <TableCell key={item.id + "code" + item.code} className="cell">{item.code}</TableCell>,
             <TableCell key={item.id + "type" + item.type} className="cell">{item.type}</TableCell>,

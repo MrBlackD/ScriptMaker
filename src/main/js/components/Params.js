@@ -14,7 +14,6 @@ export default class Params extends React.Component{
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>ID</TableCell>
                         <TableCell>Code</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>DefaultValue</TableCell>
@@ -27,7 +26,6 @@ export default class Params extends React.Component{
                     {
                         params.map((param) => {
                             return <TableRow key={param.id}>
-                                <TableCell>{param.id}</TableCell>
                                 <TableCell>{param.code}</TableCell>
                                 <TableCell>{param.name}</TableCell>
                                 <TableCell>{param.defaultValue}</TableCell>
