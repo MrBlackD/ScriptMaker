@@ -58,14 +58,16 @@ export default class Action extends Component {
             params.push(
                 <TableRow key={i}>
                     {mapping&&mapping.length>0&&<TableCell className={inMappingClassName}>{inMapping.in&&inMapping.in}</TableCell>}
-                    <TableCell className={inParamClassName}>{inParam.id}</TableCell>
+
                     <TableCell className={inParamClassName}>{inParam.name}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.code}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.type}</TableCell>
-                    <TableCell>{outParam.id}</TableCell>
+                    <TableCell className={inParamClassName}>{inParam.required.toString()}</TableCell>
+
                     <TableCell>{outParam.name}</TableCell>
                     <TableCell>{outParam.code}</TableCell>
                     <TableCell>{outParam.type}</TableCell>
+                    <TableCell>{outParam.required}</TableCell>
                     {mapping&&mapping.length>0&&<TableCell >{outMapping.out&&outMapping.out}</TableCell>}
                 </TableRow>
             );
@@ -119,14 +121,14 @@ export default class Action extends Component {
                         </TableRow>
                         <TableRow className="bold">
                             <TableCell colSpan={1} className="yellow">Входящий маппинг</TableCell>
-                            <TableCell className="yellow" colSpan={1}>ID</TableCell>
                             <TableCell className="yellow" colSpan={1}>Имя</TableCell>
                             <TableCell className="yellow" colSpan={1}>Код</TableCell>
                             <TableCell className="yellow" colSpan={1}>Тип</TableCell>
-                            <TableCell className="yellow" colSpan={1}>ID</TableCell>
+                            <TableCell className="yellow" colSpan={1}>Обязательность</TableCell>
                             <TableCell className="yellow" colSpan={1}>Имя</TableCell>
                             <TableCell className="yellow" colSpan={1}>Код</TableCell>
                             <TableCell className="yellow" colSpan={1}>Тип</TableCell>
+                            <TableCell className="yellow" colSpan={1}>Обязательность</TableCell>
                             <TableCell colSpan={1} className="yellow">Исходящий маппинг</TableCell>
                         </TableRow>
                         {params}
@@ -188,14 +190,14 @@ export default class Action extends Component {
                             <TableCell className="yellow text-center" colSpan={4}>Исходящие параметры</TableCell>
                         </TableRow>
                         <TableRow className="bold">
-                            <TableCell className="yellow" colSpan={1}>ID</TableCell>
                             <TableCell className="yellow" colSpan={1}>Имя</TableCell>
                             <TableCell className="yellow" colSpan={1}>Код</TableCell>
                             <TableCell className="yellow" colSpan={1}>Тип</TableCell>
-                            <TableCell className="yellow" colSpan={1}>ID</TableCell>
+                            <TableCell className="yellow" colSpan={1}>Обязательность</TableCell>
                             <TableCell className="yellow" colSpan={1}>Имя</TableCell>
                             <TableCell className="yellow" colSpan={1}>Код</TableCell>
                             <TableCell className="yellow" colSpan={1}>Тип</TableCell>
+                            <TableCell className="yellow" colSpan={1}>Обязательность</TableCell>
                         </TableRow>
                         {params}
                         <TableRow>
