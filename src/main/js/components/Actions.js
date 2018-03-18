@@ -339,7 +339,7 @@ class Actions extends Component {
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("newName")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("newCode")} label="code" required={true}/>
-                <TextField onChange={this.handleChange("newModule")} label="module" required={true}/>
+                <TextField onChange={this.handleChange("newModule")} value={this.state.newModule} label="module" required={true}/>
                 <TextField onChange={this.handleChange("newDescription")} label="description" multiline rows={4}
                            required={true}/>
                 {this.renderInParams()}
