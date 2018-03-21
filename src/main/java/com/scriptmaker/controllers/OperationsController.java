@@ -222,7 +222,7 @@ public class OperationsController {
         if (split.length == 2) {
             String mappings = split[1];
             for (String mapping : mappings.split(";")) {
-                String[] props = mapping.split(",");
+                String[] props = mapping.split("_");
                 ParamMapping paramMapping = new ParamMapping();
                 if (props.length == 0) {
                     continue;

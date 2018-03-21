@@ -227,7 +227,7 @@ export default class Operations extends Component {
             operation.actions.map((actionInstance) => {
                 let actionMapping = "";
                 actionInstance.mapping.forEach((mapping) => {
-                    actionMapping += mapping.in + "," + mapping.out + "," + mapping.type + ";";
+                    actionMapping += mapping.in + "_" + mapping.out + "_" + mapping.type + ";";
                 });
                 actions.push(actionInstance.action.id + ":" + actionMapping)
             });
@@ -348,7 +348,7 @@ export default class Operations extends Component {
                             const actions = this.state.actions.slice();
                             let newMapping = "";
                             this.state.newMapping.forEach((mapping) => {
-                                newMapping += mapping.in + "," + mapping.out + "," + mapping.type + ";";
+                                newMapping += mapping.in + "_" + mapping.out + "_" + mapping.type + ";";
                             })
                             let newActionId = this.state.actionsRegistry.filter((action) => {
                                 return action.code === this.state.newActionCode;
