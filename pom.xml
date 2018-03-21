@@ -13,7 +13,7 @@
 
     <groupId>com.scriptmaker</groupId>
     <artifactId>script-maker</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Script Maker</name>
