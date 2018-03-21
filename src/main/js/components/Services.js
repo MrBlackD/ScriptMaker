@@ -40,7 +40,7 @@ export default class Services extends Component {
             dynamicParams: [],
             operationsRegistry: [],
             newParamCode: "",
-            newParamRequired: false,
+            newParamRequired: true,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
             newParamType: "",
@@ -585,7 +585,7 @@ export default class Services extends Component {
                                 state[this.state.newParamType] = params;
                                 state.openedAddParamDialog = false;
                                 state.newParamCode = "";
-                                state.newParamRequired = false;
+                                state.newParamRequired = true;
                                 state.newParamKeepInWorkflow = false;
                                 state.newParamDefaultValue = "";
                                 this.setState(state)

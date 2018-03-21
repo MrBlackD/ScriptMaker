@@ -41,7 +41,7 @@ class Actions extends Component {
             editModule: "",
             editDescription: "",
             newParamCode: "",
-            newParamRequired: false,
+            newParamRequired: true,
             newParamKeepInWorkflow: false,
             newParamDefaultValue: "",
             newParamType: "",
@@ -303,7 +303,7 @@ class Actions extends Component {
                                 state[this.state.newParamType] = params;
                                 state.openedAddParamDialog = false;
                                 state.newParamCode = "";
-                                state.newParamRequired = false;
+                                state.newParamRequired = true;
                                 state.newParamKeepInWorkflow = false;
                                 state.newParamDefaultValue = "";
                                 this.setState(state)
