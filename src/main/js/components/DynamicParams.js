@@ -20,9 +20,11 @@ import {
     Typography
 } from "material-ui";
 import SearchField from "./SearchField";
+import {loadDynamicParams} from "../AC/index";
+import {connect} from "react-redux";
 
 
-export default class DynamicParams extends Component {
+class DynamicParams extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,6 +55,7 @@ export default class DynamicParams extends Component {
                 filteredParams: json
             });
         });
+        this.props.loadDynamicParams();
 
     }
 
@@ -387,3 +390,5 @@ export default class DynamicParams extends Component {
     }
 
 }
+
+export default connect(null,{loadDynamicParams})(DynamicParams)

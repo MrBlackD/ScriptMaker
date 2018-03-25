@@ -11,7 +11,7 @@ export default class HeadBar extends Component {
                 <AppBar position="static" color="primary">
                     <Toolbar >
                         <Typography variant="title">
-                            <Link className="react-router-link" to="/">SCRIPT-MAKER v0.0.4</Link>
+                            <Link className="react-router-link" to="/">SCRIPT-MAKER v0.0.5</Link>
                         </Typography>
                         <div className="appbar__menu">
                             <Button>

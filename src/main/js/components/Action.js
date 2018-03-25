@@ -55,6 +55,7 @@ export default class Action extends Component {
                     inMappingClassName = className = "action-param__context-error";
                 }
             }
+            console.log("---inParam",inParam)
             params.push(
                 <TableRow key={i}>
                     {mapping&&mapping.length>0&&<TableCell className={inMappingClassName}>{inMapping.in&&inMapping.in}</TableCell>}
@@ -62,12 +63,12 @@ export default class Action extends Component {
                     <TableCell className={inParamClassName}>{inParam.name}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.code}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.type}</TableCell>
-                    <TableCell className={inParamClassName}>{inParam.required.toString()}</TableCell>
+                    <TableCell className={inParamClassName}>{inParam.required&&inParam.required.toString()}</TableCell>
 
                     <TableCell>{outParam.name}</TableCell>
                     <TableCell>{outParam.code}</TableCell>
                     <TableCell>{outParam.type}</TableCell>
-                    <TableCell>{outParam.required}</TableCell>
+                    <TableCell>{outParam.required&&outParam.required.toString()}</TableCell>
                     {mapping&&mapping.length>0&&<TableCell >{outMapping.out&&outMapping.out}</TableCell>}
                 </TableRow>
             );

@@ -4,6 +4,7 @@
   "description": "script-maker",
   "dependencies": {
     "fetch-polyfill": "^0.8.2",
+    "immutable": "^4.0.0-rc.9",
     "jsplumb": "^2.4.3",
     "material-ui": "1.0.0-beta.38",
     "material-ui-icons": "^1.0.0-alpha.19",
@@ -15,6 +16,7 @@
     "react-redux": "^5.0.7",
     "react-router": "^2.1.1",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "typeface-roboto": "0.0.31"
   },
   "scripts": {

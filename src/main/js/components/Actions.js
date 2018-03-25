@@ -158,12 +158,13 @@ class Actions extends Component {
     renderActions() {
         let params = this.state.filteredActions;
 
-        let actions = [];
-        for (let i = 0; i < params.length; i++) {
-            actions.push(<Action onDelete={(id) => this.openDeleteDialog(id)}
-                                 onEdit={(action) => this.openEditDialog(action)}
-                                 key={i} data={params[i]}/>);
-        }
+        let actions = params.map((item,index) => {
+            console.log("---index",index)
+            return <Action onDelete={(id) => this.openDeleteDialog(id)}
+                           onEdit={(action) => this.openEditDialog(action)}
+                           key={item.id} data={item}/>
+        })
+
         return actions;
     }
 
