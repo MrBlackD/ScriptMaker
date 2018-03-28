@@ -18,22 +18,30 @@ export default class Operation extends Component {
             inParams = operation.inParams;
         if (operation.outParams && operation.outParams.length > 0)
             outParams = operation.outParams;
+
+        console.log("--operation",operation)
+        console.log("--inParams",inParams)
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
-        let className = "";
+        let problems = 0;
+
         for (let i = 0; i < paramsLength; i++) {
-            let inParam = "";
-            let outParam = "";
+            let className = "";
+            let inParam = {};
+            let outParam = {};
             if (i < inParams.length) {
                 inParam = inParams[i].dynamicParam;
+
             }
             if (i < outParams.length) {
                 outParam = outParams[i].dynamicParam;
             }
 
             if (this.props.context) {
-                if (!this.props.context.includes(inParam.code)) {
+                if (inParam.code&&!this.props.context.includes(inParam.code)) {
+                    console.log("Параметр " + inParam.code + " отсутствует в контексте",inParam)
                     className = "action-param__context-error";
+                    problems++;
                 }
             }
             params.push(
@@ -49,11 +57,12 @@ export default class Operation extends Component {
                 </TableRow>
             );
         }
-        return {className,params};
+        return {className:problems>0?"action-param__context-error":"",params};
     }
 
 
     render() {
+        console.log("--this.props.context",this.props.context)
         let operation = this.props.data;
         let collapsed = this.state.collapsed;
         console.log(operation);
