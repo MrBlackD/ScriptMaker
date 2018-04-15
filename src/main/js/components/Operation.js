@@ -19,8 +19,7 @@ export default class Operation extends Component {
         if (operation.outParams && operation.outParams.length > 0)
             outParams = operation.outParams;
 
-        console.log("--operation",operation)
-        console.log("--inParams",inParams)
+
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
         let problems = 0;
@@ -39,7 +38,7 @@ export default class Operation extends Component {
 
             if (this.props.context) {
                 if (inParam.code&&!this.props.context.includes(inParam.code)) {
-                    console.log("Параметр " + inParam.code + " отсутствует в контексте",inParam)
+                    console.log("Параметр " + inParam.code + " отсутствует в контексте")
                     className = "action-param__context-error";
                     problems++;
                 }

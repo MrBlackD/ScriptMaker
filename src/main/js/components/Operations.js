@@ -93,7 +93,7 @@ export default class Operations extends Component {
     }
 
     openDialog() {
-        this.setState({createDialogOpened: true});
+        this.setState({createDialogOpened: true,actions:[]});
     }
 
     renderCreationDialog() {
@@ -143,14 +143,14 @@ export default class Operations extends Component {
         let description = this.state.description;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
-        let actions = this.state.actions.join("!");
+        let actions = JSON.stringify(this.state.actions);
         console.log(name + " " + code + " " + description + " " + actions + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/operations/new?"
             + "name=" + name
             + "&code=" + code
             + "&description=" + description;
         if (actions) {
-            url += "&actions=" + actions;
+            url += "&actions=" + encodeURIComponent(actions);
         }
         if (inParams) {
             url += "&inParams=" + inParams;
@@ -225,11 +225,8 @@ export default class Operations extends Component {
         let actions = [];
         if (operation.actions) {
             operation.actions.map((actionInstance) => {
-                let actionMapping = "";
-                actionInstance.mapping.forEach((mapping) => {
-                    actionMapping += mapping.in + "_" + mapping.out + "_" + mapping.type + ";";
-                });
-                actions.push(actionInstance.action.id + ":" + actionMapping)
+                let mapping = actionInstance.mapping.slice();
+                actions.push({actionId:actionInstance.action.id,mapping});
             });
         }
         this.setState({
@@ -346,14 +343,18 @@ export default class Operations extends Component {
                     <div>
                         <Button variant="raised" type="submit" onClick={() => {
                             const actions = this.state.actions.slice();
-                            let newMapping = "";
-                            this.state.newMapping.forEach((mapping) => {
-                                newMapping += mapping.in + "_" + mapping.out + "_" + mapping.type + ";";
+                            let mapping = [];
+                            this.state.newMapping.forEach((item) => {
+                                mapping.push({
+                                    in:item.in,
+                                    out:item.out,
+                                    type:item.type
+                                })
                             })
-                            let newActionId = this.state.actionsRegistry.filter((action) => {
+                            let newActionId = this.state.actionsRegistry.find((action) => {
                                 return action.code === this.state.newActionCode;
-                            })[0].id;
-                            actions.push(newActionId + ":" + newMapping);
+                            }).id;
+                            actions.push({actionId:newActionId,mapping})
                             this.setState({
                                 openAddActionDialog: false,
                                 actions,
@@ -391,7 +392,7 @@ export default class Operations extends Component {
         let description = this.state.description;
         let inParams = this.state.inParams.join("");
         let outParams = this.state.outParams.join("");
-        let actions = this.state.actions.join("!");
+        let actions = JSON.stringify(this.state.actions);
         console.log(operation.id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/operations/edit?"
             + "id=" + operation.id;
@@ -405,7 +406,7 @@ export default class Operations extends Component {
             url += "&description=" + description;
         }
         if (actions) {
-            url += "&actions=" + actions;
+            url += "&actions=" + encodeURIComponent(actions);
         }
         if (inParams) {
             url += "&inParams=" + inParams;
@@ -474,10 +475,9 @@ export default class Operations extends Component {
             <div>
                 <Typography variant="subheading" gutterBottom>{"Actions"}</Typography>
                 {this.state.actions.map((action, index) => {
-                    const split = action.split(":");
-                    const actionItem = this.state.actionsRegistry.filter((action) => {
-                            return action.id == split[0];
-                        })[0] || {};
+                    const actionItem = this.state.actionsRegistry.find((item) => {
+                            return item.id == action.actionId;
+                        }) || {};
                     return <Element key={index} index={index} onDropElement={this.onDropElement}>
                         <span>{actionItem.name + " ( " + actionItem.code + " ) "}</span>
                         <Remove onClick={() => {

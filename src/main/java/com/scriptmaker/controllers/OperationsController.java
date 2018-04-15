@@ -1,7 +1,10 @@
 package com.scriptmaker.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.scriptmaker.common.Type;
 import com.scriptmaker.common.Utils;
+import com.scriptmaker.dto.ActionInstanceDto;
 import com.scriptmaker.factories.OperationFactory;
 import com.scriptmaker.model.ActionInstance;
 import com.scriptmaker.model.DynamicParam;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,7 +78,12 @@ public class OperationsController {
             @RequestParam(name = "actions", required = false) String actions
 
     ) throws Exception {
-        List<ActionInstance> actionInstances = getActionInstances(actions);
+        System.out.println(actions);
+        Gson gson = new Gson();
+        java.lang.reflect.Type type = new TypeToken<ArrayList<ActionInstanceDto>>() {
+        }.getType();
+        List<ActionInstanceDto> list = gson.fromJson(actions,type);
+        List<ActionInstance> actionInstances = getActionInstances(list);
         List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
         List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
         dynamicParamInstanceRepository.save(inParamInstances);
@@ -182,7 +191,10 @@ public class OperationsController {
         } else {
             operation.setOutParams(new ArrayList<>());
         }
-        List<ActionInstance> actionInstances = getActionInstances(actions);
+
+        java.lang.reflect.Type type = new TypeToken<ArrayList<ActionInstanceDto>>() {}.getType();
+        List<ActionInstanceDto> list = new Gson().fromJson(actions,type);
+        List<ActionInstance> actionInstances = getActionInstances(list);
         actionInstanceRepository.save(actionInstances);
         operation.setActions(actionInstances);
         operationFactory.update(operation);
@@ -195,48 +207,26 @@ public class OperationsController {
         operationFactory.delete(Long.parseLong(id));
     }
 
-    private List<ActionInstance> getActionInstances(String string) {
-        if(string==null || string.isEmpty()){
-            return new ArrayList<>();
-        }
-        String[] split = string.split("!");
+    private List<ActionInstance> getActionInstances(List<ActionInstanceDto> list) {
         List<ActionInstance> actionInstances = new ArrayList<>();
-        for (String str : split) {
-            actionInstances.add(getActionInstance(str));
+        for (ActionInstanceDto actionInstanceDto : list) {
+            actionInstances.add(getActionInstance(actionInstanceDto));
         }
+
         return actionInstances;
     }
 
-    /**
-     * Создаёт экземпляр действия из строки
-     *
-     * @param string строка вида `actionId:in,out,type;`
-     * @return экземпляр действия
-     */
-    private ActionInstance getActionInstance(String string) {
-        String[] split = string.split(":");
-        String actiondId = split[0];
-        ActionInstance actionInstance = new ActionInstance();
-        actionInstance.setAction(actionRepository.findOne(Long.valueOf(actiondId)));
-        List<ParamMapping> paramMappings = new ArrayList<>();
-        if (split.length == 2) {
-            String mappings = split[1];
-            for (String mapping : mappings.split(";")) {
-                String[] props = mapping.split("_");
-                ParamMapping paramMapping = new ParamMapping();
-                if (props.length == 0) {
-                    continue;
-                }
-                paramMapping.setIn(props[0]);
-                if (props.length >= 2) {
-                    paramMapping.setOut(props[1]);
-                }
-                if (props.length >= 3) {
-                    paramMapping.setType(Type.valueOf(props[2]));
-                }
 
-                paramMappings.add(paramMapping);
-            }
+    private ActionInstance getActionInstance(ActionInstanceDto instanceDto) {
+        ActionInstance actionInstance = new ActionInstance();
+        actionInstance.setAction(actionRepository.findOne(Long.valueOf(instanceDto.getActionId())));
+        List<ParamMapping> paramMappings = new ArrayList<>();
+        for (Map<String, String> mapping : instanceDto.getMapping()) {
+            ParamMapping paramMapping = new ParamMapping();
+            paramMapping.setIn(mapping.get("in"));
+            paramMapping.setOut(mapping.get("out"));
+            paramMapping.setType(Type.valueOf(mapping.get("type")));
+            paramMappings.add(paramMapping);
         }
         actionInstance.setMapping(paramMappings);
         paramMappingRepository.save(paramMappings);
