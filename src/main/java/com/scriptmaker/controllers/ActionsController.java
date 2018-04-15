@@ -1,6 +1,9 @@
 package com.scriptmaker.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.scriptmaker.common.Utils;
+import com.scriptmaker.dto.ParamInstanceDto;
 import com.scriptmaker.factories.ActionFactory;
 import com.scriptmaker.model.Action;
 import com.scriptmaker.model.DynamicParam;
@@ -54,8 +57,13 @@ public class ActionsController {
             @RequestParam(name = "inParams", required = false) String inParams,
             @RequestParam(name = "outParams", required = false) String outParams
     ) throws Exception {
-        List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
-        List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
+        java.lang.reflect.Type type = new TypeToken<ArrayList<ParamInstanceDto>>() {}.getType();
+        Gson gson = new Gson();
+        List<ParamInstanceDto> inParamsList = gson.fromJson(inParams, type);
+        List<ParamInstanceDto> outParamsList = gson.fromJson(outParams, type);
+
+        List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParamsList);
+        List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParamsList);
         dynamicParamInstanceRepository.save(inParamInstances);
         dynamicParamInstanceRepository.save(outParamInstances);
         Action newAction = new Action(
@@ -133,6 +141,9 @@ public class ActionsController {
     ) throws Exception {
         Action action = actionRepository.findOne(Long.parseLong(id));
 
+        java.lang.reflect.Type type = new TypeToken<ArrayList<ParamInstanceDto>>() {}.getType();
+        Gson gson = new Gson();
+
 
 
         if (name != null) {
@@ -148,14 +159,16 @@ public class ActionsController {
             action.setDescription(description);
         }
         if (inParams != null) {
-            List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParams);
+            List<ParamInstanceDto> inParamsList = gson.fromJson(inParams, type);
+            List<DynamicParamInstance> inParamInstances = utils.getDynamicParamsInstances(inParamsList);
             dynamicParamInstanceRepository.save(inParamInstances);
             action.setInParams(inParamInstances);
         } else {
             action.setInParams(new ArrayList<>());
         }
         if (outParams != null) {
-            List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParams);
+            List<ParamInstanceDto> outParamsList = gson.fromJson(outParams, type);
+            List<DynamicParamInstance> outParamInstances = utils.getDynamicParamsInstances(outParamsList);
             dynamicParamInstanceRepository.save(outParamInstances);
             action.setOutParams(outParamInstances);
         } else {

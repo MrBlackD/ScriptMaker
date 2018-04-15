@@ -209,7 +209,8 @@ export default class Services extends Component {
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("name")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
-                <TextField onChange={this.handleChange("description")} label="description" multiline rows={4} required={true}/>
+                <TextField onChange={this.handleChange("description")} label="description" multiline rows={4}
+                           required={true}/>
                 <InputLabel>Operations</InputLabel>
                 {this.renderOperations()}
                 <Button variant="raised" onClick={() => {
@@ -228,23 +229,23 @@ export default class Services extends Component {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = this.state.inParams.join("");
-        let outParams = this.state.outParams.join("");
+        let inParams = JSON.stringify(this.state.inParams);
+        let outParams = JSON.stringify(this.state.outParams);
         let operations = this.state.operations.join(",");
 
         console.log(name + " " + code + " " + description + " " + operations + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/services/new?"
-            + "name=" + name
-            + "&code=" + code
-            + "&description=" + description;
+            + "name=" + encodeURIComponent(name)
+            + "&code=" + encodeURIComponent(code)
+            + "&description=" + encodeURIComponent(description);
         if (operations) {
-            url += "&operations=" + operations;
+            url += "&operations=" + encodeURIComponent(operations);
         }
         if (inParams) {
-            url += "&inParams=" + inParams;
+            url += "&inParams=" + encodeURIComponent(inParams);
         }
         if (outParams) {
-            url += "&outParams=" + outParams;
+            url += "&outParams=" + encodeURIComponent(outParams);
         }
         fetch(url).then((response) => {
             return response.json();
@@ -295,17 +296,21 @@ export default class Services extends Component {
     openEditService = (service) => {
         let inParams = [];
         service.inParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
-            inParams.push(dynamicParam.id + ","
-                + required + ","
-                + keepInWorkflow + ","
-                + defaultValue + ";");
+            inParams.push({
+                id: dynamicParam.id,
+                required,
+                keepInWorkflow,
+                defaultValue
+            });
         });
         let outParams = [];
         service.outParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
-            outParams.push(dynamicParam.id + ","
-                + required + ","
-                + keepInWorkflow + ","
-                + defaultValue + ";");
+            outParams.push({
+                id: dynamicParam.id,
+                required,
+                keepInWorkflow,
+                defaultValue
+            });
         });
 
         let operations = [];
@@ -383,30 +388,30 @@ export default class Services extends Component {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = this.state.inParams.join("");
-        let outParams = this.state.outParams.join("");
+        let inParams = JSON.stringify(this.state.inParams);
+        let outParams = JSON.stringify(this.state.outParams);
         let operations = this.state.operations.join(",");
 
         console.log(operation.id + " " + name + " " + code + " " + operations + " " + description + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/services/edit?"
             + "id=" + operation.id;
         if (name) {
-            url += "&name=" + name;
+            url += "&name=" + encodeURIComponent(name);
         }
         if (code) {
-            url += "&code=" + code;
+            url += "&code=" + encodeURIComponent(code);
         }
         if (description) {
-            url += "&description=" + description;
+            url += "&description=" + encodeURIComponent(description);
         }
         if (operations) {
-            url += "&operations=" + operations;
+            url += "&operations=" + encodeURIComponent(operations);
         }
         if (inParams) {
-            url += "&inParams=" + inParams;
+            url += "&inParams=" + encodeURIComponent(inParams);
         }
         if (outParams) {
-            url += "&outParams=" + outParams;
+            url += "&outParams=" + encodeURIComponent(outParams);
         }
 
         fetch(url).then((response) => {
@@ -492,20 +497,22 @@ export default class Services extends Component {
 
     renderTableParams(params) {
         const resultParams = this.state[params].map((param) => {
-            const splittedParam = param.slice(0, param.length - 1).split(",");
-            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam[0])[0];
+            const splittedParam = param;
+            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam.id)[0];
             return {
                 id: paramInst.id,
                 code: paramInst.code,
                 name: paramInst.name,
-                required: splittedParam[1],
-                keepInWorkflow: splittedParam[2],
-                defaultValue: splittedParam[3],
+                required: splittedParam.required,
+                keepInWorkflow: splittedParam.keepInWorkflow,
+                defaultValue: splittedParam.defaultValue,
             }
         });
         return <Params params={resultParams} onRemoveClick={(param) => {
             let resultParams = [...this.state[params]];
-            const indexes = resultParams.map((item)=>{return Number(item.split(",")[0])})
+            const indexes = resultParams.map((item) => {
+                return Number(item.id)
+            })
             resultParams.splice(indexes.indexOf(param.id), 1);
             const state = {...this.state};
             state[params] = resultParams;
@@ -568,18 +575,20 @@ export default class Services extends Component {
                                 const newParamId = this.state.dynamicParams.filter((param) => {
                                     return param.code == newParamCode;
                                 })[0].id;
-                                if (params.filter(param => param.split(",")[0] == newParamId).length > 0) {
+                                if (params.filter(param => param.id == newParamId).length > 0) {
                                     console.error("Параметр " + this.state.newParamCode
                                         + " уже добавлен в " + this.state.newParamType);
-                                    this.setState({openedAddParamDialog:false})
+                                    this.setState({openedAddParamDialog: false})
                                     return;
                                 }
 
 
-                                const newParam = newParamId + ","
-                                    + newParamRequired + ","
-                                    + newParamKeepInWorkflow + ","
-                                    + newParamDefaultValue + ";";
+                                const newParam = {
+                                    id: newParamId,
+                                    required: newParamRequired,
+                                    keepInWorkflow: newParamKeepInWorkflow,
+                                    defaultValue: newParamDefaultValue
+                                };
                                 params.push(newParam);
                                 const state = {...this.state};
                                 state[this.state.newParamType] = params;

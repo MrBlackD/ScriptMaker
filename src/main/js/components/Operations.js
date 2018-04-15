@@ -93,7 +93,7 @@ export default class Operations extends Component {
     }
 
     openDialog() {
-        this.setState({createDialogOpened: true,actions:[]});
+        this.setState({createDialogOpened: true, actions: []});
     }
 
     renderCreationDialog() {
@@ -128,7 +128,8 @@ export default class Operations extends Component {
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("name")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("code")} label="code" required={true}/>
-                <TextField onChange={this.handleChange("description")} multiline rows={4} label="description" required={true}/>
+                <TextField onChange={this.handleChange("description")} multiline rows={4} label="description"
+                           required={true}/>
                 {this.renderOperationActions()}
                 {this.renderInParams()}
                 {this.renderOutParams()}
@@ -141,22 +142,22 @@ export default class Operations extends Component {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = this.state.inParams.join("");
-        let outParams = this.state.outParams.join("");
+        let inParams = JSON.stringify(this.state.inParams);
+        let outParams = JSON.stringify(this.state.outParams);
         let actions = JSON.stringify(this.state.actions);
         console.log(name + " " + code + " " + description + " " + actions + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/operations/new?"
-            + "name=" + name
-            + "&code=" + code
-            + "&description=" + description;
+            + "name=" + encodeURIComponent(name)
+            + "&code=" + encodeURIComponent(code)
+            + "&description=" + encodeURIComponent(description);
         if (actions) {
             url += "&actions=" + encodeURIComponent(actions);
         }
         if (inParams) {
-            url += "&inParams=" + inParams;
+            url += "&inParams=" + encodeURIComponent(inParams);
         }
         if (outParams) {
-            url += "&outParams=" + outParams;
+            url += "&outParams=" + encodeURIComponent(outParams);
         }
         this.clearState();
         fetch(url).then((response) => {
@@ -209,24 +210,28 @@ export default class Operations extends Component {
 
         let inParams = [];
         operation.inParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
-            inParams.push(dynamicParam.id + ","
-                + required + ","
-                + keepInWorkflow + ","
-                + defaultValue + ";");
+            inParams.push({
+                id: dynamicParam.id,
+                required,
+                keepInWorkflow,
+                defaultValue
+            });
         });
         let outParams = [];
         operation.outParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
-            outParams.push(dynamicParam.id + ","
-                + required + ","
-                + keepInWorkflow + ","
-                + defaultValue + ";");
+            outParams.push({
+                id: dynamicParam.id,
+                required,
+                keepInWorkflow,
+                defaultValue
+            });
         });
 
         let actions = [];
         if (operation.actions) {
             operation.actions.map((actionInstance) => {
                 let mapping = actionInstance.mapping.slice();
-                actions.push({actionId:actionInstance.action.id,mapping});
+                actions.push({actionId: actionInstance.action.id, mapping});
             });
         }
         this.setState({
@@ -346,15 +351,15 @@ export default class Operations extends Component {
                             let mapping = [];
                             this.state.newMapping.forEach((item) => {
                                 mapping.push({
-                                    in:item.in,
-                                    out:item.out,
-                                    type:item.type
+                                    in: item.in,
+                                    out: item.out,
+                                    type: item.type
                                 })
                             })
                             let newActionId = this.state.actionsRegistry.find((action) => {
                                 return action.code === this.state.newActionCode;
                             }).id;
-                            actions.push({actionId:newActionId,mapping})
+                            actions.push({actionId: newActionId, mapping})
                             this.setState({
                                 openAddActionDialog: false,
                                 actions,
@@ -390,29 +395,29 @@ export default class Operations extends Component {
         let name = this.state.name;
         let code = this.state.code;
         let description = this.state.description;
-        let inParams = this.state.inParams.join("");
-        let outParams = this.state.outParams.join("");
+        let inParams = JSON.stringify(this.state.inParams);
+        let outParams = JSON.stringify(this.state.outParams);
         let actions = JSON.stringify(this.state.actions);
         console.log(operation.id + " " + name + " " + code + " " + actions + " " + description + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/operations/edit?"
             + "id=" + operation.id;
         if (name) {
-            url += "&name=" + name;
+            url += "&name=" + encodeURIComponent(name);
         }
         if (code) {
-            url += "&code=" + code;
+            url += "&code=" + encodeURIComponent(code);
         }
         if (description) {
-            url += "&description=" + description;
+            url += "&description=" + encodeURIComponent(description);
         }
         if (actions) {
             url += "&actions=" + encodeURIComponent(actions);
         }
         if (inParams) {
-            url += "&inParams=" + inParams;
+            url += "&inParams=" + encodeURIComponent(inParams);
         }
         if (outParams) {
-            url += "&outParams=" + outParams;
+            url += "&outParams=" + encodeURIComponent(outParams);
         }
 
 
@@ -522,20 +527,22 @@ export default class Operations extends Component {
 
     renderTableParams(params) {
         const resultParams = this.state[params].map((param) => {
-            const splittedParam = param.slice(0, param.length - 1).split(",");
-            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam[0])[0];
+            const splittedParam = param;
+            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam.id)[0];
             return {
                 id: paramInst.id,
                 code: paramInst.code,
                 name: paramInst.name,
-                required: splittedParam[1],
-                keepInWorkflow: splittedParam[2],
-                defaultValue: splittedParam[3],
+                required: splittedParam.required,
+                keepInWorkflow: splittedParam.keepInWorkflow,
+                defaultValue: splittedParam.defaultValue,
             }
         });
         return <Params params={resultParams} onRemoveClick={(param) => {
             let resultParams = [...this.state[params]];
-            const indexes = resultParams.map((item)=>{return Number(item.split(",")[0])})
+            const indexes = resultParams.map((item) => {
+                return Number(item.id)
+            })
             resultParams.splice(indexes.indexOf(param.id), 1);
             const state = {...this.state};
             state[params] = resultParams;
@@ -598,18 +605,20 @@ export default class Operations extends Component {
                                 const newParamId = this.state.dynamicParams.filter((param) => {
                                     return param.code == newParamCode;
                                 })[0].id;
-                                if (params.filter(param => param.split(",")[0] == newParamId).length > 0) {
+                                if (params.filter(param => param.id == newParamId).length > 0) {
                                     console.error("Параметр " + this.state.newParamCode
                                         + " уже добавлен в " + this.state.newParamType);
-                                    this.setState({openedAddParamDialog:false})
+                                    this.setState({openedAddParamDialog: false})
                                     return;
                                 }
 
 
-                                const newParam = newParamId + ","
-                                    + newParamRequired + ","
-                                    + newParamKeepInWorkflow + ","
-                                    + newParamDefaultValue + ";";
+                                const newParam = {
+                                    id: newParamId,
+                                    required: newParamRequired,
+                                    keepInWorkflow: newParamKeepInWorkflow,
+                                    defaultValue: newParamDefaultValue
+                                }
                                 params.push(newParam);
                                 const state = {...this.state};
                                 state[this.state.newParamType] = params;
@@ -619,6 +628,7 @@ export default class Operations extends Component {
                                 state.newParamKeepInWorkflow = false;
                                 state.newParamDefaultValue = "";
                                 this.setState(state)
+
                             }}>Добавить параметр</Button>
                 </DialogContent>
             </Dialog>

@@ -4,83 +4,84 @@ import InvisibleTableCell from "./InvisibleTableCell";
 
 
 export default class Action extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             collapsed: true
         }
     }
+
     render() {
         let action = this.props.data;
         let collapsed = this.state.collapsed;
 
-        if(!action)
+        if (!action)
             return null;
         let inParams = [];
         let outParams = [];
         const mapping = this.props.mapping;
-        if(action.inParams&&action.inParams.length > 0)
+        if (action.inParams && action.inParams.length > 0)
             inParams = action.inParams;
-        if(action.outParams&&action.outParams.length > 0)
+        if (action.outParams && action.outParams.length > 0)
             outParams = action.outParams;
         let paramsLength = inParams.length > outParams.length ? inParams.length : outParams.length;
         let params = [];
         let className = "";
-        for(let i=0;i < paramsLength; i++){
+        for (let i = 0; i < paramsLength; i++) {
             let inParam = "";
             let outParam = "";
-            if(i < inParams.length){
-                inParam = {...inParams[i].dynamicParam,required:inParams[i].required};
+            if (i < inParams.length) {
+                inParam = {...inParams[i].dynamicParam, required: inParams[i].required};
             }
-            if(i < outParams.length){
-                outParam = {...outParams[i].dynamicParam,required:outParams[i].required};
+            if (i < outParams.length) {
+                outParam = {...outParams[i].dynamicParam, required: outParams[i].required};
             }
 
-            console.log("inParam",inParam)
-            let inMapping = mapping&&mapping.filter((mapping)=>{
-                return mapping.type.includes("IN") && mapping.out === inParam.code;
-            })[0] || {};
+            let inMapping = mapping && mapping.filter((mapping) => {
+                    return mapping.type.includes("IN") && mapping.out === inParam.code;
+                })[0] || {};
 
-            let outMapping = this.props.mapping&&this.props.mapping.filter((mapping)=>{
+            let outMapping = this.props.mapping && this.props.mapping.filter((mapping) => {
                     return mapping.type.includes("OUT") && mapping.in === outParam.code;
                 })[0] || {};
 
             let inMappingClassName = "";
             let inParamClassName = "";
-            if(this.props.context){
-                if(!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code && inParam.required){
+            if (this.props.context) {
+                if (!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code && inParam.required) {
                     inParamClassName = className = "action-param__context-error";
                 }
-                if(inMapping.type==="INPARAM" && !this.props.context.includes(inMapping.in)){
+                if (inMapping.type === "INPARAM" && !this.props.context.includes(inMapping.in)) {
                     inMappingClassName = className = "action-param__context-error";
                 }
             }
-            console.log("---inParam",inParam)
             params.push(
                 <TableRow key={i}>
-                    {mapping&&mapping.length>0&&<TableCell className={inMappingClassName}>{inMapping.in&&inMapping.in}</TableCell>}
+                    {mapping && mapping.length > 0 &&
+                    <TableCell className={inMappingClassName}>{inMapping.in && inMapping.in}</TableCell>}
 
                     <TableCell className={inParamClassName}>{inParam.name}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.code}</TableCell>
                     <TableCell className={inParamClassName}>{inParam.type}</TableCell>
-                    <TableCell className={inParamClassName}>{inParam.required&&inParam.required.toString()}</TableCell>
+                    <TableCell
+                        className={inParamClassName}>{inParam.required && inParam.required.toString()}</TableCell>
 
                     <TableCell>{outParam.name}</TableCell>
                     <TableCell>{outParam.code}</TableCell>
                     <TableCell>{outParam.type}</TableCell>
-                    <TableCell>{outParam.required&&outParam.required.toString()}</TableCell>
-                    {mapping&&mapping.length>0&&<TableCell >{outMapping.out&&outMapping.out}</TableCell>}
+                    <TableCell>{outParam.required && outParam.required.toString()}</TableCell>
+                    {mapping && mapping.length > 0 && <TableCell >{outMapping.out && outMapping.out}</TableCell>}
                 </TableRow>
             );
 
         }
-        if(this.state.collapsed){
+        if (this.state.collapsed) {
             return (<div id={this.props.id} className={"yellow text-center collapsed_table name " + className}
-                         onClick={() =>{
+                         onClick={() => {
                              this.setState({collapsed: !collapsed});
-                         }}>{action.name +"( code: "+action.code+" )"}</div>)
+                         }}>{action.name + "( code: " + action.code + " )"}</div>)
         }
-        if(this.props.mapping&&this.props.mapping.length>0){
+        if (this.props.mapping && this.props.mapping.length > 0) {
             return (
                 <Table id={this.props.id} className="action table">
                     <TableHead>

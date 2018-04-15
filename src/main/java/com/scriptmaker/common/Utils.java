@@ -1,5 +1,6 @@
 package com.scriptmaker.common;
 
+import com.scriptmaker.dto.ParamInstanceDto;
 import com.scriptmaker.model.DynamicParamInstance;
 import com.scriptmaker.repository.DynamicParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,29 +33,16 @@ public class Utils {
         return paramsList;
     }
 
-    /**
-     * Создаёт список экземпляров динамических параметров из строки
-     * @param string  строка вида `dynamicParamId,required,keepInworkflow,defaultValue;`
-     * @return список экземпляров динамических параметров
-     */
-    public List<DynamicParamInstance> getDynamicParamsInstances(String string) {
-        if(string == null || string.isEmpty()){
-            return new ArrayList<>();
-        }
+
+    public List<DynamicParamInstance> getDynamicParamsInstances(List<ParamInstanceDto> paramsList) {
         List<DynamicParamInstance> dynamicParamInstances = new ArrayList<>();
-        for(String paramInstance : string.split(";")){
-            String[] props = paramInstance.split(",");
+        for (ParamInstanceDto paramInstanceDto : paramsList) {
             DynamicParamInstance dynamicParamInstance = new DynamicParamInstance();
-            dynamicParamInstance.setDynamicParam(dynamicParamRepository.findOne(Long.valueOf(props[0])));
-            if(props.length>=2) {
-                dynamicParamInstance.setRequired(Boolean.valueOf(props[1]));
-            }
-            if(props.length>=3) {
-                dynamicParamInstance.setKeepInWorkflow(Boolean.valueOf(props[2]));
-            }
-            if(props.length>=4){
-                dynamicParamInstance.setDefaultValue(String.valueOf(props[3]));
-            }
+            Long paramId = Long.valueOf(paramInstanceDto.getId());
+            dynamicParamInstance.setDynamicParam(dynamicParamRepository.findOne(paramId));
+            dynamicParamInstance.setRequired(Boolean.valueOf(paramInstanceDto.getRequired()));
+            dynamicParamInstance.setKeepInWorkflow(Boolean.valueOf(paramInstanceDto.getKeepInWorkflow()));
+            dynamicParamInstance.setDefaultValue(paramInstanceDto.getDefaultValue());
             dynamicParamInstances.add(dynamicParamInstance);
         }
         return dynamicParamInstances;

@@ -88,19 +88,19 @@ class Actions extends Component {
         let code = this.state.newCode;
         let module = this.state.newModule;
         let description = this.state.newDescription;
-        let inParams = this.state.inParams.join("");
-        let outParams = this.state.outParams.join("");
+        let inParams = JSON.stringify(this.state.inParams);
+        let outParams = JSON.stringify(this.state.outParams);
         console.log(name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/actions/new?"
-            + "name=" + name
-            + "&code=" + code
-            + "&module=" + module
-            + "&description=" + description;
+            + "name=" + encodeURIComponent(name)
+            + "&code=" + encodeURIComponent(code)
+            + "&module=" + encodeURIComponent(module)
+            + "&description=" + encodeURIComponent(description);
         if (inParams) {
-            url += "&inParams=" + inParams;
+            url += "&inParams=" + encodeURIComponent(inParams);
         }
         if (outParams) {
-            url += "&outParams=" + outParams;
+            url += "&outParams=" + encodeURIComponent(outParams);
         }
         fetch(url).then((response) => {
             return response.json();
@@ -115,28 +115,28 @@ class Actions extends Component {
         let code = this.state.editCode;
         let module = this.state.editModule;
         let description = this.state.editDescription;
-        let inParams = this.state.inParams.join("");
-        let outParams = this.state.outParams.join("");
+        let inParams = JSON.stringify(this.state.inParams);
+        let outParams = JSON.stringify(this.state.outParams);
         console.log(action.id + " " + name + " " + code + " " + module + " " + description + " " + inParams + " " + outParams);
         let url = window.location.origin + "/api/actions/edit?"
             + "id=" + action.id;
         if (name) {
-            url += "&name=" + name;
+            url += "&name=" + encodeURIComponent(name);
         }
         if (code) {
-            url += "&code=" + code;
+            url += "&code=" + encodeURIComponent(code);
         }
         if (module) {
-            url += "&module=" + module;
+            url += "&module=" + encodeURIComponent(module);
         }
         if (description) {
-            url += "&description=" + description;
+            url += "&description=" + encodeURIComponent(description);
         }
         if (inParams) {
-            url += "&inParams=" + inParams;
+            url += "&inParams=" + encodeURIComponent(inParams);
         }
         if (outParams) {
-            url += "&outParams=" + outParams;
+            url += "&outParams=" + encodeURIComponent(outParams);
         }
         fetch(url).then((response) => {
             return response.json();
@@ -158,14 +158,10 @@ class Actions extends Component {
     renderActions() {
         let params = this.state.filteredActions;
 
-        let actions = params.map((item,index) => {
-            console.log("---index",index)
-            return <Action onDelete={(id) => this.openDeleteDialog(id)}
-                           onEdit={(action) => this.openEditDialog(action)}
-                           key={item.id} data={item}/>
-        })
-
-        return actions;
+        return params.map((item) => <Action onDelete={(id) => this.openDeleteDialog(id)}
+                                            onEdit={(action) => this.openEditDialog(action)}
+                                            key={item.id} data={item}/>
+        );
     }
 
     handleRequestCreateDialog() {
@@ -181,20 +177,24 @@ class Actions extends Component {
     }
 
     openEditDialog(action) {
-        console.log("action", action);
         let inParams = [];
         action.inParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
-            inParams.push(dynamicParam.id + ","
-                + required + ","
-                + keepInWorkflow + ","
-                + defaultValue + ";");
+
+            inParams.push({
+                id: dynamicParam.id,
+                required,
+                keepInWorkflow,
+                defaultValue
+            });
         });
         let outParams = [];
         action.outParams.forEach(({dynamicParam, required, keepInWorkflow, defaultValue}) => {
-            outParams.push(dynamicParam.id + ","
-                + required + ","
-                + keepInWorkflow + ","
-                + defaultValue + ";");
+            outParams.push({
+                id: dynamicParam.id,
+                required,
+                keepInWorkflow,
+                defaultValue
+            });
         });
         this.setState({
             editionDialogOpened: true,
@@ -287,18 +287,20 @@ class Actions extends Component {
                                 const newParamId = this.state.dynamicParams.filter((param) => {
                                     return param.code == newParamCode;
                                 })[0].id;
-                                if (params.filter(param => param.split(",")[0] == newParamId).length > 0) {
+                                if (params.filter(param => param.id == newParamId).length > 0) {
                                     console.error("Параметр " + this.state.newParamCode
                                         + " уже добавлен в " + this.state.newParamType);
-                                    this.setState({openedAddParamDialog:false})
+                                    this.setState({openedAddParamDialog: false})
                                     return;
                                 }
 
 
-                                const newParam = newParamId + ","
-                                    + newParamRequired + ","
-                                    + newParamKeepInWorkflow + ","
-                                    + newParamDefaultValue + ";";
+                                const newParam = {
+                                    id: newParamId,
+                                    required: newParamRequired,
+                                    keepInWorkflow: newParamKeepInWorkflow,
+                                    defaultValue: newParamDefaultValue
+                                }
                                 params.push(newParam);
                                 const state = {...this.state};
                                 state[this.state.newParamType] = params;
@@ -340,7 +342,8 @@ class Actions extends Component {
             <div className={"dialog__content"}>
                 <TextField onChange={this.handleChange("newName")} label="name" required={true}/>
                 <TextField onChange={this.handleChange("newCode")} label="code" required={true}/>
-                <TextField onChange={this.handleChange("newModule")} value={this.state.newModule} label="module" required={true}/>
+                <TextField onChange={this.handleChange("newModule")} value={this.state.newModule} label="module"
+                           required={true}/>
                 <TextField onChange={this.handleChange("newDescription")} label="description" multiline rows={4}
                            required={true}/>
                 {this.renderInParams()}
@@ -382,7 +385,8 @@ class Actions extends Component {
                 <TextField onChange={this.handleChange("editName")} value={this.state.editName} label="name"/>
                 <TextField onChange={this.handleChange("editCode")} value={this.state.editCode} label="code"/>
                 <TextField onChange={this.handleChange("editModule")} value={this.state.editModule} label="module"/>
-                <TextField onChange={this.handleChange("editDescription")} value={this.state.editDescription} multiline rows={4}
+                <TextField onChange={this.handleChange("editDescription")} value={this.state.editDescription} multiline
+                           rows={4}
                            label="description"/>
                 {this.renderInParams()}
                 {this.renderOutParams()}
@@ -446,20 +450,22 @@ class Actions extends Component {
 
     renderTableParams(params) {
         const resultParams = this.state[params].map((param) => {
-            const splittedParam = param.slice(0, param.length - 1).split(",");
-            const paramInst = this.state.dynamicParams.filter((param) => param.id == splittedParam[0])[0];
+            const parametr = param;
+            const paramInst = this.state.dynamicParams.filter((param) => param.id == parametr.id)[0];
             return {
                 id: paramInst.id,
                 code: paramInst.code,
                 name: paramInst.name,
-                required: splittedParam[1],
-                keepInWorkflow: splittedParam[2],
-                defaultValue: splittedParam[3],
+                required: parametr.required,
+                keepInWorkflow: parametr.keepInWorkflow,
+                defaultValue: parametr.defaultValue,
             }
         });
         return <Params params={resultParams} onRemoveClick={(param) => {
             let resultParams = [...this.state[params]];
-            const indexes = resultParams.map((item)=>{return Number(item.split(",")[0])})
+            const indexes = resultParams.map((item) => {
+                return Number(item.id)
+            })
             resultParams.splice(indexes.indexOf(param.id), 1);
             const state = {...this.state};
             state[params] = resultParams;
@@ -468,4 +474,4 @@ class Actions extends Component {
     }
 }
 
-export default connect(state=>({test:state.actions}))(Actions)
+export default connect(state => ({test: state.actions}))(Actions)
