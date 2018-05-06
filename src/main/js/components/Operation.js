@@ -37,7 +37,11 @@ export default class Operation extends Component {
             }
 
             if (this.props.context) {
-                if (inParam.code&&!this.props.context.includes(inParam.code)) {
+                if(inParam.code&&inParams[i].defaultValue==="null"){
+                    console.warn("[HACK]Параметр имеет defaultValue=null", inParam)
+                }
+                if (inParam.code&&(!inParams[i].defaultValue||inParams[i].defaultValue=="null")
+                    &&inParams[i].required&& !this.props.context.includes(inParam.code)) {
                     console.log("Параметр " + inParam.code + " отсутствует в контексте")
                     className = "action-param__context-error";
                     problems++;
