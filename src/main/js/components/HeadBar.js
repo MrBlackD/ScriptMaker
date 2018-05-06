@@ -14,18 +14,26 @@ export default class HeadBar extends Component {
                             <Link className="react-router-link" to="/">SCRIPT-MAKER v0.0.6</Link>
                         </Typography>
                         <div className="appbar__menu">
-                            <Button>
-                                <Link  className="react-router-link" to="/dynamicParams">Динамические параметры</Link>
-                            </Button>
-                            <Button>
-                                <Link className="react-router-link" to="/actions">Действия</Link>
-                            </Button>
-                            <Button>
-                                <Link className="react-router-link" to="/operations">Операции</Link>
-                            </Button>
-                            <Button>
-                                <Link className="react-router-link" to="/services">Сервисы</Link>
-                            </Button>
+                            <Link className="react-router-link" to="/dynamicParams">
+                                <Button>
+                                    Динамические параметры
+                                </Button>
+                            </Link>
+                            <Link className="react-router-link" to="/actions">
+                                <Button>
+                                    Действия
+                                </Button>
+                            </Link>
+                            <Link className="react-router-link" to="/operations">
+                                <Button>
+                                    Операции
+                                </Button>
+                            </Link>
+                            <Link className="react-router-link" to="/services">
+                                <Button>
+                                    Сервисы
+                                </Button>
+                            </Link>
                         </div>
                     </Toolbar>
                 </AppBar>

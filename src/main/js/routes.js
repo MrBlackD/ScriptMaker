@@ -2,7 +2,7 @@ import React from "react";
 import {IndexRoute, Route} from "react-router";
 
 import Application from "./containers/Application";
-import Home from "./components/Home";
+import Home from "./components/Home/Home";
 import NotFound from "./components/NotFound";
 import DynamicParams from "./components/DynamicParams";
 import Actions from "./components/Actions";
