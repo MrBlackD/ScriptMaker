@@ -31,10 +31,18 @@ export default class Action extends Component {
             let inParam = "";
             let outParam = "";
             if (i < inParams.length) {
-                inParam = {...inParams[i].dynamicParam, required: inParams[i].required};
+                inParam = {
+                    ...inParams[i].dynamicParam,
+                    required: inParams[i].required,
+                    defaultValue:inParams[i].defaultValue
+                };
             }
             if (i < outParams.length) {
-                outParam = {...outParams[i].dynamicParam, required: outParams[i].required};
+                outParam = {
+                    ...outParams[i].dynamicParam,
+                    required: outParams[i].required,
+                    defaultValue:outParams[i].defaultValue
+                };
             }
 
             let inMapping = mapping && mapping.filter((mapping) => {
@@ -47,11 +55,17 @@ export default class Action extends Component {
 
             let inMappingClassName = "";
             let inParamClassName = "";
+
             if (this.props.context) {
-                if (!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code && inParam.required) {
+                if(inParam.defaultValue==="null"){
+                    console.warn("[HACK]Параметр имеет defaultValue=null", inParam)
+                }
+                if (!this.props.context.includes(inParam.code) && inMapping.out !== inParam.code
+                    && inParam.required && (!inParam.defaultValue || inParam.defaultValue=="null")) {
                     inParamClassName = className = "action-param__context-error";
                 }
-                if (inMapping.type === "INPARAM" && !this.props.context.includes(inMapping.in)) {
+                if (inMapping.type === "INPARAM" && !this.props.context.includes(inMapping.in)
+                    && inParam.required && (!inParam.defaultValue || inParam.defaultValue=="null")) {
                     inMappingClassName = className = "action-param__context-error";
                 }
             }
