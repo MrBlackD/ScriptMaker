@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import Action from "./Action";
 import {
     Button,
     Dialog,
@@ -15,8 +14,9 @@ import {
 } from "material-ui";
 import Suggest from "./Suggest";
 import SearchField from "./SearchField";
-import Params from "./Params";
 import {connect} from "react-redux";
+import ActionsList from "./Actions/ActionsList";
+import ParamsTable from "./ParamsTable/ParamsTable";
 
 class Actions extends Component {
     constructor(props) {
@@ -49,6 +49,7 @@ class Actions extends Component {
         };
         this.handleRequestEditDialog = this.handleRequestEditDialog.bind(this);
         this.handleRequestCreateDialog = this.handleRequestCreateDialog.bind(this);
+        this.onRemoveParam = this.onRemoveParam.bind(this);
     }
 
     componentDidMount() {
@@ -155,14 +156,6 @@ class Actions extends Component {
         });
     }
 
-    renderActions() {
-        let params = this.state.filteredActions;
-
-        return params.map((item) => <Action onDelete={(id) => this.openDeleteDialog(id)}
-                                            onEdit={(action) => this.openEditDialog(action)}
-                                            key={item.id} data={item}/>
-        );
-    }
 
     handleRequestCreateDialog() {
         this.setState({createDialogOpened: false});
@@ -346,8 +339,8 @@ class Actions extends Component {
                            required={true}/>
                 <TextField onChange={this.handleChange("newDescription")} label="description" multiline rows={4}
                            required={true}/>
-                {this.renderInParams()}
-                {this.renderOutParams()}
+                {this.renderParams("inParams")}
+                {this.renderParams("outParams")}
             </div>
         );
     }
@@ -388,8 +381,8 @@ class Actions extends Component {
                 <TextField onChange={this.handleChange("editDescription")} value={this.state.editDescription} multiline
                            rows={4}
                            label="description"/>
-                {this.renderInParams()}
-                {this.renderOutParams()}
+                {this.renderParams("inParams")}
+                {this.renderParams("outParams")}
             </div>
         );
     }
@@ -415,7 +408,9 @@ class Actions extends Component {
                 {this.renderCreationDialog()}
                 {this.renderDeleteConfirmDialog()}
                 {this.renderEditionDialog()}
-                {this.renderActions()}
+                <ActionsList actions={this.state.filteredActions}
+                             onDelete={this.openDeleteDialog}
+                             onEdit={(action) => this.openEditDialog(action)}/>
             </Paper>
         )
     }
@@ -424,54 +419,32 @@ class Actions extends Component {
         this.setState({inParams: [], outParams: [], newModule: "dul-module"});
     }
 
-    renderInParams() {
+    renderParams(paramsType) {
+        const title = paramsType == "inParams" ? "Исходящие параметры" : "Входящие параметры"
         return (
             <div>
-                <Typography variant="subheading" gutterBottom>{"Входящие параметры"}</Typography>
+                <Typography variant="subheading" gutterBottom>{title}</Typography>
                 <Button variant="raised" onClick={() => {
-                    this.setState({openedAddParamDialog: true, newParamType: "inParams"});
+                    this.setState({openedAddParamDialog: true, newParamType: paramsType});
                 }}>Добавить входящий параметр</Button>
-                {this.renderTableParams("inParams")}
+                <ParamsTable params={this.state[paramsType]}
+                             paramsType={paramsType}
+                             dynamicParams={this.state.dynamicParams}
+                             onRemoveClick={this.onRemoveParam}/>
             </div>
         );
     }
 
-    renderOutParams() {
-        return (
-            <div>
-                <Typography variant="subheading" gutterBottom>{"Исходящие параметры"}</Typography>
-                <Button variant="raised" onClick={() => {
-                    this.setState({openedAddParamDialog: true, newParamType: "outParams"});
-                }}>Добавить исходящий параметр</Button>
-                {this.renderTableParams("outParams")}
-            </div>
-        );
+    onRemoveParam(param, paramsType) {
+        let resultParams = [...this.state[paramsType]];
+        const indexes = resultParams.map((item) => Number(item.id))
+        resultParams.splice(indexes.indexOf(param.id), 1);
+        const state = {...this.state};
+        state[paramsType] = resultParams;
+        this.setState(state);
+
     }
 
-    renderTableParams(params) {
-        const resultParams = this.state[params].map((param) => {
-            const parametr = param;
-            const paramInst = this.state.dynamicParams.filter((param) => param.id == parametr.id)[0];
-            return {
-                id: paramInst.id,
-                code: paramInst.code,
-                name: paramInst.name,
-                required: parametr.required,
-                keepInWorkflow: parametr.keepInWorkflow,
-                defaultValue: parametr.defaultValue,
-            }
-        });
-        return <Params params={resultParams} onRemoveClick={(param) => {
-            let resultParams = [...this.state[params]];
-            const indexes = resultParams.map((item) => {
-                return Number(item.id)
-            })
-            resultParams.splice(indexes.indexOf(param.id), 1);
-            const state = {...this.state};
-            state[params] = resultParams;
-            this.setState(state);
-        }}/>
-    }
 }
 
 export default connect(state => ({test: state.actions}))(Actions)
