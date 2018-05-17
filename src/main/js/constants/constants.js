@@ -3,8 +3,13 @@ export const ItemTypes = {
 }
 
 export const constants = {
-    START:"_START",
-    SUCCESS:"_SUCCESS",
-    FAIL:"_FAIL",
     LOAD_DYNAMIC_PARAMS:"LOAD_DYNAMIC_PARAMS",
+    CREATE_DYNAMIC_PARAM:"CREATE_DYNAMIC_PARAM",
+    DELETE_DYNAMIC_PARAM:"DELETE_DYNAMIC_PARAM",
+    EDIT_DYNAMIC_PARAM:"EDIT_DYNAMIC_PARAM",
 }
+
+
+export const START = "_START"
+export const SUCCESS = "_SUCCESS"
+export const FAIL = "_FAIL"

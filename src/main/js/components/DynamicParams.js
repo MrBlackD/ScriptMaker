@@ -20,8 +20,14 @@ import {
     Typography
 } from "material-ui";
 import SearchField from "./SearchField";
-import {loadDynamicParams} from "../AC/index";
+import {
+    createDynamicParam,
+    deleteDynamicParam,
+    editDynamicParam,
+    loadDynamicParams
+} from "../AC/dynamicParamsActionCreators";
 import {connect} from "react-redux";
+import {selectDynamicParams} from "../selectors/dynamicParamsSelectors";
 
 
 class DynamicParams extends Component {
@@ -33,8 +39,13 @@ class DynamicParams extends Component {
             deleteConfirmDialogOpened: false,
             editionDialogOpened: false,
             dynamicParam: {},
-            dynamicParams: [],
-            filteredParams: []
+            filteredParams: [],
+            newName: "",
+            newCode: "",
+            newType: "",
+            editName: "",
+            editCode: "",
+            editType: "",
         };
 
         this.handleRequestCloseDialog = this.handleRequestCloseDialog.bind(this);
@@ -46,79 +57,21 @@ class DynamicParams extends Component {
     }
 
     loadData() {
-        fetch(window.location.origin + "/api/dynamicParams").then((response) => {
-            return response.json();
-        }).then((json) => {
-            console.log(json);
-            this.setState({
-                dynamicParams: json,
-                filteredParams: json
-            });
-        });
         this.props.loadDynamicParams();
-
     }
 
     handleCreateParam() {
-        let name = this.newName.value;
-        this.newName.value = "";
-        let code = this.newCode.value;
-        this.newCode.value = "";
-        let type = this.newType.value;
-        this.newType.value = "";
-        console.log(name + " " + code + " " + type );
-
-        let url = window.location.origin + "/api/dynamicParams/new?"
-                + "name=" + name
-                + "&code=" + code
-                + "&type=" + type
-
-        fetch(url).then((response) => {
-            return response.json();
-        }).then((json) => {
-            console.log(json);
-            this.loadData();
-        });
-
+        const {newName, newCode, newType} = this.state;
+        this.props.createDynamicParam({name: newName, code: newCode, type: newType})
     }
 
     handleEditParam(id) {
-        let name = this.editName.value;
-        this.editName.value = "";
-        let code = this.editCode.value;
-        this.editCode.value = "";
-        let type = this.editType.value;
-        this.editType.value = "";
-
-        console.log(id + "" + name + " " + code + " " + type );
-        let url = window.location.origin + "/api/dynamicParams/edit?"
-            + "id=" + id;
-        if (name) {
-            url += "&name=" + name;
-        }
-        if (code) {
-            url += "&code=" + code;
-        }
-        if (type) {
-            url += "&type=" + type;
-        }
-        fetch(url).then((response) => {
-            return response.json();
-        }).then((json) => {
-            console.log(json);
-            this.loadData();
-        });
-
-
+        const {editName, editCode, editType} = this.state
+        this.props.editDynamicParam({id, name: editName, code: editCode, type: editType})
     }
 
     handleDelete(id) {
-        let url = window.location.origin + "/api/dynamicParams/delete?id=" + id;
-        fetch(url).then((response) => {
-            console.log(response);
-            this.loadData();
-        });
-
+        this.props.deleteDynamicParam(id)
     }
 
     handleRequestCloseDialog() {
@@ -144,19 +97,23 @@ class DynamicParams extends Component {
     }
 
     openEditDialog(id) {
-        this.setState({editionDialogOpened: true, targetId: id});
+        const param = this.props.dynamicParams.find((item)=>item.id==id)
+        this.setState({
+            editionDialogOpened: true,
+            targetId: id,
+            editCode: param.code,
+            editName: param.name,
+            editType: param.type
+        });
     }
 
 
     renderParams(params) {
-        console.log("params",params);
-        return params.map((param,index)=>{
-           return <DynamicParam onClose={(id) => this.openDeleteDialog(param, id)}
-                          onEdit={(id) => this.openEditDialog(id)}
-                          key={index}
-                          data={param}/>
-        })
-
+        return params.map((param, index) => <DynamicParam onClose={(id) => this.openDeleteDialog(param, id)}
+                                                          onEdit={(id) => this.openEditDialog(id)}
+                                                          key={index}
+                                                          data={param}/>
+        )
     }
 
     renderRow(item) {
@@ -299,7 +256,8 @@ class DynamicParams extends Component {
                         this.handleDelete(this.state.targetId)
                     }
                     } color="secondary" variant="raised">{"Удалить"}</Button>
-                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})} variant="raised">{"Отмена"}</Button>
+                    <Button onClick={() => this.setState({deleteConfirmDialogOpened: false})}
+                            variant="raised">{"Отмена"}</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -308,16 +266,18 @@ class DynamicParams extends Component {
     renderCreationForm() {
         return (
             <div className={"dialog__content"}>
-                <TextField id="newName" inputRef={(input) => {
-                    this.newName = input;
-                }} label="Name" required={true}/>
-                <TextField id="newCode" inputRef={(input) => {
-                    this.newCode = input;
-                }} label="Code" required={true}/>
-                <TextField id="newType" inputRef={(input) => {
-                    this.newType = input;
-                }} label="Type" required={true}/>
-
+                <TextField value={this.state.newName}
+                           onChange={(e) => this.setState({newName: e.target.value})}
+                           label="Name"
+                           required={true}/>
+                <TextField value={this.state.newCode}
+                           onChange={(e) => this.setState({newCode: e.target.value})}
+                           label="Code"
+                           required={true}/>
+                <TextField value={this.state.newType}
+                           onChange={(e) => this.setState({newType: e.target.value})}
+                           label="Type"
+                           required={true}/>
                 <Button color="secondary" variant="raised" onClick={() => {
                     this.handleRequestCloseDialog();
                     this.handleCreateParam()
@@ -327,11 +287,12 @@ class DynamicParams extends Component {
     }
 
     renderEditionForm() {
-        let params = this.state.dynamicParams;
+        const {dynamicParams} = this.props;
+
         let param;
-        for (let i = 0; i < params.length; i++) {
-            if (params[i].id === this.state.targetId) {
-                param = params[i];
+        for (let i = 0; i < dynamicParams.length; i++) {
+            if (dynamicParams[i].id === this.state.targetId) {
+                param = dynamicParams[i];
                 break;
             }
         }
@@ -339,15 +300,15 @@ class DynamicParams extends Component {
             return null;
         return (
             <div className={"dialog__content"}>
-                <TextField id="editName" inputRef={(input) => {
-                    this.editName = input;
-                }} defaultValue={param.name} label="Name"/>
-                <TextField id="editCode" inputRef={(input) => {
-                    this.editCode = input;
-                }} defaultValue={param.code} label="Code"/>
-                <TextField id="editType" inputRef={(input) => {
-                    this.editType = input;
-                }} defaultValue={param.type} label="Type"/>
+                <TextField value={this.state.editName}
+                           onChange={(e) => this.setState({editName: e.target.value})}
+                           label="Name"/>
+                <TextField value={this.state.editCode}
+                           onChange={(e) => this.setState({editCode: e.target.value})}
+                           label="Code"/>
+                <TextField value={this.state.editType}
+                           onChange={(e) => this.setState({editType: e.target.value})}
+                           label="Type"/>
                 <Button color="secondary" variant="raised" onClick={() => {
                     this.handleRequestEditDialog();
                     this.handleEditParam(this.state.targetId)
@@ -357,7 +318,7 @@ class DynamicParams extends Component {
     }
 
     render() {
-        let params = this.state.filteredParams;
+        const {dynamicParams} = this.props;
         return (
             <Paper>
                 <div style={{"textAlign": "center", "padding": "10px"}}>
@@ -365,7 +326,7 @@ class DynamicParams extends Component {
                         this.setState({openDialog: true});
                     }} variant="raised" color="secondary">Создать динамический параметр</Button>
                     <div>
-                        <SearchField values={this.state.dynamicParams}
+                        <SearchField values={dynamicParams}
                                      field="code"
                                      onChange={(value) => {
                                          this.setState({filteredParams: value})
@@ -379,10 +340,10 @@ class DynamicParams extends Component {
                 {this.renderDeleteConfirmDialog()}
                 <Table>
                     <TableHead>
-                        {this.renderHeader(params)}
+                        {this.renderHeader(dynamicParams)}
                     </TableHead>
                     <TableBody>
-                        {this.renderParams(params)}
+                        {this.renderParams(dynamicParams)}
                     </TableBody>
                 </Table>
             </Paper>
@@ -391,4 +352,11 @@ class DynamicParams extends Component {
 
 }
 
-export default connect(null,{loadDynamicParams})(DynamicParams)
+const mapStateToProps = (state) => {
+    return {
+        dynamicParams: selectDynamicParams(state)
+    }
+}
+
+export default connect(mapStateToProps,
+    {loadDynamicParams, createDynamicParam, deleteDynamicParam, editDynamicParam})(DynamicParams)

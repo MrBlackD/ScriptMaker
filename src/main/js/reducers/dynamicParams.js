@@ -1,13 +1,15 @@
-import {constants} from "../constants/constants";
-const initState = {
-    dynamicParams:[]
-}
+import {constants, SUCCESS} from "../constants/constants";
+import {List, Record} from "immutable";
 
-export default (state = initState,action) => {
-    const {type,payload} = action
-    switch (type){
-        case constants.LOAD_DYNAMIC_PARAMS + constants.SUCCESS:
-            return state = payload.response
+const InitState = Record({
+    entities: new List([])
+})
+
+export default (state = new InitState(), action) => {
+    const {type, payload} = action
+    switch (type) {
+        case constants.LOAD_DYNAMIC_PARAMS + SUCCESS:
+            return state.set("entities", new List(payload.response))
         default:
             return state;
     }
